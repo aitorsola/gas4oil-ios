@@ -9,17 +9,23 @@ App para iOS y macOS que muestra el precio del carburante en las estaciones de s
 Encuentra las gasolineras más cercanas, ordénalas por precio, filtra por marca o por municipio, guarda las que te interesen y traza la ruta en Apple Maps con un toque. Si guardas tu vehículo, la app calcula lo que cuesta llenar el depósito en cada estación.
 
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/14097782/164501962-bc7f0816-1d40-45dd-9d7e-d3f2924a836d.png" />
+  <img src="docs/screenshots/estaciones.png" width="200" alt="Listado de estaciones cercanas" />
+  <img src="docs/screenshots/combustible-orden.png" width="200" alt="Filtro de combustible y orden" />
+  <img src="docs/screenshots/marcas.png" width="200" alt="Filtro por marca" />
+</p>
+<p align="center">
+  <img src="docs/screenshots/mapa.png" width="200" alt="Mapa de la estación" />
+  <img src="docs/screenshots/vehiculo.png" width="200" alt="Mi vehículo con el coste de llenado" />
 </p>
 
 ## Qué hace
 
-- **Estaciones cercanas** ordenadas por proximidad, precio ascendente o descendente.
-- **Filtros** por combustible (gasolina 95, gasolina 98 y diésel) y por marca, con su logo.
-- **Búsqueda por municipio**, con sugerencias.
+- **Estaciones cercanas** con los tres precios de un vistazo, ordenadas por proximidad o por precio.
+- **Filtros** por combustible (gasolina 95, gasolina 98 y diésel) y por marca, cada una con su logo.
+- **Búsqueda por municipio**, con sugerencias mientras escribes.
 - **Favoritos**, que mantienen su precio actualizado.
-- **Cómo llegar**: abre la ruta en Apple Maps con el destino ya nombrado.
-- **Mi vehículo**: guarda el combustible y la capacidad del depósito y la app te dice entre cuánto y cuánto cuesta llenarlo en las estaciones que tienes cerca.
+- **Cómo llegar**: abre la ruta en Apple Maps con el destino ya nombrado, sin salir de la celda.
+- **Mi vehículo**: guarda el combustible y la capacidad del depósito y la app te dice entre cuánto y cuánto cuesta llenarlo en las estaciones que tienes cerca, y dónde sale más barato.
 - **App de macOS** con vista dividida: lista a la izquierda, detalle y mapa a la derecha.
 
 ## Datos
