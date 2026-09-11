@@ -19,7 +19,7 @@ struct MainTabView: View {
     @State private var canShowFavorites: Bool = false
     @State private var showAlert: Bool = false
     
-    @ObservedObject var viewModel = MainTabViewViewModel()
+    @State private var viewModel = MainTabViewViewModel()
     
 #if os(iOS)
     @EnvironmentObject var appDelegate: AppDelegate
@@ -41,7 +41,10 @@ struct MainTabView: View {
                         }
                     }
                 
-                VehicleView()
+                VehicleView(stationsViewModel: viewModel.listViewViewModel) {
+                    // Saving a tank size changes every fill price in the list.
+                    viewModel.listViewViewModel.refresh()
+                }
                     .tag(TabSelectedType.vehicle.rawValue)
                     .tabItem {
                         VStack {
@@ -52,7 +55,7 @@ struct MainTabView: View {
                         }
                     }
 #if os(macOS)
-                    .frame(width: 500)
+                    .frame(minWidth: 420, maxWidth: .infinity)
 #endif
                 
                 FavoriteListView(viewModel: viewModel.favoriteViewViewModel)
@@ -65,9 +68,11 @@ struct MainTabView: View {
 #endif
                         }
                     }
-                    .onReceive(viewModel.listViewViewModel.$favorites, perform: { stations in
+                    // @Observable has no Combine publisher to subscribe to; onChange observes
+                    // the property directly.
+                    .onChange(of: viewModel.listViewViewModel.favorites, initial: true) { _, stations in
                         viewModel.favoriteViewViewModel.updateFavoriteStations(allStations: stations)
-                    })
+                    }
                 
             }
             .padding(.top, 10)

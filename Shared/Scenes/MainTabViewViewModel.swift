@@ -5,10 +5,12 @@
 //  Created by Aitor Sola on 11/3/22.
 //
 
-import Foundation
+import Observation
 
-class MainTabViewViewModel: ObservableObject {
+@MainActor
+@Observable
+final class MainTabViewViewModel {
     
-    @Published var listViewViewModel: StationsListViewViewModel = StationsListViewViewModel()
-    @Published var favoriteViewViewModel: FavoriteListViewViewModel = FavoriteListViewViewModel()
+    let listViewViewModel = StationsListViewViewModel()
+    let favoriteViewViewModel = FavoriteListViewViewModel()
 }

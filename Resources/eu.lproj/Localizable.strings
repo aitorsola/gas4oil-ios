@@ -1,0 +1,82 @@
+/* Localizable.strings — Gas4Oil */
+
+"common.loading" = "Kargatzen";
+"common.cancel" = "Utzi";
+"common.ok" = "Ados";
+"common.done" = "Eginda";
+"common.gettingLocation" = "Kokapena lortzen";
+"common.fuelType" = "Erregaia";
+
+"fuel.95" = "95 gasolina";
+"fuel.98" = "98 gasolina";
+"fuel.diesel" = "Diesela";
+
+"station.schedule" = "Ordutegia";
+"station.fillPrice" = "Deposituaren prezioa:";
+
+"landingView.title.discover" = "Aurkitu zerbitzuguneak eta ikusi haien eguneratutako prezioa";
+"landingView.button.requestLocationPermission" = "Eskatu kokapen baimena";
+"landingView.button.locationDenied" = "Kokapen baimena ukatuta";
+
+"mainTab.stationsTabTitle" = "Guneak";
+"mainTab.vehicle" = "Nire ibilgailua";
+"mainTab.favTabTitle" = "Gogokoak";
+
+"listView.button.requestLocation" = "Inguruko guneak";
+"listView.search.placeholder" = "Bilatu herriaren arabera";
+"listView.empty" = "Ez dago zerbitzugunerik erakusteko";
+"listView.sort.title" = "Ordenatu honela";
+"listView.sortOrder.near" = "Hurbiltasuna";
+"listView.sortOrder.down" = "Prezio baxuena";
+"listView.sortOrder.up" = "Prezio altuena";
+"listView.brand.all" = "Marka guztiak";
+"listView.sortType.all.button" = "Dena";
+"listView.sortType.near95.button" = "Gertu 95";
+"listView.sortType.down95.button" = "Prezio baxuena 95";
+"listView.sortType.up95.button" = "Prezio altuena 95";
+"listView.sortType.near98.button" = "Gertu 98";
+"listView.sortType.down98.button" = "Prezio baxuena 98";
+"listView.sortType.up98.button" = "Prezio altuena 98";
+"listView.sortType.nearDiesel.button" = "Gertu diesela";
+"listView.sortType.downDiesel.button" = "Prezio baxuena diesela";
+"listView.sortType.upDiesel.button" = "Prezio altuena diesela";
+"listView.station.directions" = "Nola iritsi";
+"listView.station.addFavorite" = "Gehitu gogokoetara";
+"listView.station.removeFavorite" = "Kendu gogokoetatik";
+"listView.ad.title" = "Zer egin dezakezu?";
+"listView.ad.description" = "Aurkitu gehien interesatzen zaizkizun zerbitzuguneak. Iragazi markaren edo erregai motaren arabera, edo ordenatu prezioz nahiz hurbiltasunez.\nGogokoen zerrendan ere gorde ditzakezu nahiago dituzunak.";
+
+"favorites.title" = "Gogokoak";
+"favorites.empty" = "Oraindik ez duzu gogoko zerbitzugunerik";
+
+"myVehicle.brand.title" = "Nire ibilgailua";
+"myVehicle.unnamed" = "Nire ibilgailua";
+"myVehicle.section.vehicle" = "Ibilgailua";
+"myVehicle.section.vehicle.hint" = "Ezagutu ahal izateko soilik. Ez da inora bidaltzen.";
+"myVehicle.section.tank" = "Depositua";
+"myVehicle.section.tank.hint" = "Edukieraren bidez kalkulatzen dugu gune bakoitzean betetzeak zenbat balio duen.";
+"myVehicle.brand.placeholder" = "Marka";
+"myVehicle.model.placeholder" = "Modeloa";
+"myVehicle.capacity.placeholder" = "Edukiera";
+"myVehicle.capacity.unit" = "L";
+"myVehicle.capacity.example" = "55";
+"myVehicle.capacity.invalid" = "Idatzi 1 eta 500 litro arteko edukiera.";
+"myVehicle.brand.example" = "Seat";
+"myVehicle.model.example" = "Leon";
+"myVehicle.save" = "Gorde";
+"myVehicle.remove" = "Ezabatu";
+"myVehicle.remove.alert.title" = "Ziur ibilgailu hau ezabatu nahi duzula?";
+"myVehicle.saved.message" = "Ondo gorde da";
+"myVehicle.ad.title" = "Gehitu ibilgailu bat";
+"myVehicle.ad.description" = "Gehitu ibilgailu bat eta aldez aurretik jakingo duzu gune bakoitzean depositua betetzeak zenbat balio duen.";
+"myVehicle.fill.title" = "Depositua betetzeak balio du";
+"myVehicle.fill.cheapestAt" = "Merkeena, %@ (%@).";
+"myVehicle.fill.footer" = "Orain kargatuta dituzun guneekin kalkulatua.";
+"myVehicle.fill.unavailable" = "Oraindik ez dago erregai honekin kargatutako gunerik.";
+
+"error.invalidURL" = "Zerbitzuaren helbidea ez da baliozkoa";
+"error.network" = "Ezin izan da zerbitzuguneen zerbitzura konektatu";
+"error.badStatusCode" = "Zerbitzuguneen zerbitzuak %d errorea eman du";
+"error.emptyResponse" = "Zerbitzuguneen zerbitzuak ez du daturik itzuli";
+"error.parse" = "Ezin izan dira zerbitzuguneen datuak irakurri";
+"listView.detail.empty" = "Aukeratu gune bat";

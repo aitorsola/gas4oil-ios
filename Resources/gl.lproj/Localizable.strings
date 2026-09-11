@@ -1,0 +1,82 @@
+/* Localizable.strings — Gas4Oil */
+
+"common.loading" = "Cargando";
+"common.cancel" = "Cancelar";
+"common.ok" = "Vale";
+"common.done" = "Listo";
+"common.gettingLocation" = "Obtendo a localización";
+"common.fuelType" = "Combustible";
+
+"fuel.95" = "Gasolina 95";
+"fuel.98" = "Gasolina 98";
+"fuel.diesel" = "Diésel";
+
+"station.schedule" = "Horario";
+"station.fillPrice" = "Prezo do depósito:";
+
+"landingView.title.discover" = "Atopa estacións de servizo e consulta o seu prezo actualizado";
+"landingView.button.requestLocationPermission" = "Solicitar permiso de localización";
+"landingView.button.locationDenied" = "Permiso de localización denegado";
+
+"mainTab.stationsTabTitle" = "Estacións";
+"mainTab.vehicle" = "O meu vehículo";
+"mainTab.favTabTitle" = "Favoritos";
+
+"listView.button.requestLocation" = "Estacións próximas";
+"listView.search.placeholder" = "Busca por localidade";
+"listView.empty" = "Non hai estacións que amosar";
+"listView.sort.title" = "Ordenar por";
+"listView.sortOrder.near" = "Proximidade";
+"listView.sortOrder.down" = "Prezo máis baixo";
+"listView.sortOrder.up" = "Prezo máis alto";
+"listView.brand.all" = "Todas as marcas";
+"listView.sortType.all.button" = "Todo";
+"listView.sortType.near95.button" = "Preto 95";
+"listView.sortType.down95.button" = "Prezo máis baixo 95";
+"listView.sortType.up95.button" = "Prezo máis alto 95";
+"listView.sortType.near98.button" = "Preto 98";
+"listView.sortType.down98.button" = "Prezo máis baixo 98";
+"listView.sortType.up98.button" = "Prezo máis alto 98";
+"listView.sortType.nearDiesel.button" = "Preto diésel";
+"listView.sortType.downDiesel.button" = "Prezo máis baixo diésel";
+"listView.sortType.upDiesel.button" = "Prezo máis alto diésel";
+"listView.station.directions" = "Como chegar";
+"listView.station.addFavorite" = "Engadir a favoritos";
+"listView.station.removeFavorite" = "Quitar de favoritos";
+"listView.ad.title" = "Que podes facer?";
+"listView.ad.description" = "Descubre as estacións de servizo que máis che interesen. Filtra por marca, por tipo de combustible ou ordena por prezo ou proximidade.\nTamén podes engadir as que prefiras á túa lista de favoritos.";
+
+"favorites.title" = "Favoritos";
+"favorites.empty" = "Aínda non tes estacións favoritas";
+
+"myVehicle.brand.title" = "O meu vehículo";
+"myVehicle.unnamed" = "O meu vehículo";
+"myVehicle.section.vehicle" = "Vehículo";
+"myVehicle.section.vehicle.hint" = "Só para recoñecelo. Non se envía a ningún sitio.";
+"myVehicle.section.tank" = "Depósito";
+"myVehicle.section.tank.hint" = "Coa capacidade calculamos o que custa encher en cada estación.";
+"myVehicle.brand.placeholder" = "Marca";
+"myVehicle.model.placeholder" = "Modelo";
+"myVehicle.capacity.placeholder" = "Capacidade";
+"myVehicle.capacity.unit" = "L";
+"myVehicle.capacity.example" = "55";
+"myVehicle.capacity.invalid" = "Escribe unha capacidade entre 1 e 500 litros.";
+"myVehicle.brand.example" = "Seat";
+"myVehicle.model.example" = "León";
+"myVehicle.save" = "Gardar";
+"myVehicle.remove" = "Eliminar";
+"myVehicle.remove.alert.title" = "Seguro que queres eliminar este vehículo?";
+"myVehicle.saved.message" = "Gardado correctamente";
+"myVehicle.ad.title" = "Engade un vehículo";
+"myVehicle.ad.description" = "Engade un vehículo e saberás de antemán canto che custará encher o depósito en cada estación.";
+"myVehicle.fill.title" = "Encher o depósito custa";
+"myVehicle.fill.cheapestAt" = "O máis barato, en %@ (%@).";
+"myVehicle.fill.footer" = "Calculado coas estacións que tes cargadas agora mesmo.";
+"myVehicle.fill.unavailable" = "Aínda non hai estacións cargadas con este combustible.";
+
+"error.invalidURL" = "O enderezo do servizo non é válido";
+"error.network" = "Non se puido conectar co servizo de estacións";
+"error.badStatusCode" = "O servizo de estacións respondeu co erro %d";
+"error.emptyResponse" = "O servizo de estacións non devolveu datos";
+"error.parse" = "Non se puideron ler os datos das estacións";
+"listView.detail.empty" = "Escolle unha estación";

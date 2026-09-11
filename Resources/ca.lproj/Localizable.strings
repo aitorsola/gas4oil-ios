@@ -1,0 +1,82 @@
+/* Localizable.strings — Gas4Oil */
+
+"common.loading" = "Carregant";
+"common.cancel" = "Cancel·la";
+"common.ok" = "D'acord";
+"common.done" = "Fet";
+"common.gettingLocation" = "Obtenint la ubicació";
+"common.fuelType" = "Combustible";
+
+"fuel.95" = "Gasolina 95";
+"fuel.98" = "Gasolina 98";
+"fuel.diesel" = "Dièsel";
+
+"station.schedule" = "Horari";
+"station.fillPrice" = "Preu del dipòsit:";
+
+"landingView.title.discover" = "Troba estacions de servei i consulta'n el preu actualitzat";
+"landingView.button.requestLocationPermission" = "Demana permís d'ubicació";
+"landingView.button.locationDenied" = "Permís d'ubicació denegat";
+
+"mainTab.stationsTabTitle" = "Estacions";
+"mainTab.vehicle" = "El meu vehicle";
+"mainTab.favTabTitle" = "Preferits";
+
+"listView.button.requestLocation" = "Estacions properes";
+"listView.search.placeholder" = "Cerca per població";
+"listView.empty" = "No hi ha estacions per mostrar";
+"listView.sort.title" = "Ordena per";
+"listView.sortOrder.near" = "Proximitat";
+"listView.sortOrder.down" = "Preu més baix";
+"listView.sortOrder.up" = "Preu més alt";
+"listView.brand.all" = "Totes les marques";
+"listView.sortType.all.button" = "Tot";
+"listView.sortType.near95.button" = "A prop 95";
+"listView.sortType.down95.button" = "Preu més baix 95";
+"listView.sortType.up95.button" = "Preu més alt 95";
+"listView.sortType.near98.button" = "A prop 98";
+"listView.sortType.down98.button" = "Preu més baix 98";
+"listView.sortType.up98.button" = "Preu més alt 98";
+"listView.sortType.nearDiesel.button" = "A prop dièsel";
+"listView.sortType.downDiesel.button" = "Preu més baix dièsel";
+"listView.sortType.upDiesel.button" = "Preu més alt dièsel";
+"listView.station.directions" = "Com arribar-hi";
+"listView.station.addFavorite" = "Afegeix a preferits";
+"listView.station.removeFavorite" = "Treu de preferits";
+"listView.ad.title" = "Què pots fer?";
+"listView.ad.description" = "Descobreix les estacions de servei que més t'interessen. Filtra per marca, per tipus de combustible o ordena per preu o proximitat.\nTambé pots afegir les que prefereixis a la teva llista de preferits.";
+
+"favorites.title" = "Preferits";
+"favorites.empty" = "Encara no tens estacions preferides";
+
+"myVehicle.brand.title" = "El meu vehicle";
+"myVehicle.unnamed" = "El meu vehicle";
+"myVehicle.section.vehicle" = "Vehicle";
+"myVehicle.section.vehicle.hint" = "Només perquè el reconeguis. No s'envia enlloc.";
+"myVehicle.section.tank" = "Dipòsit";
+"myVehicle.section.tank.hint" = "Amb la capacitat calculem què costa omplir-lo a cada estació.";
+"myVehicle.brand.placeholder" = "Marca";
+"myVehicle.model.placeholder" = "Model";
+"myVehicle.capacity.placeholder" = "Capacitat";
+"myVehicle.capacity.unit" = "L";
+"myVehicle.capacity.example" = "55";
+"myVehicle.capacity.invalid" = "Escriu una capacitat entre 1 i 500 litres.";
+"myVehicle.brand.example" = "Seat";
+"myVehicle.model.example" = "León";
+"myVehicle.save" = "Desa";
+"myVehicle.remove" = "Elimina";
+"myVehicle.remove.alert.title" = "Segur que vols eliminar aquest vehicle?";
+"myVehicle.saved.message" = "Desat correctament";
+"myVehicle.ad.title" = "Afegeix un vehicle";
+"myVehicle.ad.description" = "Afegeix un vehicle i sabràs per endavant què et costarà omplir el dipòsit a cada estació.";
+"myVehicle.fill.title" = "Omplir el dipòsit costa";
+"myVehicle.fill.cheapestAt" = "El més barat, a %@ (%@).";
+"myVehicle.fill.footer" = "Calculat amb les estacions que tens carregades ara mateix.";
+"myVehicle.fill.unavailable" = "Encara no hi ha estacions carregades amb aquest combustible.";
+
+"error.invalidURL" = "L'adreça del servei no és vàlida";
+"error.network" = "No s'ha pogut connectar amb el servei d'estacions";
+"error.badStatusCode" = "El servei d'estacions ha respost amb l'error %d";
+"error.emptyResponse" = "El servei d'estacions no ha retornat dades";
+"error.parse" = "No s'han pogut llegir les dades de les estacions";
+"listView.detail.empty" = "Tria una estació";

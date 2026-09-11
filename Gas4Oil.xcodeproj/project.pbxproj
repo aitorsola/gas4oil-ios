@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5BB74FDC2D7311E6001D92C9 /* Shimmer in Frameworks */ = {isa = PBXBuildFile; productRef = 5BB74FDB2D7311E6001D92C9 /* Shimmer */; };
 		5BC0EA1F2948E3BC00E07674 /* Gas4OilTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BC0EA1E2948E3BC00E07674 /* Gas4OilTests.swift */; };
 		A406706327D8BE5F00193D36 /* FavoriteStations.swift in Sources */ = {isa = PBXBuildFile; fileRef = A406706227D8BE5E00193D36 /* FavoriteStations.swift */; };
 		A406706427D8BE5F00193D36 /* FavoriteStations.swift in Sources */ = {isa = PBXBuildFile; fileRef = A406706227D8BE5E00193D36 /* FavoriteStations.swift */; };
@@ -44,6 +45,8 @@
 		A4727BF827D528AF0005736F /* Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4727BF727D528AF0005736F /* Sequence.swift */; };
 		A4727BF927D528AF0005736F /* Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4727BF727D528AF0005736F /* Sequence.swift */; };
 		A4727BFC27D57D4B0005736F /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4727BFB27D57D4B0005736F /* MapView.swift */; };
+		9A6573A5DD72B80BF820A53F /* StationDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BA535103D8CD1A540C72E6 /* StationDetailView.swift */; };
+		351417841EEE1FE43A1366B4 /* StationDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BA535103D8CD1A540C72E6 /* StationDetailView.swift */; };
 		A4727BFD27D57D4B0005736F /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4727BFB27D57D4B0005736F /* MapView.swift */; };
 		A4727BFF27D57D5F0005736F /* MapViewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4727BFE27D57D5F0005736F /* MapViewViewModel.swift */; };
 		A4727C0027D57D5F0005736F /* MapViewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4727BFE27D57D5F0005736F /* MapViewViewModel.swift */; };
@@ -154,10 +157,14 @@
 		A4727BF427D519740005736F /* Gas4OilButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Gas4OilButton.swift; sourceTree = "<group>"; };
 		A4727BF727D528AF0005736F /* Sequence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sequence.swift; sourceTree = "<group>"; };
 		A4727BFB27D57D4B0005736F /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
+		21BA535103D8CD1A540C72E6 /* StationDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StationDetailView.swift"; sourceTree = "<group>"; };
 		A4727BFE27D57D5F0005736F /* MapViewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewViewModel.swift; sourceTree = "<group>"; };
 		A4727C0227D600BE0005736F /* MapPin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapPin.swift; sourceTree = "<group>"; };
 		A478913C27D9217D001CA76E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		A478913E27D92180001CA76E /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
+		870D9D14F901DCB420818B01 /* eu */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = eu; path = eu.lproj/Localizable.strings; sourceTree = "<group>"; };
+		5C03993C7ECA9A00C68E61FA /* gl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = gl; path = gl.lproj/Localizable.strings; sourceTree = "<group>"; };
+		864A9B1A278F6288DC8A6523 /* ca */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ca; path = ca.lproj/Localizable.strings; sourceTree = "<group>"; };
 		A478913F27D922F4001CA76E /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
 		A47A84AC27F5AB2700AF2892 /* VehicleModelEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicleModelEntity.swift; sourceTree = "<group>"; };
 		A48581C527DAC54100864885 /* FavoriteListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteListView.swift; sourceTree = "<group>"; };
@@ -211,6 +218,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5BB74FDC2D7311E6001D92C9 /* Shimmer in Frameworks */,
 				A489DF4027F9A2C50020D769 /* Lottie in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -381,6 +389,7 @@
 			isa = PBXGroup;
 			children = (
 				A4727BFB27D57D4B0005736F /* MapView.swift */,
+				21BA535103D8CD1A540C72E6 /* StationDetailView.swift */,
 				A4727BFE27D57D5F0005736F /* MapViewViewModel.swift */,
 			);
 			path = Map;
@@ -509,6 +518,7 @@
 			name = "Gas4Oil (macOS)";
 			packageProductDependencies = (
 				A489DF3F27F9A2C50020D769 /* Lottie */,
+				5BB74FDB2D7311E6001D92C9 /* Shimmer */,
 			);
 			productName = "Gas4Oil (macOS)";
 			productReference = A444764C27D12DB600B25303 /* Gas4Oil.app */;
@@ -543,6 +553,9 @@
 			knownRegions = (
 				en,
 				es,
+				ca,
+				gl,
+				eu,
 			);
 			mainGroup = A444763927D12DB500B25303;
 			packageReferences = (
@@ -646,6 +659,7 @@
 				A406706D27D90F8D00193D36 /* MainTabView.swift in Sources */,
 				A4727BF827D528AF0005736F /* Sequence.swift in Sources */,
 				A4727BFC27D57D4B0005736F /* MapView.swift in Sources */,
+				9A6573A5DD72B80BF820A53F /* StationDetailView.swift in Sources */,
 				A444764F27D12DB600B25303 /* Gas4OilApp.swift in Sources */,
 				A406706327D8BE5F00193D36 /* FavoriteStations.swift in Sources */,
 				A47A84AD27F5AB2700AF2892 /* VehicleModelEntity.swift in Sources */,
@@ -693,6 +707,7 @@
 				A406706E27D90F8D00193D36 /* MainTabView.swift in Sources */,
 				A4727BF927D528AF0005736F /* Sequence.swift in Sources */,
 				A4727BFD27D57D4B0005736F /* MapView.swift in Sources */,
+				351417841EEE1FE43A1366B4 /* StationDetailView.swift in Sources */,
 				A406706427D8BE5F00193D36 /* FavoriteStations.swift in Sources */,
 				A48F4AB327D4B1CF0024473D /* StationsListViewViewModel.swift in Sources */,
 			);
@@ -714,6 +729,9 @@
 			children = (
 				A478913C27D9217D001CA76E /* en */,
 				A478913E27D92180001CA76E /* es */,
+				870D9D14F901DCB420818B01 /* eu */,
+				5C03993C7ECA9A00C68E61FA /* gl */,
+				864A9B1A278F6288DC8A6523 /* ca */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -730,7 +748,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = SK4CMEFH7T;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.Aitor.Gas4OilTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -751,7 +769,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = SK4CMEFH7T;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.Aitor.Gas4OilTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -895,12 +913,12 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.5;
+				MARKETING_VERSION = 1.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.AitorSola.Gas4Oil;
 				PRODUCT_NAME = Gas4Oil;
 				SDKROOT = iphoneos;
@@ -928,12 +946,12 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.5;
+				MARKETING_VERSION = 1.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.AitorSola.Gas4Oil;
 				PRODUCT_NAME = Gas4Oil;
 				SDKROOT = iphoneos;
@@ -968,7 +986,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 12.1;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.AitorSola.Gas4Oil;
 				PRODUCT_NAME = Gas4Oil;
@@ -1002,7 +1020,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 12.1;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.AitorSola.Gas4Oil;
 				PRODUCT_NAME = Gas4Oil;
@@ -1058,29 +1076,34 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/markiv/SwiftUI-Shimmer";
 			requirement = {
-				branch = main;
-				kind = branch;
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.5.1;
 			};
 		};
 		A45D27A227E8E0F800C724D6 /* XCRemoteSwiftPackageReference "lottie-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/airbnb/lottie-ios.git";
 			requirement = {
-				branch = master;
-				kind = branch;
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.6.1;
 			};
 		};
 		A489DF3C27F997890020D769 /* XCRemoteSwiftPackageReference "NotificationBanner" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Daltron/NotificationBanner.git";
 			requirement = {
-				branch = master;
-				kind = branch;
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.2.1;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		5BB74FDB2D7311E6001D92C9 /* Shimmer */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A44F419928102FBF00CE8C81 /* XCRemoteSwiftPackageReference "SwiftUI-Shimmer" */;
+			productName = Shimmer;
+		};
 		A44F419A28102FBF00CE8C81 /* Shimmer */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = A44F419928102FBF00CE8C81 /* XCRemoteSwiftPackageReference "SwiftUI-Shimmer" */;

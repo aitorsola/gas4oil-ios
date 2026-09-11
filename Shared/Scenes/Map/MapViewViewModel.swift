@@ -5,8 +5,10 @@
 //  Created by Aitor Sola on 7/3/22.
 //
 
-import Foundation
+import Observation
 
-class MapViewViewModel: ObservableObject {
+@MainActor
+@Observable
+final class MapViewViewModel {
     
 }

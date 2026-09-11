@@ -1,50 +1,82 @@
+/* Localizable.strings — Gas4Oil */
+
 "common.loading" = "Cargando";
 "common.cancel" = "Cancelar";
+"common.ok" = "Vale";
+"common.done" = "Listo";
 "common.gettingLocation" = "Obteniendo ubicación";
 "common.fuelType" = "Combustible";
+
+"fuel.95" = "Gasolina 95";
+"fuel.98" = "Gasolina 98";
+"fuel.diesel" = "Diésel";
 
 "station.schedule" = "Horario";
 "station.fillPrice" = "Precio del depósito:";
 
 "landingView.title.discover" = "Encuentra estaciones de servicio y obtén su precio actualizado";
 "landingView.button.requestLocationPermission" = "Solicitar permiso de localización";
-"landingView.button.locationDenied" = "Permiso de localizacion denegada";
+"landingView.button.locationDenied" = "Permiso de localización denegado";
 
-"fuel.95" = "Gasolina 95";
-"fuel.98" = "Gasolina 98";
-"fuel.diesel" = "Diesel";
+"mainTab.stationsTabTitle" = "Estaciones";
+"mainTab.vehicle" = "Mi vehículo";
+"mainTab.favTabTitle" = "Favoritos";
 
 "listView.button.requestLocation" = "Estaciones cercanas";
-
 "listView.search.placeholder" = "Busca por población";
-
+"listView.empty" = "No hay gasolineras que mostrar";
+"listView.sort.title" = "Ordenar por";
+"listView.sortOrder.near" = "Cercanía";
+"listView.sortOrder.down" = "Precio más bajo";
+"listView.sortOrder.up" = "Precio más alto";
+"listView.brand.all" = "Todas las marcas";
 "listView.sortType.all.button" = "Todo";
 "listView.sortType.near95.button" = "Cerca 95";
 "listView.sortType.down95.button" = "Precio más bajo 95";
 "listView.sortType.up95.button" = "Precio más alto 95";
-
 "listView.sortType.near98.button" = "Cerca 98";
 "listView.sortType.down98.button" = "Precio más bajo 98";
 "listView.sortType.up98.button" = "Precio más alto 98";
-
 "listView.sortType.nearDiesel.button" = "Cerca diésel";
 "listView.sortType.downDiesel.button" = "Precio más bajo diésel";
 "listView.sortType.upDiesel.button" = "Precio más alto diésel";
-
+"listView.station.directions" = "Cómo llegar";
+"listView.station.addFavorite" = "Añadir a favoritos";
+"listView.station.removeFavorite" = "Quitar de favoritos";
 "listView.ad.title" = "¿Qué puedes hacer?";
 "listView.ad.description" = "Descubre las estaciones de servicio que más te interesen. Filtra por marca, por tipo de combustible o por precio descendente, ascendente o cercanía.\nPuedes también añadir las estaciones de servicio que prefieras a tu lista de favoritos.";
 
-"mainTab.favTabTitle" = "Favoritos";
-"mainTab.stationsTabTitle" = "Estaciones";
-"mainTab.vehicle" = "Mi vehículo";
+"favorites.title" = "Favoritos";
+"favorites.empty" = "Todavía no tienes estaciones favoritas";
 
 "myVehicle.brand.title" = "Mi vehículo";
-"myVehicle.saved.message" = "Guardado satisfactoriamente";
+"myVehicle.unnamed" = "Mi vehículo";
+"myVehicle.section.vehicle" = "Vehículo";
+"myVehicle.section.vehicle.hint" = "Solo para reconocerlo. No se envía a ningún sitio.";
+"myVehicle.section.tank" = "Depósito";
+"myVehicle.section.tank.hint" = "Con la capacidad calculamos lo que cuesta llenar en cada estación.";
 "myVehicle.brand.placeholder" = "Marca";
 "myVehicle.model.placeholder" = "Modelo";
-"myVehicle.capacity.placeholder" = "Capacidad del depósito (L.)";
+"myVehicle.capacity.placeholder" = "Capacidad";
+"myVehicle.capacity.unit" = "L";
+"myVehicle.capacity.example" = "55";
+"myVehicle.capacity.invalid" = "Escribe una capacidad entre 1 y 500 litros.";
+"myVehicle.brand.example" = "Seat";
+"myVehicle.model.example" = "León";
 "myVehicle.save" = "Guardar";
 "myVehicle.remove" = "Eliminar";
-"myVehicle.remove.alert.title" = "¿Estás seguro de que quieres eliminar este vehículo?";
+"myVehicle.remove.alert.title" = "¿Seguro que quieres eliminar este vehículo?";
+"myVehicle.saved.message" = "Guardado correctamente";
 "myVehicle.ad.title" = "Añade un vehículo";
 "myVehicle.ad.description" = "¿Sabías que puedes añadir un vehículo de forma que podrás saber de antemano cuánto te costará llenar el depósito en cada gasolinera?";
+"myVehicle.fill.title" = "Llenar el depósito cuesta";
+"myVehicle.fill.cheapestAt" = "Lo más barato, en %@ (%@).";
+"myVehicle.fill.footer" = "Calculado con las estaciones que tienes cargadas ahora mismo.";
+"myVehicle.fill.unavailable" = "Todavía no hay estaciones cargadas con este combustible.";
+
+"error.invalidURL" = "La dirección del servicio no es válida";
+"error.network" = "No se ha podido conectar con el servicio de gasolineras";
+"error.badStatusCode" = "El servicio de gasolineras ha respondido con el error %d";
+"error.emptyResponse" = "El servicio de gasolineras no ha devuelto datos";
+"error.parse" = "No se han podido leer los datos de las gasolineras";
+"listView.detail.empty" = "Elige una estación";

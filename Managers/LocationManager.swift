@@ -12,10 +12,19 @@ enum MeasurementUnit {
     case km(Double)
 }
 
-@objc protocol LocationManagerDelegate: AnyObject {
-    @objc optional func didGet(auth: CLAuthorizationStatus)
-    @objc optional func didGet(city: String?)
+/// Plain Swift protocol rather than `@objc`: the optional requirements only existed to avoid
+/// implementing every callback, which a protocol extension does without the ObjC bridge — and
+/// `@objc` members cannot satisfy a `@MainActor` requirement.
+@MainActor
+protocol LocationManagerDelegate: AnyObject {
+    func didGet(auth: CLAuthorizationStatus)
+    func didGet(city: String?)
     func didFailGettingLocation(_ error: Error)
+}
+
+extension LocationManagerDelegate {
+    func didGet(auth: CLAuthorizationStatus) {}
+    func didGet(city: String?) {}
 }
 
 protocol LocationManager {
@@ -63,14 +72,12 @@ class Location: NSObject, LocationManager {
         guard let currentPoint = Managers.location.currentCoordinates else {
             return nil
         }
-        let distanceInMeters = point.distance(from: currentPoint)
-        let squareKm = Measurement(value: distanceInMeters, unit: UnitArea.squareKilometers)
-        let squareMetters = squareKm.converted(to: .squareKilometers)
+        let distance = Measurement(value: point.distance(from: currentPoint), unit: UnitLength.meters)
         
-        if squareKm.value < 1000 {
-            return .metters(squareMetters.value.round(to: 0))
+        if distance.value < 1000 {
+            return .metters(distance.value.round(to: 0))
         } else {
-            return .km(squareKm.value.round(to: 2))
+            return .km(distance.converted(to: .kilometers).value.round(to: 1))
         }
     }
 }
@@ -78,7 +85,10 @@ class Location: NSObject, LocationManager {
 extension Location: CLLocationManagerDelegate {
     
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        delegate?.didGet?(auth: manager.authorizationStatus)
+        let status = manager.authorizationStatus
+        Task { @MainActor in
+            delegate?.didGet(auth: status)
+        }
         switch manager.authorizationStatus {
         case .authorizedWhenInUse, .authorizedAlways:
             manager.startUpdatingLocation()
@@ -95,11 +105,15 @@ extension Location: CLLocationManagerDelegate {
         getCityNameFor(location) { placemark in
             self.manager.stopUpdatingLocation()
             self.currentCity = placemark?.locality
-            self.delegate?.didGet?(city: placemark?.locality)
+            Task { @MainActor in
+                self.delegate?.didGet(city: placemark?.locality)
+            }
         }
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        delegate?.didFailGettingLocation(error)
+        Task { @MainActor in
+            delegate?.didFailGettingLocation(error)
+        }
     }
 }

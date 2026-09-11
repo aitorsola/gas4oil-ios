@@ -1,12 +1,13 @@
 {
+  "originHash" : "de720bb27b40fde1a74acdf678618f2d0f7aa4a87a9d4029af52168d8f0bab01",
   "pins" : [
     {
       "identity" : "lottie-ios",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/airbnb/lottie-ios.git",
       "state" : {
-        "branch" : "master",
-        "revision" : "b4f9b2ea44fcc47628a27c1fb876314608f1736b"
+        "revision" : "f4db77d7feacba0c2360b84a40c38a6ce8ff399d",
+        "version" : "4.6.1"
       }
     },
     {
@@ -23,8 +24,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Daltron/NotificationBanner.git",
       "state" : {
-        "branch" : "master",
-        "revision" : "e856a462053daf80c7936056d64246983f3f4d14"
+        "revision" : "1406ac60bcab58074fc969e9b4cb804679832c8e",
+        "version" : "3.2.1"
       }
     },
     {
@@ -41,10 +42,10 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/markiv/SwiftUI-Shimmer",
       "state" : {
-        "branch" : "main",
-        "revision" : "61411771350a5a4e96666a8a202ae4b2be327a2b"
+        "revision" : "0226e21f9bf355d40e07e5f5e1c33679d50e167f",
+        "version" : "1.5.1"
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }

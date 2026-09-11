@@ -1,50 +1,82 @@
+/* Localizable.strings — Gas4Oil */
+
 "common.loading" = "Loading";
 "common.cancel" = "Cancel";
+"common.ok" = "OK";
+"common.done" = "Done";
 "common.gettingLocation" = "Getting location";
 "common.fuelType" = "Fuel";
-
-"station.schedule" = "Schedule";
-"station.fillPrice" = "Fill price:";
-
-"landingView.title.discover" = "Discover fuel stations and get its current price";
-"landingView.button.requestLocationPermission" = "Request location permission";
-"landingView.button.locationDenied" = "Location denied";
 
 "fuel.95" = "Petrol 95";
 "fuel.98" = "Petrol 98";
 "fuel.diesel" = "Diesel";
 
-"listView.button.requestLocation" = "Get near stations";
+"station.schedule" = "Schedule";
+"station.fillPrice" = "Fill price:";
 
-"listView.search.placeholder" = "Search by locality";
+"landingView.title.discover" = "Find service stations and see their up-to-date prices";
+"landingView.button.requestLocationPermission" = "Allow location access";
+"landingView.button.locationDenied" = "Location permission denied";
 
-"listView.sortType.all.button" = "All";
-"listView.sortType.near95.button" = "Near 95";
-"listView.sortType.down95.button" = "Price down 95";
-"listView.sortType.up95.button" = "Price up 95";
-
-"listView.sortType.near98.button" = "Near 98";
-"listView.sortType.down98.button" = "Price down 98";
-"listView.sortType.up98.button" = "Price up 98";
-
-"listView.sortType.nearDiesel.button" = "Near diesel";
-"listView.sortType.downDiesel.button" = "Price down diesel";
-"listView.sortType.upDiesel.button" = "Price up diesel";
-
-"listView.ad.title" = "What can you do?";
-"listView.ad.description" = "Discover the service stations that interest you the most. Filter by brand, by type of fuel or by descending, ascending or proximity price.\nYou can also add the service stations you prefer to your favorites list.";
-
-"mainTab.favTabTitle" = "Favorites";
 "mainTab.stationsTabTitle" = "Stations";
 "mainTab.vehicle" = "My vehicle";
+"mainTab.favTabTitle" = "Favorites";
+
+"listView.button.requestLocation" = "Nearby stations";
+"listView.search.placeholder" = "Search by locality";
+"listView.empty" = "No stations to show";
+"listView.sort.title" = "Sort by";
+"listView.sortOrder.near" = "Nearest";
+"listView.sortOrder.down" = "Lowest price";
+"listView.sortOrder.up" = "Highest price";
+"listView.brand.all" = "All brands";
+"listView.sortType.all.button" = "All";
+"listView.sortType.near95.button" = "Nearest 95";
+"listView.sortType.down95.button" = "Lowest price 95";
+"listView.sortType.up95.button" = "Highest price 95";
+"listView.sortType.near98.button" = "Nearest 98";
+"listView.sortType.down98.button" = "Lowest price 98";
+"listView.sortType.up98.button" = "Highest price 98";
+"listView.sortType.nearDiesel.button" = "Nearest diesel";
+"listView.sortType.downDiesel.button" = "Lowest price diesel";
+"listView.sortType.upDiesel.button" = "Highest price diesel";
+"listView.station.directions" = "Directions";
+"listView.station.addFavorite" = "Add to favorites";
+"listView.station.removeFavorite" = "Remove from favorites";
+"listView.ad.title" = "What can you do?";
+"listView.ad.description" = "Find the service stations that suit you best. Filter by brand, by fuel type, or sort by price or distance.\nYou can also keep the ones you like in your favorites list.";
+
+"favorites.title" = "Favorites";
+"favorites.empty" = "No favorite stations yet";
 
 "myVehicle.brand.title" = "My vehicle";
-"myVehicle.saved.message" = "Saved successfully";
+"myVehicle.unnamed" = "My vehicle";
+"myVehicle.section.vehicle" = "Vehicle";
+"myVehicle.section.vehicle.hint" = "Just so you recognise it. It is never sent anywhere.";
+"myVehicle.section.tank" = "Tank";
+"myVehicle.section.tank.hint" = "The capacity is what lets us work out a full tank at each station.";
 "myVehicle.brand.placeholder" = "Brand";
 "myVehicle.model.placeholder" = "Model";
-"myVehicle.capacity.placeholder" = "Capacity (L)";
+"myVehicle.capacity.placeholder" = "Capacity";
+"myVehicle.capacity.unit" = "L";
+"myVehicle.capacity.example" = "55";
+"myVehicle.capacity.invalid" = "Enter a capacity between 1 and 500 litres.";
+"myVehicle.brand.example" = "Seat";
+"myVehicle.model.example" = "Leon";
 "myVehicle.save" = "Save";
 "myVehicle.remove" = "Remove";
-"myVehicle.remove.alert.title" = "Are you sure you want to remove this vehicle?";
+"myVehicle.remove.alert.title" = "Remove this vehicle?";
+"myVehicle.saved.message" = "Saved";
 "myVehicle.ad.title" = "Add a vehicle";
-"myVehicle.ad.description" = "Did you know that you can add a vehicle so that you can know in advance how much it will cost to fill the tank at each gas station?";
+"myVehicle.ad.description" = "Add a vehicle and you will know in advance what a full tank costs at each station.";
+"myVehicle.fill.title" = "A full tank costs";
+"myVehicle.fill.cheapestAt" = "Cheapest at %@ (%@).";
+"myVehicle.fill.footer" = "Worked out from the stations you have loaded right now.";
+"myVehicle.fill.unavailable" = "No stations loaded with this fuel yet.";
+
+"error.invalidURL" = "The service address is not valid";
+"error.network" = "Could not reach the fuel stations service";
+"error.badStatusCode" = "The fuel stations service answered with error %d";
+"error.emptyResponse" = "The fuel stations service returned no data";
+"error.parse" = "The fuel stations data could not be read";
+"listView.detail.empty" = "Pick a station";

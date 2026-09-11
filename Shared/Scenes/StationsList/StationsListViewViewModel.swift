@@ -6,6 +6,7 @@
 //
 
 import CoreLocation
+import Observation
 import SwiftUI
 #if canImport(UIKit)
 import NotificationBannerSwift
@@ -27,10 +28,172 @@ enum CommonStationBrand: String {
     case avia
     case petronor
     case q8
+    case moeve
+    case plenergy
     case unknown
 }
 
-class StationsListViewViewModel: ObservableObject {
+// MARK: - Logos
+
+extension CommonStationBrand {
+    
+    /// Matches the `Rótulo` the ministry publishes ("REPSOL", "CEPSA ES", "BALLENOIL"...) against
+    /// the brands we ship a logo for.
+    init(rotulo: String) {
+        let rawBrand = rotulo
+            .trimmingCharacters(in: .whitespaces)
+            .lowercased()
+            .components(separatedBy: CharacterSet(charactersIn: " -,"))
+            .first ?? ""
+        self = CommonStationBrand(rawValue: rawBrand) ?? .unknown
+    }
+    
+    /// Brand logo as a round badge.
+    ///
+    /// The artwork is square and drawn on white, so it is *fitted* inside the circle over a white
+    /// disc rather than clipped to it — clipping would slice the sides off the wordmarks
+    /// (Alcampo, Carrefour, bonÀrea…).
+    @ViewBuilder
+    func roundIcon(size: CGFloat) -> some View {
+        if self == .unknown {
+            Image(systemName: "fuelpump.circle.fill")
+                .resizable()
+                .scaledToFit()
+                .frame(width: size, height: size)
+                .foregroundColor(.orange)
+        } else {
+            image
+                .resizable()
+                .scaledToFit()
+                .padding(size * 0.14)
+                .frame(width: size, height: size)
+                .background(Color.white)
+                .clipShape(Circle())
+        }
+    }
+    
+    /// How the brand writes itself, which `rawValue.capitalized` gets wrong for BP and bonÀrea.
+    var displayName: String {
+        switch self {
+        case .bp:
+            return "BP"
+        case .bonarea:
+            return "bonÀrea"
+        case .q8:
+            return "Q8"
+        case .unknown:
+            return "listView.brand.all".translated
+        default:
+            return rawValue.capitalized
+        }
+    }
+    
+    var imageName: String? {
+        switch self {
+        case .alcampo:
+            return "logo_alcampo"
+        case .carrefour:
+            return "logo_carrefour"
+        case .bonarea:
+            return "logo_bonarea"
+        case .campsa:
+            return "logo_campsa"
+        case .petroprix:
+            return "logo_petroprix"
+        case .eroski:
+            return "logo_eroski"
+        case .repsol:
+            return "logo_repsol"
+        case .cepsa:
+            return "logo_cepsa"
+        case .ballenoil:
+            return "logo_ballenoil"
+        case .galp:
+            return "logo_galp"
+        case .bp:
+            return "logo_bp"
+        case .shell:
+            return "logo_shell"
+        case .avia:
+            return "logo_avia"
+        case .petronor:
+            return "logo_petronor"
+        case .q8:
+            return "logo_q8"
+        case .moeve:
+            return "logo_moeve"
+        case .plenergy:
+            return "logo_plenergy"
+        case .unknown:
+            return nil
+        }
+    }
+    
+    var image: Image {
+        guard let imageName else {
+            return Image(systemName: "fuelpump.circle.fill")
+        }
+        return Image(imageName)
+    }
+    
+#if canImport(UIKit)
+    /// Round logo for a menu row.
+    ///
+    /// UIKit rasterises menu icons into a `UIImage` and drops SwiftUI shape modifiers, so
+    /// `.clipShape(Circle())` there does nothing — the rounding has to be baked into the bitmap.
+    func roundedMenuImage(size: CGFloat = 28) -> Image? {
+        guard let imageName, let source = UIImage(named: imageName) else {
+            return nil
+        }
+        let canvas = CGSize(width: size, height: size)
+        let rendered = UIGraphicsImageRenderer(size: canvas).image { _ in
+            let circle = UIBezierPath(ovalIn: CGRect(origin: .zero, size: canvas))
+            UIColor.white.setFill()
+            circle.fill()
+            circle.addClip()
+            let inset = size * 0.14
+            let box = CGRect(origin: .zero, size: canvas).insetBy(dx: inset, dy: inset)
+            let scale = min(box.width / source.size.width, box.height / source.size.height)
+            let drawn = CGSize(width: source.size.width * scale, height: source.size.height * scale)
+            source.draw(in: CGRect(x: (canvas.width - drawn.width) / 2,
+                                   y: (canvas.height - drawn.height) / 2,
+                                   width: drawn.width,
+                                   height: drawn.height))
+        }
+        return Image(uiImage: rendered.withRenderingMode(.alwaysOriginal))
+    }
+#else
+    /// AppKit menus draw the asset at its intrinsic size — Ballenoil is 400px — so macOS needs
+    /// the same pre-rendered badge, not just the raw image.
+    func roundedMenuImage(size: CGFloat = 20) -> Image? {
+        guard let imageName, let source = NSImage(named: imageName) else {
+            return nil
+        }
+        let canvas = NSSize(width: size, height: size)
+        let rendered = NSImage(size: canvas)
+        rendered.lockFocus()
+        let bounds = NSRect(origin: .zero, size: canvas)
+        let circle = NSBezierPath(ovalIn: bounds)
+        NSColor.white.setFill()
+        circle.fill()
+        circle.addClip()
+        let inset = size * 0.14
+        let box = bounds.insetBy(dx: inset, dy: inset)
+        let scale = min(box.width / source.size.width, box.height / source.size.height)
+        let drawn = NSSize(width: source.size.width * scale, height: source.size.height * scale)
+        source.draw(in: NSRect(x: (canvas.width - drawn.width) / 2,
+                               y: (canvas.height - drawn.height) / 2,
+                               width: drawn.width,
+                               height: drawn.height))
+        rendered.unlockFocus()
+        return Image(nsImage: rendered)
+    }
+#endif
+}
+
+@MainActor
+@Observable
+final class StationsListViewViewModel {
     
     // MARK: - Properties
     
@@ -38,30 +201,30 @@ class StationsListViewViewModel: ObservableObject {
     private var servicesStationsAPI: ServiceStationsAPI
     
     private var kMaxLenght = 200
+    private var fetchTask: Task<Void, Never>?
     
     let defaults: UserDefaults = UserDefaults.standard
     
     var allStations: [Station] = []
-    var allMunicipios: [String] {
-        allStations.map({$0.municipio}).unique().sorted(by: {$0<$1})
-    }
-    var currentSortType: SortType = .near95
+    var allMunicipios: [String] = []
     var currentCity: String?
     var currentSortBrand: FuelBrandSortType = .all
-    var updateFavorites: Bool = true
     
-    @Published var locationAllowed: Bool = false {
+    var locationAllowed: Bool = false {
         didSet {
             isLoading = !locationAllowed
         }
     }
-    @Published var adViewSeen: Bool = true
-    @Published var isLoading: Bool = false
-    @Published var navigationTitle: String?
-    @Published var isLoaded: Bool = false
-    @Published var stations: [Station] = []
-    @Published var favorites: [Station] = []
-    @Published var allBrands: [CommonStationBrand] = [
+    var adViewSeen: Bool = true
+    var isLoading: Bool = false
+    var navigationTitle: String?
+    var isLoaded: Bool = false
+    var stations: [Station] = []
+    var favorites: [Station] = []
+    /// The fuel every price comparison refers to. There is no "none": one is always selected.
+    var selectedFuel: FuelType = .gas95
+    var sortOrder: StationSort = .nearest
+    let allBrands: [CommonStationBrand] = [
         .alcampo,
         .avia,
         .bp,
@@ -73,10 +236,12 @@ class StationsListViewViewModel: ObservableObject {
         .cepsa,
         .eroski,
         .galp,
+        .moeve,
         .petronor,
+        .plenergy,
         .repsol,
         .petroprix,
-        .shell].sorted(by: { $0.rawValue > $1.rawValue })
+        .shell].sorted(by: { $0.rawValue < $1.rawValue })
     
     // MARK: - Lifecycle
     
@@ -86,7 +251,7 @@ class StationsListViewViewModel: ObservableObject {
 #if os(macOS)
         self.locationAllowed = locationManager.currentAuth == .authorized || locationManager.currentAuth == .authorizedAlways
 #else
-        self.locationAllowed = locationManager.currentAuth == .authorizedWhenInUse
+        self.locationAllowed = locationManager.currentAuth == .authorizedWhenInUse || locationManager.currentAuth == .authorizedAlways
 #endif
         _ = FavoriteStations.getAllFavorites()
         setupLocationManager()
@@ -96,8 +261,10 @@ class StationsListViewViewModel: ObservableObject {
     
     func requestLocation() {
 #if os(iOS)
-        if locationManager.currentAuth == .denied {
-            UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
+        if locationManager.currentAuth == .denied || locationManager.currentAuth == .restricted {
+            if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
+                UIApplication.shared.open(settingsURL)
+            }
             return
         }
 #endif
@@ -106,11 +273,14 @@ class StationsListViewViewModel: ObservableObject {
     
     func favoriteStationTapAction(_ station: Station) {
         favorites = FavoriteStations.manageFavorite(station)
-        // update model
-        guard let index = stations.firstIndex(where: {$0.id == station.id }) else {
-            return
+        let isFav = favorites.contains(where: { $0.id == station.id })
+        // update both the visible list and the full data set so the flag survives a re-filter
+        if let index = stations.firstIndex(where: { $0.id == station.id }) {
+            stations[index].isFav = isFav
         }
-        stations[index].isFav = favorites.contains(where: {$0.id == stations[index].id })
+        if let index = allStations.firstIndex(where: { $0.id == station.id }) {
+            allStations[index].isFav = isFav
+        }
     }
     
     func searchResults(text: String) -> [String] {
@@ -124,7 +294,6 @@ class StationsListViewViewModel: ObservableObject {
     func didTapAdButton() {
         adViewSeen = true
         defaults.set(true, forKey: "stationsView.adSeen")
-        defaults.synchronize()
     }
     
     // MARK: - Private
@@ -133,43 +302,51 @@ class StationsListViewViewModel: ObservableObject {
         locationAllowed = true
         isLoading = true
         allStations = []
+        allMunicipios = []
         stations = []
+        // Fuel, order and brand survive: a refresh reloads prices, it is not a "start over".
         currentCity = nil
-        currentSortType = .near95
-        currentSortBrand = .all
-        servicesStationsAPI.getAllStations { result in
-            DispatchQueue.main.async {
-                self.isLoaded = true
-                self.isLoading = false
-                self.adViewSeen = self.defaults.bool(forKey: "stationsView.adSeen")
+        
+        fetchTask?.cancel()
+        fetchTask = Task {
+            defer {
+                isLoaded = true
+                isLoading = false
+                adViewSeen = defaults.bool(forKey: "stationsView.adSeen")
             }
-            switch result {
-            case .success(let stations):
-                self.allStations = stations
-                self.updateFavoriteStationsData(stations: stations)
-                
-                let stations = Array(self.allStations
-                    .filter { !$0.gasolina95E5.isEmpty }
-                    .sorted(by: { self.sortStationsByProximity(station1: $0, station2: $1, sortType: self.currentSortType) })
-                    .prefix(self.kMaxLenght))
-                
-                DispatchQueue.main.async {
-                    self.stations = stations
+            // Typed throws: without the annotation the catch block widens to `any Error`.
+            do throws(G4OError) {
+                let stations = try await servicesStationsAPI.getAllStations()
+                guard !Task.isCancelled else {
+                    return
                 }
-            case .failure(let error):
-#if os(iOS)
-                let banner = NotificationBanner(title: error.localizedDescription,
-                                                subtitle: "",
-                                                leftView: nil,
-                                                rightView: nil,
-                                                style: .warning,
-                                                colors: nil)
-                banner.show()
-#else
-                print(error.localizedDescription)
-#endif
+                // The decode already happened off the main actor inside the service; the heavy
+                // grouping here is cheap enough not to warrant leaving the actor again.
+                allStations = stations
+                allMunicipios = stations.map(\.municipio).unique().sorted()
+                favorites = refreshedFavorites(with: stations)
+                refresh()
+            } catch {
+                guard !Task.isCancelled else {
+                    return
+                }
+                show(error)
             }
         }
+    }
+    
+    private func show(_ error: G4OError) {
+#if os(iOS)
+        NotificationBanner(title: error.localizedDescription,
+                           subtitle: "",
+                           leftView: nil,
+                           rightView: nil,
+                           style: .warning,
+                           colors: nil)
+        .show()
+#else
+        print(error.localizedDescription)
+#endif
     }
     
     private func setupLocationManager() {
@@ -180,183 +357,103 @@ class StationsListViewViewModel: ObservableObject {
     }
 }
 
-// MARK: - Sorting
+// MARK: - Filtering & sorting
 
 extension StationsListViewViewModel {
     
     func showByBrand(_ brandSortType: FuelBrandSortType) {
-        self.currentSortBrand = brandSortType
-        switch brandSortType {
-        case .all:
-            showFuelSorted(currentSortType)
-        case .brand(let brand):
-            let newStations = Array(self.allStations
-                .filter { $0.rotulo.contains(brand.uppercased()) }
-                .filter { station in
-                    guard let currentCity else {
-                        return true
-                    }
-                    return station.municipio == currentCity.lowercased() || station.provincia == currentCity.lowercased()
-                }
-                .filter { station in
-                    switch self.currentSortType {
-                    case .near98, .price98Up, .price98Down:
-                        return !station.gasolina98E5.isEmpty
-                    case .near95, .price95Up, .price95Down:
-                        return !station.gasolina95E5.isEmpty
-                    case .nearDiesel, .priceDieselUp, .priceDieselDown:
-                        return !station.gasoleoA.isEmpty
-                    }
-                }
-                .sorted(by: { station1, station2 in
-                    switch self.currentSortType {
-                    case .near95, .near98, .nearDiesel:
-                        return true
-                    case .price95Down:
-                        return station1.gasolina95E5 < station2.gasolina95E5
-                    case .price95Up:
-                        return station1.gasolina95E5 > station2.gasolina95E5
-                    case .price98Down:
-                        return station1.gasolina98E5 < station2.gasolina98E5
-                    case .price98Up:
-                        return station1.gasolina98E5 > station2.gasolina98E5
-                    case .priceDieselDown:
-                        return station1.gasoleoA < station2.gasoleoA
-                    case .priceDieselUp:
-                        return station1.gasoleoA > station2.gasoleoA
-                    }
-                })
-                    .sorted(by: { self.sortStationsByProximity(station1: $0, station2: $1, sortType: currentSortType) })
-                    .prefix(kMaxLenght))
-            
-            stations = newStations
-        }
+        currentSortBrand = brandSortType
+        refresh()
     }
     
     func showFuelByCity(_ city: String) {
-        currentCity = city.lowercased()
-        let newStations = Array(self.allStations
-            .filter {$0.municipio == currentCity || $0.provincia == currentCity }
-            .filter { station in
-                switch self.currentSortBrand {
-                case .all:
-                    return true
-                case .brand(let brand):
-                    return station.rotulo.contains(brand.uppercased())
-                }
-            }
-            .sorted(by: { station1, station2 in
-                switch self.currentSortType {
-                case .near95, .near98, .nearDiesel:
-                    return sortStationsByProximity(station1: station1, station2: station2, sortType: self.currentSortType)
-                case .price95Down:
-                    return station1.gasolina95E5 < station2.gasolina95E5
-                case .price95Up:
-                    return station1.gasolina95E5 > station2.gasolina95E5
-                case .price98Down:
-                    return station1.gasolina98E5 < station2.gasolina98E5
-                case .price98Up:
-                    return station1.gasolina98E5 > station2.gasolina98E5
-                case .priceDieselDown:
-                    return station1.gasoleoA < station2.gasoleoA
-                case .priceDieselUp:
-                    return station1.gasoleoA > station2.gasoleoA
-                }
-            })
-                .prefix(kMaxLenght))
-        
-        stations = newStations
-        navigationTitle = currentCity?.capitalized ?? ""
+        let trimmed = city.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        currentCity = trimmed.isEmpty ? nil : trimmed
+        refresh()
+        navigationTitle = currentCity?.capitalized ?? locationManager.currentCity?.capitalized
     }
     
-    func showFuelSorted(_ by: SortType) {
-        self.currentSortType = by
-        let newStations = Array(self.allStations
-            .filter { station in
-                guard let currentCity else {
-                    return true
-                }
-                return station.municipio == currentCity.lowercased() || station.provincia == currentCity.lowercased()
-            }
-            .filter { station in
-                switch self.currentSortType {
-                case .near98, .price98Up, .price98Down:
-                    return !station.gasolina98E5.isEmpty
-                case .near95, .price95Up, .price95Down:
-                    return !station.gasolina95E5.isEmpty
-                case .nearDiesel, .priceDieselUp, .priceDieselDown:
-                    return !station.gasoleoA.isEmpty
-                }
-            }
-            .filter { station in
-                switch self.currentSortBrand {
-                case .all:
-                    return true
-                case .brand(let brand):
-                    return station.rotulo.contains(brand.uppercased())
-                }
-            }
-            .sorted(by: { self.sortStationsByProximity(station1: $0, station2: $1, sortType: by) })
-            .prefix(kMaxLenght)
-            .sorted(by: { station1, station2 in
-                switch self.currentSortType {
-                case .near95, .near98, .nearDiesel:
-                    return true
-                case .price95Down:
-                    return station1.gasolina95E5 < station2.gasolina95E5
-                case .price95Up:
-                    return station1.gasolina95E5 > station2.gasolina95E5
-                case .price98Down:
-                    return station1.gasolina98E5 < station2.gasolina98E5
-                case .price98Up:
-                    return station1.gasolina98E5 > station2.gasolina98E5
-                case .priceDieselDown:
-                    return station1.gasoleoA < station2.gasoleoA
-                case .priceDieselUp:
-                    return station1.gasoleoA > station2.gasoleoA
-                }
-            }))
-        
-        stations = newStations
+    func showFuel(_ fuel: FuelType) {
+        selectedFuel = fuel
+        refresh()
     }
     
-    private func sortStationsByProximity(station1: Station, station2: Station, sortType: SortType) -> Bool {
-        guard let pointToCompare = locationManager.currentCoordinates else {
-            return false
+    func showSorted(_ order: StationSort) {
+        sortOrder = order
+        refresh()
+    }
+    
+    func refresh() {
+        stations = filteredAndSortedStations()
+    }
+    
+    /// Single pipeline shared by every filter/sort entry point: filter by city, brand and fuel
+    /// availability, keep the `kMaxLenght` closest stations and only then apply the requested order.
+    private func filteredAndSortedStations() -> [Station] {
+        let filtered = allStations.filter { station in
+            matchesCity(station) && matchesBrand(station) && hasPriceForCurrentFuel(station)
         }
-        switch sortType {
-        case .near95:
-            if station1.gasolina95E5.isEmpty {
-                return false
-            }
-        case .near98:
-            if station1.gasolina98E5.isEmpty {
-                return false
-            }
-        case .nearDiesel:
-            if station1.gasoleoA.isEmpty {
-                return false
-            }
-        default:
-            break
+        let nearest = Array(sortedByProximity(filtered).prefix(kMaxLenght))
+        
+        switch sortOrder {
+        case .nearest:
+            return nearest
+        case .cheapest:
+            return nearest.sorted { (price(for: $0) ?? 0) < (price(for: $1) ?? 0) }
+        case .priciest:
+            return nearest.sorted { (price(for: $0) ?? 0) > (price(for: $1) ?? 0) }
         }
-        let station1Coord = CLLocation(latitude: station1.latitude, longitude: station1.longitude)
-        let station2Coord = CLLocation(latitude: station2.latitude, longitude: station2.longitude)
-        return station1Coord.distance(from: pointToCompare) < station2Coord.distance(from: pointToCompare)
     }
     
-    private func updateFavoriteStationsData(stations: [Station]) {
+    /// Partial match on purpose: typing "rivas" should find Rivas-Vaciamadrid. Exact equality
+    /// only ever worked because the suggestion list completed the name first.
+    private func matchesCity(_ station: Station) -> Bool {
+        guard let currentCity else {
+            return true
+        }
+        return station.municipio.contains(currentCity) || station.provincia.contains(currentCity)
+    }
+    
+    private func matchesBrand(_ station: Station) -> Bool {
+        switch currentSortBrand {
+        case .all:
+            return true
+        case .brand(let brand):
+            return station.rotulo.uppercased().contains(brand.uppercased())
+        }
+    }
+    
+    private func hasPriceForCurrentFuel(_ station: Station) -> Bool {
+        price(for: station) != nil
+    }
+    
+    private func price(for station: Station) -> Double? {
+        station.price(for: selectedFuel)
+    }
+    
+    /// Decorate-sort-undecorate: computing the distance once per station instead of on every
+    /// comparison keeps this cheap even with the ~11.000 stations the service returns.
+    private func sortedByProximity(_ stations: [Station]) -> [Station] {
+        guard let currentPoint = locationManager.currentCoordinates else {
+            return stations
+        }
+        return stations
+            .map { ($0, $0.getCLLocationCoordinates().distance(from: currentPoint)) }
+            .sorted { $0.1 < $1.1 }
+            .map { $0.0 }
+    }
+    
+    private func refreshedFavorites(with stations: [Station]) -> [Station] {
         var allFavs = FavoriteStations.getAllFavorites()
-        allStations.forEach { station in
-            if let index = allFavs.firstIndex(where: {$0.id == station.id}) {
-                allFavs[index].gasolina95E5 = station.gasolina95E5
-                allFavs[index].gasolina98E5 = station.gasolina98E5
-                allFavs[index].gasoleoA = station.gasoleoA
+        for station in stations {
+            guard let index = allFavs.firstIndex(where: { $0.id == station.id }) else {
+                continue
             }
+            allFavs[index].gasolina95E5 = station.gasolina95E5
+            allFavs[index].gasolina98E5 = station.gasolina98E5
+            allFavs[index].gasoleoA = station.gasoleoA
         }
-        DispatchQueue.main.async {
-            self.favorites = allFavs
-        }
+        return allFavs
     }
 }
 
@@ -365,11 +462,11 @@ extension StationsListViewViewModel {
 extension StationsListViewViewModel: LocationManagerDelegate {
     
     func didGet(city: String?) {
-        self.navigationTitle = city?.capitalized
+        navigationTitle = city?.capitalized
         getStations()
     }
     
     func didFailGettingLocation(_ error: Error) {
-        self.isLoading = false
+        isLoading = false
     }
 }

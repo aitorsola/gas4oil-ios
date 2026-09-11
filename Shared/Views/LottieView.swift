@@ -8,17 +8,17 @@
 import SwiftUI
 import Lottie
 
-struct LottieView: UIViewRepresentable {
+/// Named after the type it wraps rather than `LottieView`, which is also the name of the SwiftUI
+/// view Lottie 4 ships.
+struct LottieAnimationRepresentable: UIViewRepresentable {
     
     var name: String
     var loopMode: LottieLoopMode = .playOnce
     
-    var animationView = AnimationView()
-    
-    func makeUIView(context: UIViewRepresentableContext<LottieView>) -> UIView {
+    func makeUIView(context: UIViewRepresentableContext<LottieAnimationRepresentable>) -> UIView {
         let view = UIView(frame: .zero)
+        let animationView = LottieAnimationView(animation: LottieAnimation.named(name))
         
-        animationView.animation = Animation.named(name)
         animationView.contentMode = .scaleAspectFit
         animationView.loopMode = loopMode
         animationView.play()
@@ -34,7 +34,7 @@ struct LottieView: UIViewRepresentable {
         return view
     }
     
-    func updateUIView(_ uiView: UIView, context: UIViewRepresentableContext<LottieView>) {
+    func updateUIView(_ uiView: UIView, context: UIViewRepresentableContext<LottieAnimationRepresentable>) {
         
     }
 }

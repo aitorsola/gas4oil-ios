@@ -7,64 +7,34 @@
 
 import Foundation
 
-protocol VehicleAPI {
-    func getVehicleTypes()
-    func getBrands(completion: @escaping (Result<[VehicleBrandEntity], G4OError>) -> Void)
-    func getModelByBrand(brandId: Int, completion: @escaping (Result<[VehicleModelEntity], G4OError>) -> Void)
+protocol VehicleAPI: Sendable {
+    func getBrands() async throws(G4OError) -> [VehicleBrandEntity]
+    func getModelByBrand(brandId: Int) async throws(G4OError) -> [VehicleModelEntity]
 }
 
 private enum VehicleEndpoints {
-    static var vehicleTypes = "https://the-vehicles-api.herokuapp.com/types/"
-    static var allBrands = "https://the-vehicles-api.herokuapp.com/brands/"
-    static var modelByBrand = "https://the-vehicles-api.herokuapp.com/models?brandId={brand_id}"
+    static let allBrands = "https://the-vehicles-api.herokuapp.com/brands/"
+    static let modelByBrand = "https://the-vehicles-api.herokuapp.com/models"
 }
 
 extension Network: VehicleAPI {
     
-    func getVehicleTypes() {
-        
+    func getBrands() async throws(G4OError) -> [VehicleBrandEntity] {
+        let data = try await perform(Request(url: VehicleEndpoints.allBrands, method: .get))
+        guard let entity = try? JSONDecoder().decode([VehicleBrand].self, from: data) else {
+            throw .parseProblems
+        }
+        return entity.compactMap { $0.domainEntity() }
     }
     
-    func getBrands(completion: @escaping (Result<[VehicleBrandEntity], G4OError>) -> Void) {
-        let request = Request(url: VehicleEndpoints.allBrands, method: .get)
-        perform(request) { result in
-            switch result {
-            case .success(let data):
-                let decoder = JSONDecoder()
-                do {
-                    let entity = try decoder.decode([VehicleBrand].self, from: data)
-                    let finalData: [VehicleBrandEntity] = entity.compactMap { brand in
-                        brand.domainEntity()
-                    }
-                    completion(.success(finalData))
-                } catch {
-                    completion(.failure(.parseProblems))
-                }
-            case .failure(let error):
-                completion(.failure(error))
-            }
+    func getModelByBrand(brandId: Int) async throws(G4OError) -> [VehicleModelEntity] {
+        let request = Request(url: VehicleEndpoints.modelByBrand,
+                              method: .get,
+                              parameters: ["brandId": String(brandId)])
+        let data = try await perform(request)
+        guard let entity = try? JSONDecoder().decode([VehicleModel].self, from: data) else {
+            throw .parseProblems
         }
-    }
-    
-    func getModelByBrand(brandId: Int, completion: @escaping (Result<[VehicleModelEntity], G4OError>) -> Void) {
-        let url = VehicleEndpoints.modelByBrand.replacingOccurrences(of: "{brand_id}", with: String(brandId))
-        let request = Request(url: url, method: .get)
-        perform(request) { result in
-            switch result {
-            case .success(let data):
-                let decoder = JSONDecoder()
-                do {
-                    let entity = try decoder.decode([VehicleModel].self, from: data)
-                    let finalData: [VehicleModelEntity] = entity.compactMap { brand in
-                        brand.domainEntity()
-                    }
-                    completion(.success(finalData))
-                } catch {
-                    completion(.failure(.parseProblems))
-                }
-            case .failure(let error):
-                completion(.failure(error))
-            }
-        }
+        return entity.compactMap { $0.domainEntity() }
     }
 }

@@ -5,13 +5,24 @@
 //  Created by Aitor Sola on 11/3/22.
 //
 
-import Foundation
+import Observation
 
-class FavoriteListViewViewModel: ObservableObject {
+@MainActor
+@Observable
+final class FavoriteListViewViewModel {
     
-    @Published var favoriteStations: [Station] = []
+    var favoriteStations: [Station] = []
+    
+    /// Favourites price the fuel the saved vehicle takes; without a vehicle, petrol 95.
+    var preferredFuel: FuelType {
+        VehicleFavorite.vehicleData?.fuel ?? .gas95
+    }
     
     // MARK: - Public
+    
+    func removeFavorite(_ station: Station) {
+        favoriteStations = FavoriteStations.manageFavorite(station)
+    }
     
     func updateFavoriteStations(allStations: [Station]) {
         favoriteStations = allStations

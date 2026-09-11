@@ -9,37 +9,86 @@ import SwiftUI
 
 struct FavoriteListView: View {
     
-    @ObservedObject private var viewModel: FavoriteListViewViewModel
+    private let viewModel: FavoriteListViewViewModel
+#if os(macOS)
+    @State private var selectedStationID: Station.ID?
+#endif
     
     init(viewModel: FavoriteListViewViewModel) {
         self.viewModel = viewModel
     }
     
     var body: some View {
-        NavigationView {
-            if viewModel.favoriteStations.isEmpty {
-                Text("No favorite stations")
-            } else {
-                List(viewModel.favoriteStations) { station in
-                    ZStack(alignment: .leading) {
-                        NavigationLink(destination: {
-                            MapView(station: station)
-                        }, label: {
-                            EmptyView()
-                        }).opacity(0)
-                        getStationView(station)
-                    }
-                }
 #if os(macOS)
-                .frame(minWidth: 350, idealWidth: 350, maxWidth: 350)
-                .listStyle(.sidebar)
-#elseif os(iOS)
-                .listStyle(.plain)
-#endif
-                .navigationTitle("Favorite Stations")
+        // Same split view as the stations tab: the phone cell stretched across a desktop window
+        // was the problem there too.
+        NavigationSplitView {
+            sidebar
+                .navigationSplitViewColumnWidth(min: 340, ideal: 380, max: 460)
+        } detail: {
+            if let station = viewModel.favoriteStations.first(where: { $0.id == selectedStationID }) {
+                StationDetailView(station: station) {
+                    viewModel.removeFavorite(station)
+                    selectedStationID = nil
+                }
+            } else {
+                ContentUnavailableView(viewModel.favoriteStations.isEmpty
+                                       ? "favorites.empty".translated
+                                       : "listView.detail.empty".translated,
+                                       systemImage: "star")
             }
         }
+#else
+        NavigationStack {
+            Group {
+                if viewModel.favoriteStations.isEmpty {
+                    Text("favorites.empty".translated)
+                } else {
+                    phoneList
+                }
+            }
+            .navigationTitle("favorites.title".translated)
+        }
+#endif
     }
+    
+#if os(macOS)
+    private var sidebar: some View {
+        List(viewModel.favoriteStations, selection: $selectedStationID) { station in
+            StationSidebarRow(station: station, fuel: viewModel.preferredFuel)
+                .contextMenu {
+                    Button {
+                        viewModel.removeFavorite(station)
+                    } label: {
+                        Label("listView.station.removeFavorite".translated, systemImage: "star.slash")
+                    }
+                    Button {
+                        station.openInMaps()
+                    } label: {
+                        Label("listView.station.directions".translated,
+                              systemImage: "arrow.triangle.turn.up.right.circle")
+                    }
+                }
+        }
+        .listStyle(.sidebar)
+        .navigationTitle("favorites.title".translated)
+    }
+#else
+    private var phoneList: some View {
+        List(viewModel.favoriteStations) { station in
+            ZStack(alignment: .leading) {
+                NavigationLink(value: station) { EmptyView() }.opacity(0)
+                getStationView(station)
+            }
+            .hidingOuterSeparators(isFirst: station.id == viewModel.favoriteStations.first?.id,
+                                   isLast: station.id == viewModel.favoriteStations.last?.id)
+        }
+        .listStyle(.plain)
+        .navigationDestination(for: Station.self) { station in
+            MapView(station: station)
+        }
+    }
+#endif
 }
 
 extension FavoriteListView {
@@ -76,6 +125,7 @@ extension FavoriteListView {
                            schedule: station.horario,
                            coordinates: station.getCLLocationCoordinates(),
                            showFavButton: false,
+                           directionsAction: { station.openInMaps() },
                            fillPrice: fillPrice,
                            isFav: station.isFav)
     }

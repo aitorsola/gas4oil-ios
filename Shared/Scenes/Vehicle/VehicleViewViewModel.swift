@@ -6,127 +6,78 @@
 //
 
 import Foundation
-#if canImport(UIKit)
-import NotificationBannerSwift
-#endif
+import Observation
 
-protocol VehicleViewViewModel: AnyObject {
-    func viewDidAppear()
+/// What a full tank costs right now across the stations currently on screen.
+struct FillCost {
+    let cheapest: Double
+    let priciest: Double
+    let cheapestStation: Station
 }
 
-class DefaultVehicleViewViewModel: ObservableObject, VehicleViewViewModel {
+@MainActor
+@Observable
+final class DefaultVehicleViewViewModel {
     
     // MARK: - Properties
     
-    @Published var vehicleData: VehicleStored = VehicleStored(brand: "", model: "", capacity: "", fuel: .gas95)
-    @Published var showSuccessAlert: Bool = false
-    @Published var allFuelTypes = FuelType.allCases
-    @Published var loading: Bool = true
+    var vehicleData: VehicleStored = VehicleStored(brand: "", model: "", capacity: "", fuel: .gas95)
+    var showSuccessAlert: Bool = false
     
-    @Published var selectedBrandIndex: Int = 0
-    @Published var selectedModelIndex: Int = 0
+    /// Whether a vehicle is stored, as opposed to merely typed into the form.
+    private(set) var isSaved: Bool = false
     
-    @Published var allBrands = [VehicleBrandEntity]()
-    @Published var allModelsForBrand = [VehicleModelEntity]()
-    
-    @Published var selectedBrand: VehicleBrandEntity?
-    @Published var selectedModel: VehicleModelEntity?
-    
-    private var vehicleAPI: VehicleAPI = Network()
+    let allFuelTypes = FuelType.allCases
     
     init() {
-        getVehicleData()
+        loadVehicleData()
     }
     
     // MARK: - Public
     
-    func getVehicleData() {
-        guard let vehicleData = VehicleFavorite.vehicleData else {
+    func loadVehicleData() {
+        guard let stored = VehicleFavorite.vehicleData else {
+            isSaved = false
             return
         }
-        self.vehicleData = vehicleData
+        vehicleData = stored
+        isSaved = true
     }
     
-    func saveVehicleData(brand: String, model: String, capacity: String) {
-        vehicleData.brand = brand
-        vehicleData.model = model
-        vehicleData.capacity = capacity
-        
+    func save() {
+        guard vehicleData.isValid else {
+            return
+        }
+        vehicleData.brand = vehicleData.brand.trimmingCharacters(in: .whitespaces)
+        vehicleData.model = vehicleData.model.trimmingCharacters(in: .whitespaces)
         VehicleFavorite.saveVehicleData(data: vehicleData)
-        
+        isSaved = true
         showSuccessAlert = true
     }
     
     func removeVehicle() {
         VehicleFavorite.removeVehicleData()
         vehicleData.reset()
+        isSaved = false
     }
     
-    func viewDidAppear() {
-        
+    /// Turns the tank size into the thing the user actually cares about: what filling it costs at
+    /// the stations they can reach. This is the whole point of the screen, and until now it only
+    /// ever showed up on the other tab.
+    func fillCost(using stations: [Station]) -> FillCost? {
+        guard let litres = vehicleData.capacityLitres else {
+            return nil
+        }
+        let totals = stations.compactMap { station -> (Station, Double)? in
+            guard let price = station.price(for: vehicleData.fuel) else {
+                return nil
+            }
+            return (station, price * litres)
+        }
+        guard let cheapest = totals.min(by: { $0.1 < $1.1 }),
+              let priciest = totals.max(by: { $0.1 < $1.1 }) else {
+            return nil
+        }
+        return FillCost(cheapest: cheapest.1, priciest: priciest.1, cheapestStation: cheapest.0)
     }
-    
-    
-    //    func getAllBrands() {
-    //        self.loading = true
-    //        vehicleAPI.getBrands { result in
-    //            DispatchQueue.main.async {
-    //                self.loading = false
-    //                switch result {
-    //                case .success(let brands):
-    //                    self.allBrands = brands
-    //                    self.getSavedVehicleBrandIndex()
-    //                    self.getModelsForBrandIndex(self.selectedBrandIndex)
-    //                case .failure(let error):
-    //#if os(iOS)
-    //                    let banner = NotificationBanner(title: error.localizedDescription,
-    //                                                    subtitle: "",
-    //                                                    leftView: nil,
-    //                                                    rightView: nil,
-    //                                                    style: .warning,
-    //                                                    colors: nil)
-    //                    banner.show()
-    //#else
-    //                    print(error.localizedDescription)
-    //#endif
-    //                }
-    //            }
-    //        }
-    //    }
-    //
-    //    func getModelsForBrandIndex(_ index: Int) {
-    //        let brandId = allBrands[index].id
-    //        vehicleAPI.getModelByBrand(brandId: brandId) { result in
-    //            switch result {
-    //            case .success(let models):
-    //                DispatchQueue.main.async {
-    //                    self.allModelsForBrand = models
-    //                    self.getSaveVehicleModelIndex()
-    //                }
-    //            case .failure(let error):
-    //#if os(iOS)
-    //                let banner = NotificationBanner(title: error.localizedDescription,
-    //                                                subtitle: "",
-    //                                                leftView: nil,
-    //                                                rightView: nil,
-    //                                                style: .warning,
-    //                                                colors: nil)
-    //                banner.show()
-    //#else
-    //                print(error.localizedDescription)
-    //#endif
-    //            }
-    //        }
-    //    }
-    //
-    //
-    //    private func getSavedVehicleBrandIndex() {
-    //        selectedBrandIndex = allBrands.firstIndex(where: {$0.brand == vehicleData.brand }) ?? 0
-    //    }
-    //
-    //    private func getSaveVehicleModelIndex() {
-    //        selectedModelIndex = allModelsForBrand.firstIndex(where: {$0.model == vehicleData.model }) ?? 0
-    //    }
-    
 }
-

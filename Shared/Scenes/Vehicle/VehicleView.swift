@@ -5,181 +5,273 @@
 //  Created by Aitor Sola on 21/3/22.
 //
 
-import Foundation
-import Combine
 import SwiftUI
-#if canImport(UIKit)
-import Lottie
-#endif
 
 struct VehicleView: View {
     
-    @State private var showAdView: Bool = true
-    @State var showRemoveVehicleAlert: Bool = false
-    @State private var offsetHeight: CGSize = .init(width: 0, height: 2000)
-    @State var kOffsetHeightWhenShow = 200.0
-    @State var kOffsetHeightWhenHidden = 2000.0
+    /// Read-only: the screen uses the loaded stations to price a tankful.
+    let stationsViewModel: StationsListViewViewModel
+    /// Lets the stations list pick up the new capacity without waiting for a reload.
+    var onSave: (() -> Void)?
     
-    @StateObject private var viewModel = DefaultVehicleViewViewModel()
+    @State private var viewModel = DefaultVehicleViewViewModel()
+    @State private var showRemoveVehicleAlert: Bool = false
+    @FocusState private var focusedField: Field?
     
-    @FocusState var brandFocused: Bool
-    @FocusState var modelFocused: Bool
-    @FocusState var capacityFocused: Bool
+    private enum Field: Hashable {
+        case brand, model, capacity
+    }
     
     var body: some View {
-        if viewModel.loading {
+        NavigationStack {
+            Form {
+                if viewModel.isSaved {
+                    fillCostSection
+                } else {
+                    introSection
+                }
+                vehicleSection
+                tankSection
+                actionsSection
+            }
+            .platformFormStyle()
+            .navigationTitle("myVehicle.brand.title".translated)
+            .alert("myVehicle.saved.message".translated, isPresented: $viewModel.showSuccessAlert) {
+                Button("common.ok".translated) { }
+            }
+            .alert("myVehicle.remove.alert.title".translated, isPresented: $showRemoveVehicleAlert) {
+                Button("myVehicle.remove".translated, role: .destructive) {
+                    viewModel.removeVehicle()
+                    onSave?()
+                }
+                Button("common.cancel".translated, role: .cancel) { }
+            }
 #if os(iOS)
-            LottieView(name: "loading", loopMode: .loop).onAppear {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                    self.viewModel.loading = false
+            .toolbar {
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("common.done".translated) { focusedField = nil }
                 }
             }
-#else
-            ProgressView(title: "common.loading".translated)
 #endif
-        } else {
-            ZStack {
-                ScrollView {
-                    Text("myVehicle.brand.title".translated)
-                        .font(.customSize(35, weight: .bold, design: .default))
-                        .padding(.bottom, 30)
-                        .padding(.top, 30)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    
-                    VStack(alignment: .leading) {
-                        HStack(spacing: 20) {
-                            Image("icn_brand").resizable().clipped().frame(width: 30, height: 30).scaledToFit()
-                            TextField("",
-                                      text: $viewModel.vehicleData.brand,
-                                      prompt: Text("myVehicle.brand.placeholder".translated))
-#if os(iOS)
-                            .keyboardType(.default)
-#endif
-                            .focused($brandFocused)
-                        }
-                        .padding(.bottom, 20)
-                        HStack(spacing: 20) {
-                            Image("icn_car_model").resizable().clipped().frame(width: 30, height: 30).scaledToFit()
-                            TextField("",
-                                      text: $viewModel.vehicleData.model,
-                                      prompt: Text("myVehicle.model.placeholder".translated))
-#if os(iOS)
-                            .keyboardType(.default)
-#endif
-                            .focused($modelFocused)
-                        }
-                        .padding(.bottom, 20)
-                        HStack(spacing: 20) {
-                            Image("icn_fuel_can").resizable().clipped().frame(width: 30, height: 30).scaledToFit()
-                            Picker("common.fuelType".translated, selection: $viewModel.vehicleData.fuel, content: {
-                                ForEach(viewModel.allFuelTypes, id: \.self) { item in
-                                    switch item {
-                                    case .gas95:
-                                        Text("fuel.95".translated).tag(FuelType.gas95)
-                                    case .gas98:
-                                        Text("fuel.98".translated).tag(FuelType.gas98)
-                                    case .diesel:
-                                        Text("fuel.diesel".translated).tag(FuelType.diesel)
-                                    }
-                                }
-                            })
-                        }
-                        .padding(.bottom, 20)
-                        
-                        HStack(spacing: 20) {
-                            Image("icn_capacity").resizable().clipped().frame(width: 30, height: 30).scaledToFit()
-                            TextField("",
-                                      text: $viewModel.vehicleData.capacity,
-                                      prompt: Text("myVehicle.capacity.placeholder".translated))
-#if os(iOS)
-                            .keyboardType(.numberPad)
-#endif
-                            .focused($capacityFocused)
-                        }
+        }
+    }
+}
+
+// MARK: - Payoff
+
+private extension VehicleView {
+    
+    /// The screen used to be a form that gave nothing back: you typed a tank size and the result
+    /// only ever appeared on the stations tab. This puts the answer where the question is asked.
+    @ViewBuilder
+    var fillCostSection: some View {
+        Section {
+            if let cost = viewModel.fillCost(using: stationsViewModel.stations) {
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("myVehicle.fill.title".translated)
+                        .font(.customSize(13))
+                        .foregroundStyle(.secondary)
+                    HStack(alignment: .firstTextBaseline, spacing: 6) {
+                        Text(cost.cheapest.asEuros)
+                            .font(.customSize(32, weight: .bold, design: .rounded))
+                            .foregroundStyle(.green)
+                        Text("—")
+                            .foregroundStyle(.secondary)
+                        Text(cost.priciest.asEuros)
+                            .font(.customSize(22, weight: .semibold, design: .rounded))
+                            .foregroundStyle(.secondary)
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    
-                    HStack {
-                        Gas4OilButton(title: "myVehicle.save".translated, image: nil, isDisabled: false) {
-                            unfocusAllResponders()
-                            viewModel.saveVehicleData(brand: viewModel.vehicleData.brand,
-                                                      model: viewModel.vehicleData.model,
-                                                      capacity: viewModel.vehicleData.capacity)
-                        }
-                        Gas4OilButton(title: "myVehicle.remove".translated,
-                                      image: nil,
-                                      isDisabled: viewModel.vehicleData.isEmpty()) {
-                            showRemoveVehicleAlert = true
-                        }
-                    }
-                    .padding(20)
+                    Text("myVehicle.fill.cheapestAt".translated(cost.cheapestStation.brandName,
+                                                               cost.cheapestStation.municipio.capitalized))
+                        .font(.customSize(13))
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding()
-                .alert("myVehicle.saved.message".translated, isPresented: $viewModel.showSuccessAlert) {
-                    Button("Ok") { }
-                }
-                .onTapGesture {
-                    withAnimation(.spring()) {
-                        offsetHeight.height = kOffsetHeightWhenHidden
-                    }
-                    unfocusAllResponders()
-                }
-                .alert("myVehicle.remove.alert.title".translated, isPresented: $showRemoveVehicleAlert) {
-                    Button("myVehicle.remove".translated, role: .destructive) {
-                        viewModel.removeVehicle()
-                    }
-                    Button("common.cancel", role: .cancel) { }
-                }
-                
-                draggableView()
-                
-#if os(iOS)
-                    .cornerRadius(30, corners: .allCorners)
-#endif
+                .padding(.vertical, 4)
+            } else {
+                Label("myVehicle.fill.unavailable".translated, systemImage: "fuelpump.slash")
+                    .font(.customSize(14))
+                    .foregroundStyle(.secondary)
             }
-            .onAppear {
-                if showAdView {
-                    withAnimation(.spring()) {
-                        self.showAdView = false
-                        offsetHeight.height = viewModel.vehicleData.isEmpty() ? kOffsetHeightWhenShow : kOffsetHeightWhenHidden
-                    }
+        } header: {
+            Text(viewModel.vehicleData.displayName)
+        } footer: {
+            Text("myVehicle.fill.footer".translated)
+        }
+    }
+    
+    var introSection: some View {
+        Section {
+            VStack(alignment: .leading, spacing: 8) {
+                Label("myVehicle.ad.title".translated, systemImage: "car.fill")
+                    .font(.customSize(17, weight: .semibold))
+                    .foregroundStyle(.orange)
+                Text("myVehicle.ad.description".translated)
+                    .font(.customSize(14))
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .padding(.vertical, 4)
+        }
+    }
+}
+
+// MARK: - Form
+
+private extension VehicleView {
+    
+    var vehicleSection: some View {
+        Section {
+            LabeledRow(icon: "tag.fill", title: "myVehicle.brand.placeholder".translated) {
+                TextField("myVehicle.brand.example".translated, text: $viewModel.vehicleData.brand)
+                    .focused($focusedField, equals: .brand)
+                    .submitLabel(.next)
+                    .onSubmit { focusedField = .model }
+            }
+            LabeledRow(icon: "car.fill", title: "myVehicle.model.placeholder".translated) {
+                TextField("myVehicle.model.example".translated, text: $viewModel.vehicleData.model)
+                    .focused($focusedField, equals: .model)
+                    .submitLabel(.next)
+                    .onSubmit { focusedField = .capacity }
+            }
+        } header: {
+            Text("myVehicle.section.vehicle".translated)
+        } footer: {
+            Text("myVehicle.section.vehicle.hint".translated)
+        }
+    }
+    
+    var tankSection: some View {
+        Section {
+            Picker(selection: $viewModel.vehicleData.fuel) {
+                ForEach(viewModel.allFuelTypes, id: \.self) { fuel in
+                    Text(fuel.name).tag(fuel)
                 }
-                viewModel.viewDidAppear()
+            } label: {
+                Label("common.fuelType".translated, systemImage: "fuelpump.fill")
+                    .foregroundStyle(.primary)
+            }
+            LabeledRow(icon: "drop.fill", title: "myVehicle.capacity.placeholder".translated) {
+                HStack(spacing: 4) {
+                    TextField("myVehicle.capacity.example".translated,
+                              text: $viewModel.vehicleData.capacity)
+#if os(iOS)
+                        .keyboardType(.decimalPad)
+#endif
+                        .focused($focusedField, equals: .capacity)
+                        .multilineTextAlignment(.trailing)
+                    Text("myVehicle.capacity.unit".translated)
+                        .foregroundStyle(.secondary)
+                }
+            }
+        } header: {
+            Text("myVehicle.section.tank".translated)
+        } footer: {
+            // Only flag the problem once they have typed something; an empty field is not an error.
+            if !viewModel.vehicleData.capacity.isEmpty && !viewModel.vehicleData.isValid {
+                Text("myVehicle.capacity.invalid".translated)
+                    .foregroundStyle(.red)
+            } else {
+                Text("myVehicle.section.tank.hint".translated)
             }
         }
     }
     
-    // MARK: - Private
-    
-    private func unfocusAllResponders() {
-        capacityFocused = false
-    }
-    
-    fileprivate func draggableView() -> some View {
-        AdView(title: "myVehicle.ad.title".translated,
-               descr: "myVehicle.ad.description".translated,
-               buttonTitle: "OK",
-               image: "icn_car") { withAnimation(.spring()) { offsetHeight.height = kOffsetHeightWhenHidden }}
-            .offset(CGSize(width: 0, height: offsetHeight.height))
-            .gesture(
-                DragGesture()
-                    .onChanged { value in
-                        let height = value.translation.height
-                        self.offsetHeight.height = height < 0 ? value.translation.height * 0.2 + kOffsetHeightWhenShow : height + kOffsetHeightWhenShow
-                    }
-                    .onEnded { value in
-                        withAnimation(.spring()) {
-                            offsetHeight.height = value.translation.height > kOffsetHeightWhenShow ? kOffsetHeightWhenHidden : kOffsetHeightWhenShow
-                        }
-                    }
-            )
+    /// Save and Remove live in separate sections on purpose: sharing a card gave them equal
+    /// weight, and the row separator between them was inset to wherever the centred label began,
+    /// because that is where iOS measures a row's content from.
+    @ViewBuilder
+    var actionsSection: some View {
+        Section {
+            Button {
+                focusedField = nil
+                viewModel.save()
+                onSave?()
+            } label: {
+                Text("myVehicle.save".translated)
+                    .fontWeight(.semibold)
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.borderedProminent)
+            .controlSize(.large)
+            .tint(.orange)
+            .frame(maxWidth: 420)
+            .disabled(!viewModel.vehicleData.isValid)
+            .listRowBackground(Color.clear)
+            .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+        }
+        
+        if viewModel.isSaved {
+            Section {
+                Button(role: .destructive) {
+                    showRemoveVehicleAlert = true
+                } label: {
+                    Text("myVehicle.remove".translated)
+                        .frame(maxWidth: .infinity)
+                }
+            }
+            // Default section spacing left the two actions a screen apart; they are related
+            // enough to sit together, just not in the same card.
+            .tightSectionSpacing()
+        }
     }
 }
 
-struct VehicleView_Previews: PreviewProvider {
-    static var previews: some View {
-        VehicleView()
-            .preferredColorScheme(.dark)
+/// Native label/content row. A hand-rolled `HStack` here fought the macOS form's own label
+/// column, which pushed the labels outside the window.
+private struct LabeledRow<Content: View>: View {
+    
+    let icon: String
+    let title: String
+    @ViewBuilder var content: Content
+    
+    var body: some View {
+        LabeledContent {
+            content
+#if os(iOS)
+                .multilineTextAlignment(.trailing)
+#endif
+        } label: {
+            Label(title, systemImage: icon)
+                .foregroundStyle(.primary)
+        }
     }
+}
+
+private extension View {
+    
+    /// macOS forms need the grouped style to get the card look, and a width cap so the rows do
+    /// not run the whole width of a desktop window.
+    @ViewBuilder
+    func platformFormStyle() -> some View {
+#if os(macOS)
+        formStyle(.grouped)
+            .frame(maxWidth: 560)
+            .frame(maxWidth: .infinity, alignment: .center)
+#else
+        self
+#endif
+    }
+    
+    /// `listSectionSpacing` is unavailable on macOS, where the default gap is already small.
+    @ViewBuilder
+    func tightSectionSpacing() -> some View {
+#if os(iOS)
+        listSectionSpacing(12)
+#else
+        self
+#endif
+    }
+}
+
+extension Double {
+    
+    var asEuros: String {
+        String(format: "%.2f", self).replacingOccurrences(of: ".", with: ",") + " €"
+    }
+}
+
+#Preview {
+    VehicleView(stationsViewModel: StationsListViewViewModel())
 }

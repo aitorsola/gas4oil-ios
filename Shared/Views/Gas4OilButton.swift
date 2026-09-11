@@ -30,10 +30,12 @@ struct Gas4OilButton: View {
                 .font(.system(size: 20, weight: .medium, design: .default))
                 .font(.customSize(20, weight: .medium, design: .rounded))
         }
-        .disabled(isDisabled)
         .padding(10)
         .overlay(RoundedRectangle(cornerRadius: 5).stroke(isDisabled ? .gray : .orange, lineWidth: 2))
         .onTapGesture {
+            guard !isDisabled else {
+                return
+            }
             withAnimation(.easeInOut(duration: 1)) {
                 needsRotate.toggle()
             }

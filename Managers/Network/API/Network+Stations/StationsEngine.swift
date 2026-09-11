@@ -7,35 +7,22 @@
 
 import CoreLocation
 
-protocol ServiceStationsAPI {
-    func getAllStations(completion: @escaping (Result<[Station], G4OError>) -> Void)
+protocol ServiceStationsAPI: Sendable {
+    func getAllStations() async throws(G4OError) -> [Station]
 }
 
 private enum StationsEndpoints {
-    static var allStations = "https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/"
+    static let allStations = "https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/"
 }
 
 extension Network: ServiceStationsAPI {
     
-    func getAllStations(completion: @escaping (Result<[Station], G4OError>) -> Void) {
-        let request = Request(url: StationsEndpoints.allStations, method: .get)
-        perform(request) { result in
-            switch result {
-            case .success(let data):
-                do {
-                    let decoder = JSONDecoder()
-                    let entity = try decoder.decode(StationsResponse.self, from: data)
-                    guard let stations = entity.domainEntity()?.stations else {
-                        completion(.failure(.parseProblems))
-                        return
-                    }
-                    completion(.success(stations))
-                } catch {
-                    completion(.failure(.parseProblems))
-                }
-            case .failure(let error):
-                completion(.failure(error))
-            }
+    func getAllStations() async throws(G4OError) -> [Station] {
+        let data = try await perform(Request(url: StationsEndpoints.allStations, method: .get))
+        guard let entity = try? JSONDecoder().decode(StationsResponse.self, from: data),
+              let stations = entity.domainEntity()?.stations else {
+            throw .parseProblems
         }
+        return stations
     }
 }
