@@ -7,6 +7,11 @@
 "common.gettingLocation" = "Obtenint la ubicació";
 "common.fuelType" = "Combustible";
 
+"appearance.title" = "Aparença";
+"appearance.system" = "Segons el sistema";
+"appearance.light" = "Clar";
+"appearance.dark" = "Fosc";
+
 "fuel.95" = "Gasolina 95";
 "fuel.98" = "Gasolina 98";
 "fuel.diesel" = "Dièsel";

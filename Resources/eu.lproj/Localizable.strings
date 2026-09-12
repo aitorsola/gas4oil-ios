@@ -7,6 +7,11 @@
 "common.gettingLocation" = "Kokapena lortzen";
 "common.fuelType" = "Erregaia";
 
+"appearance.title" = "Itxura";
+"appearance.system" = "Sistemaren arabera";
+"appearance.light" = "Argia";
+"appearance.dark" = "Iluna";
+
 "fuel.95" = "95 gasolina";
 "fuel.98" = "98 gasolina";
 "fuel.diesel" = "Diesela";

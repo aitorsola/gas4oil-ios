@@ -13,7 +13,6 @@ struct Stations {
     let stations: [Station]
 }
 
-// Hashable is what `NavigationLink(value:)` and `navigationDestination(for:)` route on.
 struct Station: Identifiable, Codable, Hashable {
     let id: Int
     let cp: String

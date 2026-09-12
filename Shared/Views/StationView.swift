@@ -138,8 +138,6 @@ private extension StationView {
                     .foregroundStyle(.primary)
             }
             .frame(maxWidth: .infinity, minHeight: 48)
-            // Same neutral fill as the price header, so the action reads as part of the card
-            // instead of a coloured slab competing with the prices.
             .background(Self.actionFill, in: RoundedRectangle(cornerRadius: 12))
             .contentShape(RoundedRectangle(cornerRadius: 12))
         }

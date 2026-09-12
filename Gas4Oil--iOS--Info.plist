@@ -23,6 +23,8 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSLocationDefaultAccuracyReduced</key>
+	<true/>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>

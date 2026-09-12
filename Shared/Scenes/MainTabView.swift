@@ -42,7 +42,6 @@ struct MainTabView: View {
                     }
                 
                 VehicleView(stationsViewModel: viewModel.listViewViewModel) {
-                    // Saving a tank size changes every fill price in the list.
                     viewModel.listViewViewModel.refresh()
                 }
                     .tag(TabSelectedType.vehicle.rawValue)
@@ -68,8 +67,6 @@ struct MainTabView: View {
 #endif
                         }
                     }
-                    // @Observable has no Combine publisher to subscribe to; onChange observes
-                    // the property directly.
                     .onChange(of: viewModel.listViewViewModel.favorites, initial: true) { _, stations in
                         viewModel.favoriteViewViewModel.updateFavoriteStations(allStations: stations)
                     }

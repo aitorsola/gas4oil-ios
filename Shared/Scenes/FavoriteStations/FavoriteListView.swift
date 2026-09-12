@@ -20,8 +20,6 @@ struct FavoriteListView: View {
     
     var body: some View {
 #if os(macOS)
-        // Same split view as the stations tab: the phone cell stretched across a desktop window
-        // was the problem there too.
         NavigationSplitView {
             sidebar
                 .navigationSplitViewColumnWidth(min: 340, ideal: 380, max: 460)

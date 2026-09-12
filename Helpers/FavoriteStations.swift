@@ -14,7 +14,7 @@ class FavoriteStations {
     private static var allFavorites: [Station] = []
     
     static func manageFavorite(_ station: Station) -> [Station] {
-        if let allFavorites = defaults.object(forKey: "favs") as? Data { // key in defaults exists
+        if let allFavorites = defaults.object(forKey: "favs") as? Data {
             let decoder = JSONDecoder()
             if let stationsDecoded = try? decoder.decode([Station].self, from: allFavorites) {
                 self.allFavorites = stationsDecoded
@@ -26,7 +26,7 @@ class FavoriteStations {
             } else {
                 return saveNewFavorite(station)
             }
-        } else { // never saved any favorite station
+        } else {
             return saveNewFavorite(station)
         }
     }

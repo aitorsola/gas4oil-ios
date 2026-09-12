@@ -37,7 +37,6 @@ struct MapView: View {
         }
         .ignoresSafeArea()
         .overlay(alignment: .topTrailing) {
-            // Like Apple Maps: the compass only shows up once the map has been rotated.
             MapCompass(scope: mapScope)
                 .mapControlVisibility(.automatic)
                 .padding(.trailing, 12)

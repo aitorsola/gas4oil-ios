@@ -168,7 +168,6 @@ private extension VehicleView {
         } header: {
             Text("myVehicle.section.tank".translated)
         } footer: {
-            // Only flag the problem once they have typed something; an empty field is not an error.
             if !viewModel.vehicleData.capacity.isEmpty && !viewModel.vehicleData.isValid {
                 Text("myVehicle.capacity.invalid".translated)
                     .foregroundStyle(.red)
@@ -211,8 +210,6 @@ private extension VehicleView {
                         .frame(maxWidth: .infinity)
                 }
             }
-            // Default section spacing left the two actions a screen apart; they are related
-            // enough to sit together, just not in the same card.
             .tightSectionSpacing()
         }
     }

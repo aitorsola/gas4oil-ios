@@ -10,6 +10,8 @@
 		5BB74FDC2D7311E6001D92C9 /* Shimmer in Frameworks */ = {isa = PBXBuildFile; productRef = 5BB74FDB2D7311E6001D92C9 /* Shimmer */; };
 		5BC0EA1F2948E3BC00E07674 /* Gas4OilTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BC0EA1E2948E3BC00E07674 /* Gas4OilTests.swift */; };
 		A406706327D8BE5F00193D36 /* FavoriteStations.swift in Sources */ = {isa = PBXBuildFile; fileRef = A406706227D8BE5E00193D36 /* FavoriteStations.swift */; };
+		A4C1B0022D9B000100000002 /* ThemePreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4C1B0012D9B000100000001 /* ThemePreference.swift */; };
+		A4C1B0032D9B000100000003 /* ThemePreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4C1B0012D9B000100000001 /* ThemePreference.swift */; };
 		A406706427D8BE5F00193D36 /* FavoriteStations.swift in Sources */ = {isa = PBXBuildFile; fileRef = A406706227D8BE5E00193D36 /* FavoriteStations.swift */; };
 		A406706D27D90F8D00193D36 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A406706C27D90F8D00193D36 /* MainTabView.swift */; };
 		A406706E27D90F8D00193D36 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A406706C27D90F8D00193D36 /* MainTabView.swift */; };
@@ -135,6 +137,7 @@
 		5BC0EA1E2948E3BC00E07674 /* Gas4OilTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Gas4OilTests.swift; sourceTree = "<group>"; };
 		6E3011958B893B5EE48E4B60 /* Pods_Gas4Oil__macOS_.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Gas4Oil__macOS_.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A406706227D8BE5E00193D36 /* FavoriteStations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteStations.swift; sourceTree = "<group>"; };
+		A4C1B0012D9B000100000001 /* ThemePreference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemePreference.swift; sourceTree = "<group>"; };
 		A406706C27D90F8D00193D36 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
 		A41249EF27FC24A50018BDB4 /* AdView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdView.swift; sourceTree = "<group>"; };
 		A416FCA327E663C200FCC16A /* LottieView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LottieView.swift; sourceTree = "<group>"; };
@@ -298,6 +301,7 @@
 			isa = PBXGroup;
 			children = (
 				A406706227D8BE5E00193D36 /* FavoriteStations.swift */,
+				A4C1B0012D9B000100000001 /* ThemePreference.swift */,
 				A487AB8827E8B8530085385E /* VehicleDataStored.swift */,
 			);
 			path = Helpers;
@@ -662,6 +666,7 @@
 				9A6573A5DD72B80BF820A53F /* StationDetailView.swift in Sources */,
 				A444764F27D12DB600B25303 /* Gas4OilApp.swift in Sources */,
 				A406706327D8BE5F00193D36 /* FavoriteStations.swift in Sources */,
+				A4C1B0022D9B000100000002 /* ThemePreference.swift in Sources */,
 				A47A84AD27F5AB2700AF2892 /* VehicleModelEntity.swift in Sources */,
 				A48F4AB227D4B1CF0024473D /* StationsListViewViewModel.swift in Sources */,
 			);
@@ -709,6 +714,7 @@
 				A4727BFD27D57D4B0005736F /* MapView.swift in Sources */,
 				351417841EEE1FE43A1366B4 /* StationDetailView.swift in Sources */,
 				A406706427D8BE5F00193D36 /* FavoriteStations.swift in Sources */,
+				A4C1B0032D9B000100000003 /* ThemePreference.swift in Sources */,
 				A48F4AB327D4B1CF0024473D /* StationsListViewViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

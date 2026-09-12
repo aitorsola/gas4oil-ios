@@ -84,20 +84,17 @@ struct StationsListView: View {
     @State private var offsetHeight: CGSize = CGSize(width: 0, height: 150)
     @State var kOffsetHeightWhenShow = 150.0
     @State var kOffsetHeightWhenHidden = 2000.0
-    
+    @AppStorage(ThemePreference.storageKey) private var appearance: ThemePreference = .system
     
     var body: some View {
         if !viewModel.locationAllowed {
             landing
         } else {
             ZStack {
-                if viewModel.isLoading {
+                if viewModel.isPreparing || viewModel.isLoading {
                     loadingPlaceholder
                 } else {
 #if os(macOS)
-                    // A phone cell stretched across a desktop window reads as broken however wide
-                    // the rows are. A split view gives the list the narrow column it was designed
-                    // for and puts the space to work on a real detail pane.
                     NavigationSplitView {
                         stationsScreen
                             .navigationSplitViewColumnWidth(min: 340, ideal: 380, max: 460)
@@ -165,12 +162,42 @@ private extension StationsListView {
         .padding()
     }
     
+    /// Cells the size of the real ones, enough of them to reach the bottom of the screen.
+    ///
+    /// In the same `List` the real rows land in, so they inherit its insets and its safe area: a
+    /// bare `VStack` here sat under the status bar and behind the tab bar, because the `TabView`
+    /// above ignores the safe area. Three stretched cells also read as three oversized rows
+    /// rather than as a list about to arrive.
     var loadingPlaceholder: some View {
-        VStack {
-            ForEach(0..<3) { _ in
-                FakeView()
-            }
+        skeletonRows
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("common.loading".translated)
+    }
+    
+    private var skeletonRows: some View {
+        List(0..<5, id: \.self) { _ in
+            FakeView()
+                .frame(height: 200)
+                .listRowSeparator(.hidden)
         }
+        .listStyle(.plain)
+        .scrollDisabled(true)
+        .safeAreaInset(edge: .top) {
+            Color.clear.frame(height: Self.statusBarInset)
+        }
+    }
+    
+    /// The `TabView` above ignores the safe area, so nothing here reserves room for the status
+    /// bar: the real list only clears it because its navigation bar has a title to lay out. Read
+    /// off the window rather than guessed, so a notch and a dynamic island both come out right.
+    private static var statusBarInset: CGFloat {
+#if os(iOS)
+        UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .first?.keyWindow?.safeAreaInsets.top ?? 44
+#else
+        0
+#endif
     }
     
     /// Split out of `body`: inline, the whole screen was one expression the type checker gave up on.
@@ -198,7 +225,6 @@ private extension StationsListView {
 #if os(macOS)
         List(viewModel.stations, selection: $selectedStationID) { station in
             StationSidebarRow(station: station, fuel: viewModel.selectedFuel)
-                // Right-click is where a Mac user looks for per-row actions.
                 .contextMenu {
                     Button {
                         viewModel.favoriteStationTapAction(station)
@@ -218,8 +244,6 @@ private extension StationsListView {
         }
 #else
         List(viewModel.stations) { station in
-            // Value-based routing, but the link itself stays invisible: a plain NavigationLink
-            // row adds a disclosure chevron that eats into the cell and shifts the distance label.
             ZStack(alignment: .leading) {
                 NavigationLink(value: station) { EmptyView() }.opacity(0)
                 getStationView(station)
@@ -290,7 +314,6 @@ private struct TownSearch: ViewModifier {
     
     func body(content: Content) -> some View {
         searchField(content)
-            // Suggestions moved out of `searchable` into their own modifier in iOS 16.
             .searchSuggestions {
                 ForEach(viewModel.searchResults(text: query.lowercased()), id: \.self) { town in
                     Text(town.capitalized).searchCompletion(town.capitalized)
@@ -298,9 +321,6 @@ private struct TownSearch: ViewModifier {
             }
             .onSubmit(of: .search) {
                 viewModel.showFuelByCity(query)
-                // On iOS the field stays in editing mode after submitting, and the navigation bar
-                // then shows the search UI instead of the title and the filter buttons — so the
-                // results of a town search could not be filtered or re-sorted at all.
                 isPresented = false
             }
             .onChange(of: query) { _, newValue in
@@ -333,7 +353,6 @@ private extension View {
     @ViewBuilder
     func platformListStyle() -> some View {
 #if os(macOS)
-        // It really is a sidebar now, so the sidebar style applies: rounded, softer selection.
         listStyle(.sidebar)
 #else
         listStyle(.plain)
@@ -403,8 +422,6 @@ extension StationsListView {
     fileprivate var filterButtons: some View {
         HStack(spacing: 2) {
             Menu {
-                // Buttons, not a Picker: on macOS a Picker inside a Menu opens as an empty popup
-                // that only fills in once the pointer moves over it.
                 Button {
                     sortBrand = .all
                     viewModel.showByBrand(.all)
@@ -425,30 +442,25 @@ extension StationsListView {
                             if sortBrand == .brand(brand.rawValue) {
                                 Image(systemName: "checkmark")
                             } else {
-                                // Pre-rounded bitmap: .original keeps the brand colours, and both
-                                // UIKit and AppKit menus need the size baked into the image.
                                 (brand.roundedMenuImage() ?? brand.image).renderingMode(.original)
                             }
                         }
                     }
                 }
             } label: {
-                filterChip(icon: "line.3.horizontal.decrease",
+                filterChip(icon: "fuelpump",
                            title: isBrandFiltered ? brandTitle : nil,
                            isActive: isBrandFiltered)
             }
             
             Menu {
-                // Two independent groups in one menu: the fuel you are pricing, and the order.
-                // Built from Buttons rather than Pickers because a Picker flattens its sections
-                // inside a menu, which leaves the options unlabelled.
                 Section {
                     ForEach(FuelType.allCases, id: \.self) { fuel in
                         Button {
                             viewModel.showFuel(fuel)
                         } label: {
                             Label(fuel.name,
-                                  systemImage: viewModel.selectedFuel == fuel ? "checkmark" : "fuelpump")
+                                  systemImage: viewModel.selectedFuel == fuel ? "checkmark" : "drop")
                         }
                     }
                 } header: {
@@ -467,14 +479,31 @@ extension StationsListView {
                     Text("listView.sort.title".translated)
                 }
             } label: {
-                // The fuel is always named — there is no "no fuel" state, so it is a label of what
-                // you are looking at rather than a filter that is on or off. Only the ordering
-                // lights the pill up, and only when it is not the default.
                 filterChip(icon: viewModel.sortOrder.icon,
                            title: viewModel.selectedFuel.tag,
                            isActive: viewModel.sortOrder != .nearest)
             }
+            
+            appearanceMenu
         }
+    }
+    
+    /// Icon only, and lit up only while the appearance is being overridden — following the system
+    /// is the default, not a filter the user has switched on.
+    fileprivate var appearanceMenu: some View {
+        Menu {
+            ForEach(ThemePreference.allCases) { option in
+                Button {
+                    appearance = option
+                } label: {
+                    Label(option.title,
+                          systemImage: appearance == option ? "checkmark" : option.icon)
+                }
+            }
+        } label: {
+            filterChip(icon: appearance.icon, title: nil, isActive: appearance != .system)
+        }
+        .accessibilityLabel("appearance.title".translated)
     }
     
     /// Icon only while the filter is at its default, icon plus value once it is not: the bar has

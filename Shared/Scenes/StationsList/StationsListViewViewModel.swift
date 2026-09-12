@@ -201,6 +201,8 @@ final class StationsListViewViewModel {
     private var servicesStationsAPI: ServiceStationsAPI
     
     private var kMaxLenght = 200
+    /// Searchable form of `allMunicipios`, index for index.
+    private var municipioSearchKeys: [String] = []
     private var fetchTask: Task<Void, Never>?
     
     let defaults: UserDefaults = UserDefaults.standard
@@ -219,6 +221,15 @@ final class StationsListViewViewModel {
     var isLoading: Bool = false
     var navigationTitle: String?
     var isLoaded: Bool = false
+    
+    /// From launch until there is a list to show: first waiting for a position, then for the
+    /// 12,2 MB the ministry serves uncompressed. `isLoading` alone was false during that first
+    /// stretch — it only goes up once the download starts — so the app opened on a bare screen
+    /// with nothing but a toolbar on it.
+    var isPreparing: Bool {
+        stations.isEmpty && !isLoaded
+    }
+    
     var stations: [Station] = []
     var favorites: [Station] = []
     /// The fuel every price comparison refers to. There is no "none": one is always selected.
@@ -274,7 +285,6 @@ final class StationsListViewViewModel {
     func favoriteStationTapAction(_ station: Station) {
         favorites = FavoriteStations.manageFavorite(station)
         let isFav = favorites.contains(where: { $0.id == station.id })
-        // update both the visible list and the full data set so the flag survives a re-filter
         if let index = stations.firstIndex(where: { $0.id == station.id }) {
             stations[index].isFav = isFav
         }
@@ -287,8 +297,35 @@ final class StationsListViewViewModel {
         if text.isEmpty {
             return allMunicipios
         } else {
-            return allMunicipios.filter { $0.contains(text) }
+            return zip(allMunicipios, municipioSearchKeys)
+                .filter { $0.1.contains(text) }
+                .map(\.0)
         }
+    }
+    
+    /// A municipality's name plus the way people actually type it.
+    ///
+    /// The ministry publishes the article at the end, in brackets — "Rozas de Madrid (Las)",
+    /// "Coruña (A)", "Alcora (l')" — which is how a gazetteer sorts names, not how anyone writes
+    /// them. 268 of the 3.261 municipalities come that way, and searching "Las Rozas" found none
+    /// of them: you had to know to type "Rozas". Both orders go into one key, so either works.
+    ///
+    /// The bracketed part is prepended whatever it is, without checking it against a list of
+    /// articles. 17 of the 18 suffixes in the data are articles; the odd one out is
+    /// "Noáin (Elortzibar)", a co-official Basque name, and making that searchable too is a gain
+    /// rather than a bug.
+    static func municipioSearchKey(_ name: String) -> String {
+        guard name.hasSuffix(")"), let open = name.lastIndex(of: "(") else {
+            return name
+        }
+        let article = name[name.index(after: open)..<name.index(before: name.endIndex)]
+            .trimmingCharacters(in: .whitespaces)
+        let base = name[name.startIndex..<open].trimmingCharacters(in: .whitespaces)
+        guard !article.isEmpty, !base.isEmpty else {
+            return name
+        }
+        let separator = article.hasSuffix("'") ? "" : " "
+        return "\(name) \(article)\(separator)\(base)"
     }
     
     func didTapAdButton() {
@@ -303,8 +340,8 @@ final class StationsListViewViewModel {
         isLoading = true
         allStations = []
         allMunicipios = []
+        municipioSearchKeys = []
         stations = []
-        // Fuel, order and brand survive: a refresh reloads prices, it is not a "start over".
         currentCity = nil
         
         fetchTask?.cancel()
@@ -314,16 +351,14 @@ final class StationsListViewViewModel {
                 isLoading = false
                 adViewSeen = defaults.bool(forKey: "stationsView.adSeen")
             }
-            // Typed throws: without the annotation the catch block widens to `any Error`.
             do throws(G4OError) {
                 let stations = try await servicesStationsAPI.getAllStations()
                 guard !Task.isCancelled else {
                     return
                 }
-                // The decode already happened off the main actor inside the service; the heavy
-                // grouping here is cheap enough not to warrant leaving the actor again.
                 allStations = stations
                 allMunicipios = stations.map(\.municipio).unique().sorted()
+                municipioSearchKeys = allMunicipios.map(Self.municipioSearchKey)
                 favorites = refreshedFavorites(with: stations)
                 refresh()
             } catch {
@@ -411,7 +446,8 @@ extension StationsListViewViewModel {
         guard let currentCity else {
             return true
         }
-        return station.municipio.contains(currentCity) || station.provincia.contains(currentCity)
+        return Self.municipioSearchKey(station.municipio).contains(currentCity)
+            || station.provincia.contains(currentCity)
     }
     
     private func matchesBrand(_ station: Station) -> Bool {
