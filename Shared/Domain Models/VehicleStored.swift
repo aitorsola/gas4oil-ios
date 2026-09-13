@@ -9,8 +9,38 @@ import Foundation
 
 enum FuelType: Codable, CaseIterable {
     case gas95
+    case gas95Premium
     case gas98
     case diesel
+    case dieselPremium
+    case glp
+}
+
+extension FuelType {
+    
+    var storageKey: String {
+        switch self {
+        case .gas95:
+            return "gas95"
+        case .gas95Premium:
+            return "gas95Premium"
+        case .gas98:
+            return "gas98"
+        case .diesel:
+            return "diesel"
+        case .dieselPremium:
+            return "dieselPremium"
+        case .glp:
+            return "glp"
+        }
+    }
+    
+    init?(storageKey: String) {
+        guard let match = FuelType.allCases.first(where: { $0.storageKey == storageKey }) else {
+            return nil
+        }
+        self = match
+    }
 }
 
 struct VehicleStored: Codable, Equatable {
@@ -19,8 +49,6 @@ struct VehicleStored: Codable, Equatable {
     var capacity: String
     var fuel: FuelType
     
-    /// Tank size in litres, or `nil` when what was typed is not a usable number.
-    /// Accepts both `55` and `55,5`, since the keyboard offers the locale's separator.
     var capacityLitres: Double? {
         let normalised = capacity
             .replacingOccurrences(of: ",", with: ".")
@@ -31,7 +59,6 @@ struct VehicleStored: Codable, Equatable {
         return value
     }
     
-    /// Capacity is the only field the app actually computes with; make and model are labels.
     var isValid: Bool {
         capacityLitres != nil
     }

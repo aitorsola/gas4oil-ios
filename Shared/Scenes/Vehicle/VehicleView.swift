@@ -9,9 +9,7 @@ import SwiftUI
 
 struct VehicleView: View {
     
-    /// Read-only: the screen uses the loaded stations to price a tankful.
     let stationsViewModel: StationsListViewViewModel
-    /// Lets the stations list pick up the new capacity without waiting for a reload.
     var onSave: (() -> Void)?
     
     @State private var viewModel = DefaultVehicleViewViewModel()
@@ -58,37 +56,15 @@ struct VehicleView: View {
     }
 }
 
-// MARK: - Payoff
-
 private extension VehicleView {
     
-    /// The screen used to be a form that gave nothing back: you typed a tank size and the result
-    /// only ever appeared on the stations tab. This puts the answer where the question is asked.
     @ViewBuilder
     var fillCostSection: some View {
         Section {
-            if let cost = viewModel.fillCost(using: stationsViewModel.stations) {
-                VStack(alignment: .leading, spacing: 10) {
-                    Text("myVehicle.fill.title".translated)
-                        .font(.customSize(13))
-                        .foregroundStyle(.secondary)
-                    HStack(alignment: .firstTextBaseline, spacing: 6) {
-                        Text(cost.cheapest.asEuros)
-                            .font(.customSize(32, weight: .bold, design: .rounded))
-                            .foregroundStyle(.green)
-                        Text("—")
-                            .foregroundStyle(.secondary)
-                        Text(cost.priciest.asEuros)
-                            .font(.customSize(22, weight: .semibold, design: .rounded))
-                            .foregroundStyle(.secondary)
-                    }
-                    Text("myVehicle.fill.cheapestAt".translated(cost.cheapestStation.brandName,
-                                                               cost.cheapestStation.municipio.capitalized))
-                        .font(.customSize(13))
-                        .foregroundStyle(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-                .padding(.vertical, 4)
+            if let cost = viewModel.fillCost(using: FillCost.candidates(from: stationsViewModel.stations)) {
+                FillCostCard(cost: cost)
+                    .listRowInsets(EdgeInsets(top: 6, leading: 6, bottom: 6, trailing: 6))
+                    .listRowBackground(Color.clear)
             } else {
                 Label("myVehicle.fill.unavailable".translated, systemImage: "fuelpump.slash")
                     .font(.customSize(14))
@@ -117,20 +93,20 @@ private extension VehicleView {
     }
 }
 
-// MARK: - Form
-
 private extension VehicleView {
     
     var vehicleSection: some View {
         Section {
             LabeledRow(icon: "tag.fill", title: "myVehicle.brand.placeholder".translated) {
-                TextField("myVehicle.brand.example".translated, text: $viewModel.vehicleData.brand)
+                PromptField(prompt: "myVehicle.brand.example".translated,
+                            text: $viewModel.vehicleData.brand)
                     .focused($focusedField, equals: .brand)
                     .submitLabel(.next)
                     .onSubmit { focusedField = .model }
             }
             LabeledRow(icon: "car.fill", title: "myVehicle.model.placeholder".translated) {
-                TextField("myVehicle.model.example".translated, text: $viewModel.vehicleData.model)
+                PromptField(prompt: "myVehicle.model.example".translated,
+                            text: $viewModel.vehicleData.model)
                     .focused($focusedField, equals: .model)
                     .submitLabel(.next)
                     .onSubmit { focusedField = .capacity }
@@ -154,13 +130,12 @@ private extension VehicleView {
             }
             LabeledRow(icon: "drop.fill", title: "myVehicle.capacity.placeholder".translated) {
                 HStack(spacing: 4) {
-                    TextField("myVehicle.capacity.example".translated,
-                              text: $viewModel.vehicleData.capacity)
+                    PromptField(prompt: "myVehicle.capacity.example".translated,
+                                text: $viewModel.vehicleData.capacity)
 #if os(iOS)
                         .keyboardType(.decimalPad)
 #endif
                         .focused($focusedField, equals: .capacity)
-                        .multilineTextAlignment(.trailing)
                     Text("myVehicle.capacity.unit".translated)
                         .foregroundStyle(.secondary)
                 }
@@ -177,9 +152,6 @@ private extension VehicleView {
         }
     }
     
-    /// Save and Remove live in separate sections on purpose: sharing a card gave them equal
-    /// weight, and the row separator between them was inset to wherever the centred label began,
-    /// because that is where iOS measures a row's content from.
     @ViewBuilder
     var actionsSection: some View {
         Section {
@@ -195,7 +167,7 @@ private extension VehicleView {
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
             .tint(.orange)
-            .frame(maxWidth: 420)
+            .buttonWidth()
             .disabled(!viewModel.vehicleData.isValid)
             .listRowBackground(Color.clear)
             .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
@@ -215,8 +187,22 @@ private extension VehicleView {
     }
 }
 
-/// Native label/content row. A hand-rolled `HStack` here fought the macOS form's own label
-/// column, which pushed the labels outside the window.
+private struct PromptField: View {
+    
+    let prompt: String
+    @Binding var text: String
+    
+    var body: some View {
+        TextField("", text: $text, prompt: Text(prompt))
+            .labelsHidden()
+            .multilineTextAlignment(.trailing)
+#if os(macOS)
+            .textFieldStyle(.roundedBorder)
+            .frame(maxWidth: 180)
+#endif
+    }
+}
+
 private struct LabeledRow<Content: View>: View {
     
     let icon: String
@@ -238,8 +224,6 @@ private struct LabeledRow<Content: View>: View {
 
 private extension View {
     
-    /// macOS forms need the grouped style to get the card look, and a width cap so the rows do
-    /// not run the whole width of a desktop window.
     @ViewBuilder
     func platformFormStyle() -> some View {
 #if os(macOS)
@@ -251,7 +235,15 @@ private extension View {
 #endif
     }
     
-    /// `listSectionSpacing` is unavailable on macOS, where the default gap is already small.
+    @ViewBuilder
+    func buttonWidth() -> some View {
+#if os(macOS)
+        frame(maxWidth: .infinity)
+#else
+        frame(maxWidth: 420)
+#endif
+    }
+    
     @ViewBuilder
     func tightSectionSpacing() -> some View {
 #if os(iOS)

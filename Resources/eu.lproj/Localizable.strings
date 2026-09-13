@@ -6,6 +6,7 @@
 "common.done" = "Eginda";
 "common.gettingLocation" = "Kokapena lortzen";
 "common.fuelType" = "Erregaia";
+"common.retry" = "Berriro saiatu";
 
 "appearance.title" = "Itxura";
 "appearance.system" = "Sistemaren arabera";
@@ -15,12 +16,21 @@
 "fuel.95" = "95 gasolina";
 "fuel.98" = "98 gasolina";
 "fuel.diesel" = "Diesela";
+"fuel.diesel.short" = "Diesela";
+"fuel.glp" = "GLP (autogasa)";
+"fuel.gas95Premium" = "95 gasolina+";
+"fuel.dieselPremium" = "Diesel+";
 
 "station.schedule" = "Ordutegia";
 "station.fillPrice" = "Deposituaren prezioa:";
 
 "landingView.title.discover" = "Aurkitu zerbitzuguneak eta ikusi haien eguneratutako prezioa";
+"landingView.benefit.nearby" = "Zure ingurukoak, distantziaren arabera ordenatuta";
+"landingView.benefit.prices" = "Ministerioaren prezio ofizialak, egunero eguneratuta";
+"landingView.benefit.favorites" = "Gorde ohikoenak gogokoetan";
+"landingView.privacy" = "App-a irekita duzun bitartean bakarrik erabiltzen da, eta ez da zure gailutik ateratzen.";
 "landingView.button.requestLocationPermission" = "Eskatu kokapen baimena";
+"landingView.button.notNow" = "Orain ez";
 "landingView.button.locationDenied" = "Kokapen baimena ukatuta";
 
 "mainTab.stationsTabTitle" = "Guneak";
@@ -29,6 +39,11 @@
 
 "listView.button.requestLocation" = "Inguruko guneak";
 "listView.search.placeholder" = "Bilatu herriaren arabera";
+"listView.city.prompt" = "Zein herritan zaude?";
+"listView.city.hint" = "Kokapenik gabe ezin dugu hurbiltasunaren arabera ordenatu. Aukeratu zure herria eta bertako prezioak erakutsiko dizkizugu.";
+"listView.city.suggested" = "Bilatuenak diren hiriak";
+"listView.city.useLocation" = "Erabili nire kokapena";
+"listView.city.noMatches" = "Ez dugu izen horretako herririk aurkitu.";
 "listView.empty" = "Ez dago zerbitzugunerik erakusteko";
 "listView.sort.title" = "Ordenatu honela";
 "listView.sortOrder.near" = "Hurbiltasuna";
@@ -49,7 +64,15 @@
 "listView.station.addFavorite" = "Gehitu gogokoetara";
 "listView.station.removeFavorite" = "Kendu gogokoetatik";
 "listView.ad.title" = "Zer egin dezakezu?";
-"listView.ad.description" = "Aurkitu gehien interesatzen zaizkizun zerbitzuguneak. Iragazi markaren edo erregai motaren arabera, edo ordenatu prezioz nahiz hurbiltasunez.\nGogokoen zerrendan ere gorde ditzakezu nahiago dituzunak.";
+"listView.ad.button" = "Hasi";
+"listView.ad.sort.title" = "Ordenatu nahi duzun eran";
+"listView.ad.sort.detail" = "Hurbiltasunaren edo prezioaren arabera.";
+"listView.ad.filter.title" = "Iragazi markaren arabera";
+"listView.ad.filter.detail" = "Eta aukeratu zure autoaren erregaia.";
+"listView.ad.search.title" = "Bilatu herriaren arabera";
+"listView.ad.search.detail" = "Idatzi Espainiako edozein udalerri.";
+"listView.ad.favorites.title" = "Gorde gogokoak";
+"listView.ad.favorites.detail" = "Gehien erabiltzen dituzunak, beti eskura.";
 
 "favorites.title" = "Gogokoak";
 "favorites.empty" = "Oraindik ez duzu gogoko zerbitzugunerik";
@@ -76,7 +99,7 @@
 "myVehicle.ad.description" = "Gehitu ibilgailu bat eta aldez aurretik jakingo duzu gune bakoitzean depositua betetzeak zenbat balio duen.";
 "myVehicle.fill.title" = "Depositua betetzeak balio du";
 "myVehicle.fill.cheapestAt" = "Merkeena, %@ (%@).";
-"myVehicle.fill.footer" = "Orain kargatuta dituzun guneekin kalkulatua.";
+"myVehicle.fill.footer" = "Zure inguruko 50 km-ko estazioen artean.";
 "myVehicle.fill.unavailable" = "Oraindik ez dago erregai honekin kargatutako gunerik.";
 
 "error.invalidURL" = "Zerbitzuaren helbidea ez da baliozkoa";

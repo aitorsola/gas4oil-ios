@@ -8,10 +8,7 @@
 import SwiftUI
 import MapKit
 
-/// How the list is ordered. Which fuel it refers to is a separate axis (`FuelType`), because
-/// "what does my car take" and "nearest or cheapest" are different questions — folding them into
-/// one nine-case enum made the control unable to say which of the two you had changed.
-enum StationSort: CaseIterable, Hashable {
+enum StationSort: String, CaseIterable, Hashable {
     case nearest
     case cheapest
     case priciest
@@ -45,22 +42,33 @@ extension FuelType {
         switch self {
         case .gas95:
             return "fuel.95".translated
+        case .gas95Premium:
+            return "fuel.gas95Premium".translated
         case .gas98:
             return "fuel.98".translated
         case .diesel:
             return "fuel.diesel".translated
+        case .dieselPremium:
+            return "fuel.dieselPremium".translated
+        case .glp:
+            return "fuel.glp".translated
         }
     }
     
-    /// Short form for the toolbar button.
     var tag: String {
         switch self {
         case .gas95:
             return "95"
+        case .gas95Premium:
+            return "95+"
         case .gas98:
             return "98"
         case .diesel:
-            return "fuel.diesel".translated
+            return "fuel.diesel.short".translated
+        case .dieselPremium:
+            return "fuel.dieselPremium".translated
+        case .glp:
+            return "GLP"
         }
     }
 }
@@ -74,10 +82,11 @@ struct StationsListView: View {
     
     let viewModel: StationsListViewViewModel
     
-    @State private var sortBrand: FuelBrandSortType = .all
     @State private var queryString: String = ""
-    /// Drives the search field so it can be collapsed once a town has been chosen.
     @State private var isSearchPresented: Bool = false
+    @State private var selectedStation: Station?
+    @State private var showOnboarding: Bool = false
+    @State private var cityQuery: String = ""
 #if os(macOS)
     @State private var selectedStationID: Station.ID?
 #endif
@@ -87,7 +96,7 @@ struct StationsListView: View {
     @AppStorage(ThemePreference.storageKey) private var appearance: ThemePreference = .system
     
     var body: some View {
-        if !viewModel.locationAllowed {
+        if !viewModel.locationAllowed && !viewModel.skippedLocation {
             landing
         } else {
             ZStack {
@@ -117,57 +126,127 @@ struct StationsListView: View {
                     NavigationStack {
                         stationsScreen
                     }
-#endif
-                    if !viewModel.adViewSeen {
-                        draggableView()
+                    .overlay(alignment: .bottomTrailing) {
+                        if !viewModel.needsCityChoice {
+                            locationButton
+                        }
                     }
+#endif
                 }
+            }
+            .onChange(of: viewModel.isLoaded, initial: true) { _, loaded in
+                if loaded && !viewModel.adViewSeen {
+                    showOnboarding = true
+                }
+            }
+            .sheet(isPresented: $showOnboarding, onDismiss: { viewModel.didTapAdButton() }) {
+                onboarding
             }
 #if os(iOS)
             .onReceive(NotificationCenter.default.publisher(for: .updateStations)) { _ in
-                viewModel.requestLocation()
+                Task {
+                    await viewModel.reload()
+                }
             }
 #endif
         }
     }
 }
 
-// MARK: - Screens
-
 private extension StationsListView {
     
     var landing: some View {
-        VStack(spacing: 10) {
-            Spacer()
-            VStack(spacing: 20) {
-                HStack {
-                    Image("icn_main_logo", bundle: nil)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 40, height: 40, alignment: .center)
-                        .clipped()
-                    Text("Gas4Oil").font(.customSize(50))
-                }
-                Text("landingView.title.discover".translated)
-                    .font(.customSize(20)).multilineTextAlignment(.center)
+        ScrollView {
+        VStack(spacing: 0) {
+            Spacer(minLength: 12)
+            ZStack {
+                Circle()
+                    .fill(
+                        RadialGradient(colors: [Color.orange.opacity(0.22), .clear],
+                                       center: .center, startRadius: 0, endRadius: 105)
+                    )
+                    .frame(width: 210, height: 210)
+                Image("icn_main_logo", bundle: nil)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(height: 96)
             }
-            Spacer()
-            Gas4OilButton(title: "landingView.button.requestLocationPermission".translated,
-                          image: nil,
-                          isDisabled: false) {
+            .accessibilityHidden(true)
+            Text("Gas4Oil")
+                .font(.customSize(34, weight: .bold, design: .rounded))
+                .padding(.top, 4)
+            Text("landingView.title.discover".translated)
+                .font(.customSize(17))
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.horizontal, 24)
+                .padding(.top, 8)
+            VStack(alignment: .leading, spacing: 14) {
+                landingBenefit("location.fill", "landingView.benefit.nearby")
+                landingBenefit("eurosign.circle.fill", "landingView.benefit.prices")
+                landingBenefit("star.fill", "landingView.benefit.favorites")
+            }
+            .padding(.top, 24)
+            .padding(.horizontal, 8)
+            Spacer(minLength: 24)
+            Button {
                 viewModel.requestLocation()
+            } label: {
+                Text("landingView.button.requestLocationPermission".translated)
+                    .font(.customSize(17, weight: .semibold))
+                    .frame(maxWidth: .infinity)
             }
-            Spacer()
+            .buttonStyle(.borderedProminent)
+            .controlSize(.large)
+            .tint(.orange)
+            .padding(.horizontal, 24)
+            Button("landingView.button.notNow".translated) {
+                viewModel.continueWithoutLocation()
+            }
+            .buttonStyle(.plain)
+            .font(.customSize(16, weight: .medium))
+            .foregroundStyle(.secondary)
+            .padding(.top, 16)
+            Text("landingView.privacy".translated)
+                .font(.customSize(13))
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.horizontal, 32)
+                .padding(.top, 14)
+                .padding(.bottom, 28)
         }
-        .padding()
+        .frame(maxWidth: .infinity, minHeight: minLandingHeight)
+        }
+        .scrollBounceBehavior(.basedOnSize)
+        .hidingTabBar()
     }
     
-    /// Cells the size of the real ones, enough of them to reach the bottom of the screen.
-    ///
-    /// In the same `List` the real rows land in, so they inherit its insets and its safe area: a
-    /// bare `VStack` here sat under the status bar and behind the tab bar, because the `TabView`
-    /// above ignores the safe area. Three stretched cells also read as three oversized rows
-    /// rather than as a list about to arrive.
+    var minLandingHeight: CGFloat {
+#if os(iOS)
+        (UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .first?.screen.bounds.height ?? 700) - 130
+#else
+        0
+#endif
+    }
+    
+    func landingBenefit(_ symbol: String, _ key: String) -> some View {
+        HStack(spacing: 14) {
+            Image(systemName: symbol)
+                .font(.customSize(17, weight: .semibold))
+                .foregroundStyle(.orange)
+                .frame(width: 30)
+            Text(key.translated)
+                .font(.customSize(16))
+                .fixedSize(horizontal: false, vertical: true)
+            Spacer(minLength: 0)
+        }
+        .padding(.horizontal, 24)
+    }
+    
     var loadingPlaceholder: some View {
         skeletonRows
             .accessibilityElement(children: .ignore)
@@ -175,9 +254,8 @@ private extension StationsListView {
     }
     
     private var skeletonRows: some View {
-        List(0..<5, id: \.self) { _ in
+        List(0..<4, id: \.self) { _ in
             FakeView()
-                .frame(height: 200)
                 .listRowSeparator(.hidden)
         }
         .listStyle(.plain)
@@ -187,9 +265,6 @@ private extension StationsListView {
         }
     }
     
-    /// The `TabView` above ignores the safe area, so nothing here reserves room for the status
-    /// bar: the real list only clears it because its navigation bar has a title to lay out. Read
-    /// off the window rather than guessed, so a notch and a dynamic island both come out right.
     private static var statusBarInset: CGFloat {
 #if os(iOS)
         UIApplication.shared.connectedScenes
@@ -200,26 +275,210 @@ private extension StationsListView {
 #endif
     }
     
-    /// Split out of `body`: inline, the whole screen was one expression the type checker gave up on.
+    var fillCost: FillCost? {
+        guard let vehicle = VehicleFavorite.vehicleData, vehicle.isValid else {
+            return nil
+        }
+        return vehicle.fillCost(using: FillCost.candidates(from: viewModel.stations))
+    }
+    
     var stationsScreen: some View {
         VStack(spacing: 15) {
 #if os(macOS)
             macSearchField
 #endif
-            if viewModel.isLoaded && viewModel.stations.isEmpty {
+            if viewModel.isLoaded && viewModel.needsCityChoice {
+                cityPrompt
+            } else if viewModel.isLoaded && viewModel.stations.isEmpty {
                 Spacer()
-                Text("listView.empty".translated)
-                    .font(.customSize(20))
-                    .foregroundColor(.secondary)
+                VStack(spacing: 16) {
+                    Text(viewModel.loadError ?? "listView.empty".translated)
+                        .font(.customSize(20))
+                        .multilineTextAlignment(.center)
+                        .foregroundColor(.secondary)
+                    if viewModel.loadError != nil {
+                        Gas4OilButton(title: "common.retry".translated,
+                                      image: nil,
+                                      isDisabled: false) {
+                            viewModel.retryLoading()
+                        }
+                    }
+                }
+                .padding(.horizontal, 20)
                 Spacer()
             }
-            stationList
+            if !(viewModel.isLoaded && viewModel.needsCityChoice) {
+                stationList
+            }
         }
-
     }
     
-    /// The platform-specific list, wrapped so the shared modifiers below have a receiver:
-    /// chaining them straight after an `#endif` leaves them dangling.
+    var locationButton: some View {
+        Button {
+            viewModel.useCurrentLocation()
+        } label: {
+            Image(systemName: "location.fill")
+                .font(.customSize(20, weight: .semibold))
+                .foregroundStyle(.white)
+                .frame(width: 56, height: 56)
+                .background(Color.orange, in: Circle())
+                .shadow(color: .black.opacity(0.22), radius: 8, y: 4)
+        }
+        .buttonStyle(.plain)
+        .padding(.trailing, 20)
+        .padding(.bottom, 12)
+        .accessibilityLabel("listView.city.useLocation".translated)
+    }
+    
+    var cityPrompt: some View {
+        ScrollView {
+            VStack(spacing: 0) {
+                ZStack {
+                    Circle()
+                        .fill(Color.orange.opacity(0.14))
+                        .frame(width: 84, height: 84)
+                    Image(systemName: "mappin.and.ellipse")
+                        .font(.customSize(34, weight: .semibold))
+                        .foregroundStyle(.orange)
+                }
+                .padding(.top, 28)
+                Text("listView.city.prompt".translated)
+                    .font(.customSize(22, weight: .bold))
+                    .multilineTextAlignment(.center)
+                    .padding(.top, 18)
+                Text("listView.city.hint".translated)
+                    .font(.customSize(14))
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.top, 6)
+                    .padding(.horizontal, 8)
+                cityField
+                    .padding(.top, 22)
+                if cityQuery.isEmpty {
+                    suggestedCities
+                } else {
+                    cityMatches
+                }
+                Spacer(minLength: 20)
+                Button {
+                    viewModel.requestLocation()
+                } label: {
+                    HStack(spacing: 8) {
+                        Image(systemName: "location.fill")
+                        Text("listView.city.useLocation".translated)
+                    }
+                    .font(.customSize(15, weight: .semibold))
+                }
+                .buttonStyle(.plain)
+                .foregroundStyle(.orange)
+                .padding(.top, 24)
+                .padding(.bottom, 100)
+            }
+            .padding(.horizontal, 24)
+        }
+        .scrollDismissesKeyboard(.interactively)
+    }
+    
+    var cityField: some View {
+        HStack(spacing: 10) {
+            Image(systemName: "magnifyingglass")
+                .foregroundStyle(.secondary)
+            TextField("listView.search.placeholder".translated, text: $cityQuery)
+                .autocorrectionDisabled()
+                .submitLabel(.search)
+                .onSubmit { viewModel.showFuelByCity(cityQuery) }
+            if !cityQuery.isEmpty {
+                Button {
+                    cityQuery = ""
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundStyle(.secondary)
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 12)
+        .background(Color.gray.opacity(0.15), in: Capsule())
+    }
+    
+    var suggestedCities: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("listView.city.suggested".translated)
+                .font(.customSize(13, weight: .semibold))
+                .foregroundStyle(.secondary)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 104), spacing: 10)], spacing: 10) {
+                ForEach(viewModel.suggestedCities, id: \.self) { town in
+                    Button {
+                        choose(town)
+                    } label: {
+                        Text(town.capitalized)
+                            .font(.customSize(15, weight: .medium))
+                            .lineLimit(1)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 11)
+                            .background(Color.orange.opacity(0.12), in: Capsule())
+                            .foregroundStyle(.orange)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+        }
+        .padding(.top, 26)
+    }
+    
+    var cityMatches: some View {
+        let matches = viewModel.searchResults(text: cityQuery.lowercased()).prefix(8)
+        return VStack(spacing: 0) {
+            if matches.isEmpty {
+                Text("listView.city.noMatches".translated)
+                    .font(.customSize(14))
+                    .foregroundStyle(.secondary)
+                    .padding(.top, 28)
+            }
+            ForEach(Array(matches), id: \.self) { town in
+                Button {
+                    choose(town)
+                } label: {
+                    HStack(spacing: 12) {
+                        Image(systemName: "mappin.circle.fill")
+                            .font(.customSize(20))
+                            .foregroundStyle(.orange)
+                        VStack(alignment: .leading, spacing: 1) {
+                            Text(town.capitalized)
+                                .font(.customSize(16))
+                            if let province = viewModel.province(of: town) {
+                                Text(province.capitalized)
+                                    .font(.customSize(12))
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                        Spacer(minLength: 0)
+                        Image(systemName: "chevron.right")
+                            .font(.customSize(12, weight: .semibold))
+                            .foregroundStyle(.secondary)
+                    }
+                    .padding(.vertical, 11)
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                Divider()
+            }
+        }
+        .padding(.top, 12)
+    }
+    
+    func choose(_ town: String) {
+        cityQuery = ""
+#if os(iOS)
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder),
+                                        to: nil, from: nil, for: nil)
+#endif
+        viewModel.showFuelByCity(town)
+    }
+    
     @ViewBuilder
     var platformList: some View {
 #if os(macOS)
@@ -243,15 +502,21 @@ private extension StationsListView {
                 }
         }
 #else
-        List(viewModel.stations) { station in
-            ZStack(alignment: .leading) {
-                NavigationLink(value: station) { EmptyView() }.opacity(0)
-                getStationView(station)
+        List {
+            if let cost = fillCost {
+                FillCostCard(cost: cost)
+                    .listRowSeparator(.hidden)
+                    .listRowInsets(EdgeInsets(top: 10, leading: 16, bottom: 10, trailing: 16))
             }
-            .hidingOuterSeparators(isFirst: station.id == viewModel.stations.first?.id,
-                                   isLast: station.id == viewModel.stations.last?.id)
+            ForEach(viewModel.stations) { station in
+                getStationView(station)
+                    .contentShape(Rectangle())
+                    .onTapGesture { selectedStation = station }
+                    .hidingOuterSeparators(isFirst: station.id == viewModel.stations.first?.id,
+                                           isLast: station.id == viewModel.stations.last?.id)
+            }
         }
-        .navigationDestination(for: Station.self) { station in
+        .navigationDestination(item: $selectedStation) { station in
             MapView(station: station)
         }
 #endif
@@ -261,15 +526,12 @@ private extension StationsListView {
         searchableList
             .platformListStyle()
             .refreshable {
-                viewModel.requestLocation()
+                await viewModel.reload()
             }
             .navigationTitle(viewModel.navigationTitle ?? "")
             .sidebarSafeToolbar { filterButtons }
     }
     
-    /// macOS never rendered `.searchable`, in either the toolbar or `.sidebar` placement, so the
-    /// sidebar gets a plain field of its own. iOS keeps the system search, which brings the
-    /// suggestions list and the collapse-on-submit behaviour with it.
     @ViewBuilder
     var searchableList: some View {
 #if os(macOS)
@@ -285,9 +547,18 @@ private extension StationsListView {
 
 private extension View {
     
-    /// Toolbar items attached to a view inside the sidebar column render on the *left* of the
-    /// window, crowding the sidebar toggle and pushing the tab picker off centre. On macOS they
-    /// are attached to the split view instead; on iOS the list is the right place for them.
+    @ViewBuilder
+    func hidingTabBar() -> some View {
+#if os(iOS)
+        toolbar(.hidden, for: .tabBar)
+#else
+        self
+#endif
+    }
+}
+
+private extension View {
+    
     @ViewBuilder
     func sidebarSafeToolbar<Content: View>(@ViewBuilder content: () -> Content) -> some View {
 #if os(macOS)
@@ -302,10 +573,6 @@ private extension View {
     }
 }
 
-// MARK: - Search
-
-/// Pulled out of the view body as a modifier: inlined, the list plus its search modifiers formed
-/// one expression the type checker refused to finish.
 private struct TownSearch: ViewModifier {
     
     @Binding var query: String
@@ -330,9 +597,6 @@ private struct TownSearch: ViewModifier {
             }
     }
     
-    /// macOS puts a `.automatic` search field in the window toolbar, where it floats over the
-    /// detail pane; a list search belongs in the sidebar. And the `isPresented` binding drives
-    /// whether the field is *shown*, so passing it there hid the sidebar field altogether.
     @ViewBuilder
     private func searchField(_ content: Content) -> some View {
 #if os(macOS)
@@ -362,8 +626,6 @@ private extension View {
 
 #if os(macOS)
 
-// MARK: - Search (macOS)
-
 private extension StationsListView {
     
     var macSearchField: some View {
@@ -384,7 +646,6 @@ private extension StationsListView {
         .padding(.top, 8)
     }
     
-    /// Stand-in for `.searchSuggestions`, which only exists alongside `.searchable`.
     @ViewBuilder
     var suggestions: some View {
         let matches = viewModel.searchResults(text: queryString.lowercased())
@@ -412,37 +673,31 @@ private extension StationsListView {
 
 #endif
 
-// MARK: - Filters
-
 extension StationsListView {
     
-    /// Two buttons, each showing the filter it currently applies instead of a generic word.
-    /// They used to be bare `Picker`s: no background, no chevron, a tap target the size of the
-    /// text, and "Sort" listing nine flat options that mixed fuel with ordering.
     fileprivate var filterButtons: some View {
         HStack(spacing: 2) {
             Menu {
                 Button {
-                    sortBrand = .all
                     viewModel.showByBrand(.all)
                 } label: {
                     Label("listView.brand.all".translated,
                           systemImage: isBrandFiltered ? "fuelpump.fill" : "checkmark")
                 }
                 Divider()
-                ForEach(viewModel.allBrands, id: \.self) { brand in
+                ForEach(viewModel.brandOptions) { option in
                     Button {
-                        let selection = FuelBrandSortType.brand(brand.rawValue)
-                        sortBrand = selection
-                        viewModel.showByBrand(selection)
+                        viewModel.showByBrand(.brand(option.key))
                     } label: {
                         Label {
-                            Text(brand.displayName)
+                            Text(option.title)
                         } icon: {
-                            if sortBrand == .brand(brand.rawValue) {
+                            if viewModel.currentSortBrand == .brand(option.key) {
                                 Image(systemName: "checkmark")
+                            } else if let logo = option.logo {
+                                (logo.roundedMenuImage() ?? logo.image).renderingMode(.original)
                             } else {
-                                (brand.roundedMenuImage() ?? brand.image).renderingMode(.original)
+                                Image(systemName: "fuelpump")
                             }
                         }
                     }
@@ -488,8 +743,6 @@ extension StationsListView {
         }
     }
     
-    /// Icon only, and lit up only while the appearance is being overridden — following the system
-    /// is the default, not a filter the user has switched on.
     fileprivate var appearanceMenu: some View {
         Menu {
             ForEach(ThemePreference.allCases) { option in
@@ -506,8 +759,6 @@ extension StationsListView {
         .accessibilityLabel("appearance.title".translated)
     }
     
-    /// Icon only while the filter is at its default, icon plus value once it is not: the bar has
-    /// little room, and the state only needs spelling out when it is actually filtering.
     fileprivate func filterChip(icon: String, title: String?, isActive: Bool) -> some View {
         HStack(spacing: 5) {
             Image(systemName: icon)
@@ -527,72 +778,49 @@ extension StationsListView {
     }
     
     fileprivate var isBrandFiltered: Bool {
-        if case .brand = sortBrand {
+        if case .brand = viewModel.currentSortBrand {
             return true
         }
         return false
     }
     
     fileprivate var brandTitle: String {
-        if case .brand(let brand) = sortBrand {
-            return brand.capitalized
+        guard case .brand(let key) = viewModel.currentSortBrand else {
+            return "listView.brand.all".translated
         }
-        return "listView.brand.all".translated
+        return viewModel.brandOptions.first { $0.key == key }?.title ?? key.capitalized
     }
     
-    fileprivate func draggableView() -> some View {
+    fileprivate var onboarding: some View {
         AdView(title: "listView.ad.title".translated,
-               descr: "listView.ad.description".translated,
-               buttonTitle: "OK",
-               image: "icn_car") {
-            withAnimation(.spring()) {
-                offsetHeight.height = kOffsetHeightWhenHidden
-                viewModel.didTapAdButton()
-            }
+               tips: [OnboardingTip(symbol: "arrow.up.arrow.down",
+                                    title: "listView.ad.sort.title".translated,
+                                    detail: "listView.ad.sort.detail".translated),
+                      OnboardingTip(symbol: "fuelpump",
+                                    title: "listView.ad.filter.title".translated,
+                                    detail: "listView.ad.filter.detail".translated),
+                      OnboardingTip(symbol: "magnifyingglass",
+                                    title: "listView.ad.search.title".translated,
+                                    detail: "listView.ad.search.detail".translated),
+                      OnboardingTip(symbol: "star",
+                                    title: "listView.ad.favorites.title".translated,
+                                    detail: "listView.ad.favorites.detail".translated)],
+               buttonTitle: "listView.ad.button".translated) {
+            showOnboarding = false
         }
-               .offset(CGSize(width: 0,
-                              height: offsetHeight.height))
-               .gesture(
-                DragGesture()
-                    .onChanged { value in
-                        let height = value.translation.height
-                        self.offsetHeight.height = height < 0 ? value.translation.height * 0.2 + kOffsetHeightWhenShow : height + kOffsetHeightWhenShow
-                    }
-                    .onEnded { value in
-                        withAnimation(.spring()) {
-                            offsetHeight.height = value.translation.height > kOffsetHeightWhenShow ? kOffsetHeightWhenHidden : kOffsetHeightWhenShow
-                        }
-                    }
-               )
+        .presentationDetents([.medium, .large])
+        .presentationDragIndicator(.visible)
     }
     
     private func getStationView(_ station: Station) -> StationView {
         var fillPrice: Double?
         let vehicle = VehicleFavorite.vehicleData
-        let formatter = NumberFormatter()
-        formatter.locale = Locale.current
-        formatter.numberStyle = .decimal
-        formatter.decimalSeparator = ","
-        formatter.groupingSeparator = ""
-        if let vehicle = vehicle {
-            switch vehicle.fuel {
-            case .gas95:
-                let fuelPrice = formatter.number(from: station.gasolina95E5)?.doubleValue ?? 0
-                let vehicleCapacity = formatter.number(from: vehicle.capacity)?.doubleValue ?? 0
-                fillPrice = (fuelPrice * vehicleCapacity)
-            case .gas98:
-                let fuelPrice = formatter.number(from: station.gasolina98E5) ?? 0
-                let vehicleCapacity = formatter.number(from: vehicle.capacity) ?? 0
-                fillPrice = fuelPrice.doubleValue * vehicleCapacity.doubleValue
-            case .diesel:
-                let fuelPrice = formatter.number(from: station.gasoleoA) ?? 0
-                let vehicleCapacity = formatter.number(from: vehicle.capacity) ?? 0
-                fillPrice = fuelPrice.doubleValue * vehicleCapacity.doubleValue
-            }
+        if let vehicle,
+           let unitPrice = station.price(for: vehicle.fuel),
+           let litres = vehicle.capacityLitres {
+            fillPrice = unitPrice * litres
         }
-        return StationView(price95: station.gasolina95E5,
-                           price98: station.gasolina98E5,
-                           priceDiesel: station.gasoleoA,
+        return StationView(prices: PriceColumn.columns(for: station),
                            brand: station.rotulo,
                            address: station.direccion,
                            schedule: station.horario,
@@ -606,12 +834,8 @@ extension StationsListView {
     }
 }
 
-// MARK: - Separators
-
 extension View {
     
-    /// A plain `List` draws a rule above its first row and below its last one, which reads as a
-    /// stray line floating against the background. Separators only belong *between* cells.
     func hidingOuterSeparators(isFirst: Bool, isLast: Bool) -> some View {
         self
             .listRowSeparator(isFirst ? .hidden : .visible, edges: .top)

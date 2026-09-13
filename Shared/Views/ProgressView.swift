@@ -9,7 +9,6 @@ import SwiftUI
 
 struct ProgressView: View {
     
-    // MARK: - Properties
     let title: String
     
     var body: some View {

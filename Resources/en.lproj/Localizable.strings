@@ -6,6 +6,7 @@
 "common.done" = "Done";
 "common.gettingLocation" = "Getting location";
 "common.fuelType" = "Fuel";
+"common.retry" = "Retry";
 
 "appearance.title" = "Appearance";
 "appearance.system" = "Match system";
@@ -15,12 +16,21 @@
 "fuel.95" = "Petrol 95";
 "fuel.98" = "Petrol 98";
 "fuel.diesel" = "Diesel";
+"fuel.diesel.short" = "Diesel";
+"fuel.glp" = "LPG (autogas)";
+"fuel.gas95Premium" = "Petrol 95+";
+"fuel.dieselPremium" = "Diesel+";
 
 "station.schedule" = "Schedule";
 "station.fillPrice" = "Fill price:";
 
 "landingView.title.discover" = "Find service stations and see their up-to-date prices";
+"landingView.benefit.nearby" = "Filling stations near you, sorted by distance";
+"landingView.benefit.prices" = "Official ministry prices, updated daily";
+"landingView.benefit.favorites" = "Keep the ones you use in favourites";
+"landingView.privacy" = "Only used while the app is open, and it never leaves your device.";
 "landingView.button.requestLocationPermission" = "Allow location access";
+"landingView.button.notNow" = "Not now";
 "landingView.button.locationDenied" = "Location permission denied";
 
 "mainTab.stationsTabTitle" = "Stations";
@@ -29,6 +39,11 @@
 
 "listView.button.requestLocation" = "Nearby stations";
 "listView.search.placeholder" = "Search by locality";
+"listView.city.prompt" = "Which locality are you in?";
+"listView.city.hint" = "Without a location we cannot sort by distance. Pick your town and we will show its prices.";
+"listView.city.suggested" = "Most searched cities";
+"listView.city.useLocation" = "Use my location";
+"listView.city.noMatches" = "No town matches that name.";
 "listView.empty" = "No stations to show";
 "listView.sort.title" = "Sort by";
 "listView.sortOrder.near" = "Nearest";
@@ -49,7 +64,15 @@
 "listView.station.addFavorite" = "Add to favorites";
 "listView.station.removeFavorite" = "Remove from favorites";
 "listView.ad.title" = "What can you do?";
-"listView.ad.description" = "Find the service stations that suit you best. Filter by brand, by fuel type, or sort by price or distance.\nYou can also keep the ones you like in your favorites list.";
+"listView.ad.button" = "Get started";
+"listView.ad.sort.title" = "Sort it your way";
+"listView.ad.sort.detail" = "By distance, lowest price or highest.";
+"listView.ad.filter.title" = "Filter by brand";
+"listView.ad.filter.detail" = "And pick the fuel your car takes.";
+"listView.ad.search.title" = "Search by locality";
+"listView.ad.search.detail" = "Type any town in Spain.";
+"listView.ad.favorites.title" = "Keep favourites";
+"listView.ad.favorites.detail" = "The ones you use most, always at hand.";
 
 "favorites.title" = "Favorites";
 "favorites.empty" = "No favorite stations yet";
@@ -76,7 +99,7 @@
 "myVehicle.ad.description" = "Add a vehicle and you will know in advance what a full tank costs at each station.";
 "myVehicle.fill.title" = "A full tank costs";
 "myVehicle.fill.cheapestAt" = "Cheapest at %@ (%@).";
-"myVehicle.fill.footer" = "Worked out from the stations you have loaded right now.";
+"myVehicle.fill.footer" = "Among the loaded stations within 50 km of you.";
 "myVehicle.fill.unavailable" = "No stations loaded with this fuel yet.";
 
 "error.invalidURL" = "The service address is not valid";

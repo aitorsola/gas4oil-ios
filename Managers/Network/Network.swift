@@ -49,10 +49,6 @@ extension G4OError: LocalizedError {
 
 final class Network: Sendable {
 
-    /// `sedeaplicaciones.minetur.gob.es` aborts the handshake when the client offers TLS 1.3, and it
-    /// only negotiates DHE/static-RSA cipher suites (no ECDHE). Capping the maximum version here is
-    /// what makes the request succeed; the lack of forward secrecy is covered by the ATS exception
-    /// declared in the Info.plist of each target.
     private static let session: URLSession = {
         let configuration = URLSessionConfiguration.default
         configuration.tlsMinimumSupportedProtocolVersion = .TLSv12

@@ -12,8 +12,6 @@ struct MapView: View {
     
     private let station: Station
     @State private var position: MapCameraPosition
-    /// Lets the controls live outside `.mapControls`, so they can be positioned inside the safe
-    /// area while the map itself stays full-bleed.
     @Namespace private var mapScope
     
     init(station: Station) {

@@ -7,55 +7,76 @@
 
 import SwiftUI
 
+struct OnboardingTip: Identifiable {
+    let symbol: String
+    let title: String
+    let detail: String
+    
+    var id: String { symbol }
+}
+
 struct AdView: View {
     
-    var title: String
-    var descr: String
-    var buttonTitle: String
-    var image: String
+    let title: String
+    let tips: [OnboardingTip]
+    let buttonTitle: String
     let buttonHandler: (() -> Void)?
     
     var body: some View {
-        VStack(spacing: 10) {
-            
-            DragBar()
-                .padding(.top, 15)
-            
-            Image(image)
-                .resizable()
-                .scaledToFill()
-                .frame(width: 40, height: 40)
-                .padding(.top, 20)
-            
+        VStack(spacing: 0) {
             Text(title)
-                .font(.customSize(40, weight: .medium))
-                .frame(maxWidth: .infinity)
-                .padding()
-            
-            Text(descr)
-                .font(.customSize(20, weight: .light))
-                .frame(maxWidth: .infinity)
-                .padding()
-            
-            Button(buttonTitle) {
-                buttonHandler?()
+                .font(.customSize(26, weight: .bold, design: .rounded))
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.top, 32)
+                .padding(.horizontal, 24)
+            VStack(alignment: .leading, spacing: 22) {
+                ForEach(tips) { tip in
+                    HStack(alignment: .top, spacing: 16) {
+                        Image(systemName: tip.symbol)
+                            .font(.customSize(20, weight: .semibold))
+                            .foregroundStyle(.orange)
+                            .frame(width: 32)
+                        VStack(alignment: .leading, spacing: 3) {
+                            Text(tip.title)
+                                .font(.customSize(16, weight: .semibold))
+                            Text(tip.detail)
+                                .font(.customSize(14))
+                                .foregroundStyle(.secondary)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                        Spacer(minLength: 0)
+                    }
+                }
             }
-#if os(iOS)
-            .font(.customSize(20))
-#endif
-            
-            Spacer()
+            .padding(.top, 28)
+            .padding(.horizontal, 24)
+            Spacer(minLength: 24)
+            Button {
+                buttonHandler?()
+            } label: {
+                Text(buttonTitle)
+                    .font(.customSize(17, weight: .semibold))
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.borderedProminent)
+            .controlSize(.large)
+            .tint(.orange)
+            .padding(.horizontal, 24)
+            .padding(.bottom, 28)
         }
-        .frame(maxHeight: .infinity)
-        .background(.ultraThinMaterial)
-        .cornerRadius(40)
     }
 }
 
 struct AdView_Previews: PreviewProvider {
     static var previews: some View {
-        AdView(title: "Titulo", descr: "Description", buttonTitle: "Ok", image: "icn_car") {
-            
-        }
+        AdView(title: "¿Qué puedes hacer?",
+               tips: [OnboardingTip(symbol: "arrow.up.arrow.down",
+                                    title: "Ordena como quieras",
+                                    detail: "Por cercanía o por precio."),
+                      OnboardingTip(symbol: "fuelpump",
+                                    title: "Filtra por marca",
+                                    detail: "Y por el combustible que usas.")],
+               buttonTitle: "Empezar") { }
     }
 }

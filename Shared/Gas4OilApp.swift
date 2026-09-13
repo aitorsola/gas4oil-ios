@@ -14,7 +14,6 @@ struct Gas4OilApp: App {
     @UIApplicationDelegateAdaptor private var delegate: AppDelegate
 #endif
     
-    /// `.system` by default, so a fresh install follows the device until the user says otherwise.
     @AppStorage(ThemePreference.storageKey) private var appearance: ThemePreference = .system
     
     var body: some Scene {

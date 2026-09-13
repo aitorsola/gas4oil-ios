@@ -8,8 +8,6 @@
 import SwiftUI
 import Lottie
 
-/// Named after the type it wraps rather than `LottieView`, which is also the name of the SwiftUI
-/// view Lottie 4 ships.
 struct LottieAnimationRepresentable: UIViewRepresentable {
     
     var name: String

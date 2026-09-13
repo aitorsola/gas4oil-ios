@@ -43,6 +43,7 @@ struct StationsResponse: Decodable, DomainConvertible {
         let gasolina98E10: String
         let gasolina98E5: String
         let hidrogeno: String
+        let glp: String
         let rotulo: String
         
         enum CodingKeys: String, CodingKey {
@@ -65,6 +66,7 @@ struct StationsResponse: Decodable, DomainConvertible {
             case gasolina98E10 = "Precio Gasolina 98 E10"
             case gasolina98E5 = "Precio Gasolina 98 E5"
             case hidrogeno = "Precio Hidrogeno"
+            case glp = "Precio Gases licuados del petróleo"
             case rotulo = "Rótulo"
             
         }
@@ -93,6 +95,7 @@ struct StationsResponse: Decodable, DomainConvertible {
                            gasolina98E10: gasolina98E10,
                            gasolina98E5: gasolina98E5,
                            hidrogeno: hidrogeno,
+                           glp: glp,
                            rotulo: rotulo,
                            isFav: FavoriteStations.isFavorite(id))
         }

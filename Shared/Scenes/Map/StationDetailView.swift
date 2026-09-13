@@ -6,12 +6,9 @@
 import MapKit
 import SwiftUI
 
-/// Detail pane for the macOS split view: everything about one station, laid out for a wide
-/// pane instead of a phone cell stretched across the window.
 struct StationDetailView: View {
     
     let station: Station
-    /// Nil hides the star; the list owns the favourites so the toggle is handed in.
     var onToggleFavorite: (() -> Void)?
     
     var body: some View {
@@ -123,11 +120,6 @@ private extension StationDetailView {
     }
 }
 
-
-/// Sidebar row for the macOS split view.
-///
-/// The full `StationView` cell belongs on a phone: in a sidebar it repeats everything the detail
-/// pane already shows, and the selection highlight lands on top of its own orange accents.
 struct StationSidebarRow: View {
     
     let station: Station

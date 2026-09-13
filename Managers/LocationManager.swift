@@ -12,9 +12,6 @@ enum MeasurementUnit {
     case km(Double)
 }
 
-/// Plain Swift protocol rather than `@objc`: the optional requirements only existed to avoid
-/// implementing every callback, which a protocol extension does without the ObjC bridge — and
-/// `@objc` members cannot satisfy a `@MainActor` requirement.
 @MainActor
 protocol LocationManagerDelegate: AnyObject {
     func didGet(auth: CLAuthorizationStatus)
@@ -54,10 +51,10 @@ class Location: NSObject, LocationManager {
     }
     
     func requestAuth() {
-        if case .notDetermined  = manager.authorizationStatus {
+        if case .notDetermined = manager.authorizationStatus {
             manager.requestWhenInUseAuthorization()
         } else {
-            manager.startUpdatingLocation()
+            manager.requestLocation()
         }
     }
     
@@ -91,7 +88,7 @@ extension Location: CLLocationManagerDelegate {
         }
         switch manager.authorizationStatus {
         case .authorizedWhenInUse, .authorizedAlways:
-            manager.startUpdatingLocation()
+            manager.requestLocation()
         default:
             break
         }
@@ -103,7 +100,6 @@ extension Location: CLLocationManagerDelegate {
         }
         currentCoordinates = location
         getCityNameFor(location) { placemark in
-            self.manager.stopUpdatingLocation()
             self.currentCity = placemark?.locality
             Task { @MainActor in
                 self.delegate?.didGet(city: placemark?.locality)

@@ -26,13 +26,14 @@ struct Station: Identifiable, Codable, Hashable {
     let gasNaturalLicuado: String
     var gasoleoA: String
     let gasoleoB: String
-    let gasoleoPremium: String
+    var gasoleoPremium: String
     let gasolina95E10: String
     var gasolina95E5: String
-    let gasolina95E5Premium: String
+    var gasolina95E5Premium: String
     let gasolina98E10: String
     var gasolina98E5: String
     let hidrogeno: String
+    var glp: String?
     let rotulo: String
     var isFav: Bool
     
@@ -40,8 +41,6 @@ struct Station: Identifiable, Codable, Hashable {
         CLLocation(latitude: latitude, longitude: longitude)
     }
     
-    /// Price of a given fuel exactly as the ministry publishes it (`1,899`), empty when
-    /// the station does not sell it.
     func rawPrice(for fuel: FuelType) -> String {
         switch fuel {
         case .gas95:
@@ -50,24 +49,23 @@ struct Station: Identifiable, Codable, Hashable {
             return gasolina98E5
         case .diesel:
             return gasoleoA
+        case .glp:
+            return glp ?? ""
+        case .dieselPremium:
+            return gasoleoPremium
+        case .gas95Premium:
+            return gasolina95E5Premium
         }
     }
     
-    /// Price of a given fuel, parsed from the `1,899` format the ministry publishes.
-    /// `nil` means the station does not sell it.
     func price(for fuel: FuelType) -> Double? {
         Double(rawPrice(for: fuel).replacingOccurrences(of: ",", with: "."))
     }
     
-    /// Rótulo cleaned up for display: the ministry ships trailing blanks and stray punctuation.
     var brandName: String {
         rotulo.trimmingCharacters(in: CharacterSet(charactersIn: " -.,"))
     }
     
-    /// Opens driving directions to the station in Apple Maps.
-    ///
-    /// Uses `MKMapItem` rather than a `maps://` URL so the destination arrives named and
-    /// addressed — Apple Maps shows "Repsol, Glorieta Embajadores" instead of bare coordinates.
     func openInMaps() {
         let placemark = MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: latitude,
                                                                        longitude: longitude))

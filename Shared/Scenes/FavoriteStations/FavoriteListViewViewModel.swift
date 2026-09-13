@@ -13,12 +13,9 @@ final class FavoriteListViewViewModel {
     
     var favoriteStations: [Station] = []
     
-    /// Favourites price the fuel the saved vehicle takes; without a vehicle, petrol 95.
     var preferredFuel: FuelType {
         VehicleFavorite.vehicleData?.fuel ?? .gas95
     }
-    
-    // MARK: - Public
     
     func removeFavorite(_ station: Station) {
         favoriteStations = FavoriteStations.manageFavorite(station)

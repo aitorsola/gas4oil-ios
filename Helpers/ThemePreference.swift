@@ -7,11 +7,6 @@
 
 import SwiftUI
 
-/// Whether the app follows the system appearance or overrides it, persisted across launches.
-///
-/// Stored as a raw `String` so `@AppStorage` can read and write it directly: the toggle in the
-/// toolbar and the override at the root of the scene are the same value, with no plumbing in
-/// between.
 enum ThemePreference: String, CaseIterable, Identifiable {
     case system
     case light
@@ -23,7 +18,6 @@ enum ThemePreference: String, CaseIterable, Identifiable {
         rawValue
     }
     
-    /// `nil` hands the decision back to the system, which is the default.
     var colorScheme: ColorScheme? {
         switch self {
         case .system:

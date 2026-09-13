@@ -91,33 +91,16 @@ struct FavoriteListView: View {
 
 extension FavoriteListView {
     
+
     private func getStationView(_ station: Station) -> StationView {
         var fillPrice: Double?
         let vehicle = VehicleFavorite.vehicleData
-        let formatter = NumberFormatter()
-        formatter.locale = Locale.current
-        formatter.numberStyle = .decimal
-        formatter.decimalSeparator = ","
-        formatter.groupingSeparator = ""
-        if let vehicle = vehicle {
-            switch vehicle.fuel {
-            case .gas95:
-                let fuelPrice = formatter.number(from: station.gasolina95E5)?.doubleValue ?? 0
-                let vehicleCapacity = formatter.number(from: vehicle.capacity)?.doubleValue ?? 0
-                fillPrice = (fuelPrice * vehicleCapacity)
-            case .gas98:
-                let fuelPrice = formatter.number(from: station.gasolina98E5) ?? 0
-                let vehicleCapacity = formatter.number(from: vehicle.capacity) ?? 0
-                fillPrice = fuelPrice.doubleValue * vehicleCapacity.doubleValue
-            case .diesel:
-                let fuelPrice = formatter.number(from: station.gasoleoA) ?? 0
-                let vehicleCapacity = formatter.number(from: vehicle.capacity) ?? 0
-                fillPrice = fuelPrice.doubleValue * vehicleCapacity.doubleValue
-            }
+        if let vehicle,
+           let unitPrice = station.price(for: vehicle.fuel),
+           let litres = vehicle.capacityLitres {
+            fillPrice = unitPrice * litres
         }
-        return StationView(price95: station.gasolina95E5,
-                           price98: station.gasolina98E5,
-                           priceDiesel: station.gasoleoA,
+        return StationView(prices: PriceColumn.columns(for: station),
                            brand: station.rotulo,
                            address: station.direccion,
                            schedule: station.horario,

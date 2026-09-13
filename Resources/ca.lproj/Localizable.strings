@@ -6,6 +6,7 @@
 "common.done" = "Fet";
 "common.gettingLocation" = "Obtenint la ubicació";
 "common.fuelType" = "Combustible";
+"common.retry" = "Tornar-ho a provar";
 
 "appearance.title" = "Aparença";
 "appearance.system" = "Segons el sistema";
@@ -15,12 +16,21 @@
 "fuel.95" = "Gasolina 95";
 "fuel.98" = "Gasolina 98";
 "fuel.diesel" = "Dièsel";
+"fuel.diesel.short" = "Dièsel";
+"fuel.glp" = "GLP (autogàs)";
+"fuel.gas95Premium" = "Gasolina 95+";
+"fuel.dieselPremium" = "Dièsel+";
 
 "station.schedule" = "Horari";
 "station.fillPrice" = "Preu del dipòsit:";
 
 "landingView.title.discover" = "Troba estacions de servei i consulta'n el preu actualitzat";
+"landingView.benefit.nearby" = "Benzineres a prop teu, ordenades per distància";
+"landingView.benefit.prices" = "Preus oficials del Ministeri, actualitzats cada dia";
+"landingView.benefit.favorites" = "Desa les teves habituals a preferits";
+"landingView.privacy" = "Només s'utilitza mentre tens l'app oberta i no surt mai del teu dispositiu.";
 "landingView.button.requestLocationPermission" = "Demana permís d'ubicació";
+"landingView.button.notNow" = "Ara no";
 "landingView.button.locationDenied" = "Permís d'ubicació denegat";
 
 "mainTab.stationsTabTitle" = "Estacions";
@@ -29,6 +39,11 @@
 
 "listView.button.requestLocation" = "Estacions properes";
 "listView.search.placeholder" = "Cerca per població";
+"listView.city.prompt" = "En quina població ets?";
+"listView.city.hint" = "Sense ubicació no podem ordenar per proximitat. Tria la teva població i et mostrem els seus preus.";
+"listView.city.suggested" = "Ciutats més cercades";
+"listView.city.useLocation" = "Utilitzar la meva ubicació";
+"listView.city.noMatches" = "No trobem cap població amb aquest nom.";
 "listView.empty" = "No hi ha estacions per mostrar";
 "listView.sort.title" = "Ordena per";
 "listView.sortOrder.near" = "Proximitat";
@@ -49,7 +64,15 @@
 "listView.station.addFavorite" = "Afegeix a preferits";
 "listView.station.removeFavorite" = "Treu de preferits";
 "listView.ad.title" = "Què pots fer?";
-"listView.ad.description" = "Descobreix les estacions de servei que més t'interessen. Filtra per marca, per tipus de combustible o ordena per preu o proximitat.\nTambé pots afegir les que prefereixis a la teva llista de preferits.";
+"listView.ad.button" = "Començar";
+"listView.ad.sort.title" = "Ordena com vulguis";
+"listView.ad.sort.detail" = "Per proximitat, preu més baix o més alt.";
+"listView.ad.filter.title" = "Filtra per marca";
+"listView.ad.filter.detail" = "I tria el combustible que fa servir el teu cotxe.";
+"listView.ad.search.title" = "Cerca per població";
+"listView.ad.search.detail" = "Escriu qualsevol municipi d'Espanya.";
+"listView.ad.favorites.title" = "Desa preferides";
+"listView.ad.favorites.detail" = "Les que més fas servir, sempre a mà.";
 
 "favorites.title" = "Preferits";
 "favorites.empty" = "Encara no tens estacions preferides";
@@ -76,7 +99,7 @@
 "myVehicle.ad.description" = "Afegeix un vehicle i sabràs per endavant què et costarà omplir el dipòsit a cada estació.";
 "myVehicle.fill.title" = "Omplir el dipòsit costa";
 "myVehicle.fill.cheapestAt" = "El més barat, a %@ (%@).";
-"myVehicle.fill.footer" = "Calculat amb les estacions que tens carregades ara mateix.";
+"myVehicle.fill.footer" = "Entre les estacions carregades a menys de 50 km de tu.";
 "myVehicle.fill.unavailable" = "Encara no hi ha estacions carregades amb aquest combustible.";
 
 "error.invalidURL" = "L'adreça del servei no és vàlida";

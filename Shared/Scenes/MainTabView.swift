@@ -75,6 +75,9 @@ struct MainTabView: View {
             .padding(.top, 10)
             .font(.headline)
         }
+        .task {
+            viewModel.listViewViewModel.start()
+        }
 #if os(iOS)
         .ignoresSafeArea()
 #endif
