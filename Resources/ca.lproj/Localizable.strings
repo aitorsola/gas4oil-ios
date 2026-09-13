@@ -48,7 +48,6 @@
 "listView.sort.title" = "Ordena per";
 "listView.sortOrder.near" = "Proximitat";
 "listView.sortOrder.down" = "Preu més baix";
-"listView.sortOrder.up" = "Preu més alt";
 "listView.brand.all" = "Totes les marques";
 "listView.sortType.all.button" = "Tot";
 "listView.sortType.near95.button" = "A prop 95";
@@ -66,7 +65,7 @@
 "listView.ad.title" = "Què pots fer?";
 "listView.ad.button" = "Començar";
 "listView.ad.sort.title" = "Ordena com vulguis";
-"listView.ad.sort.detail" = "Per proximitat, preu més baix o més alt.";
+"listView.ad.sort.detail" = "Per proximitat o per preu.";
 "listView.ad.filter.title" = "Filtra per marca";
 "listView.ad.filter.detail" = "I tria el combustible que fa servir el teu cotxe.";
 "listView.ad.search.title" = "Cerca per població";
@@ -98,7 +97,6 @@
 "myVehicle.ad.title" = "Afegeix un vehicle";
 "myVehicle.ad.description" = "Afegeix un vehicle i sabràs per endavant què et costarà omplir el dipòsit a cada estació.";
 "myVehicle.fill.title" = "Omplir el dipòsit costa";
-"myVehicle.fill.cheapestAt" = "El més barat, a %@ (%@).";
 "myVehicle.fill.footer" = "Entre les estacions carregades a menys de 50 km de tu.";
 "myVehicle.fill.unavailable" = "Encara no hi ha estacions carregades amb aquest combustible.";
 
@@ -119,3 +117,4 @@
 "country.portugal" = "Portugal";
 "country.italy" = "Itàlia";
 "country.croatia" = "Croàcia";
+"listView.cheapest.title" = "La més barata · %@";

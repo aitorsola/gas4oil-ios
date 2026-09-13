@@ -29,6 +29,19 @@ enum ThemePreference: String, CaseIterable, Identifiable {
         }
     }
     
+#if os(macOS)
+    var appKitAppearance: NSAppearance? {
+        switch self {
+        case .system:
+            return nil
+        case .light:
+            return NSAppearance(named: .aqua)
+        case .dark:
+            return NSAppearance(named: .darkAqua)
+        }
+    }
+#endif
+    
     var title: String {
         switch self {
         case .system:

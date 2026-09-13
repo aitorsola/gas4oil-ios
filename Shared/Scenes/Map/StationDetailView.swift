@@ -60,7 +60,9 @@ private extension StationDetailView {
                           systemImage: "arrow.triangle.turn.up.right.circle.fill")
                 }
                 .buttonStyle(.borderedProminent)
-                .tint(.orange)
+                .tint(.primary)
+                .foregroundStyle(.background)
+                .foregroundStyle(.background)
             }
         }
         .padding(20)
@@ -72,7 +74,7 @@ private extension StationDetailView {
         } label: {
             Image(systemName: station.isFav ? "star.fill" : "star")
                 .font(.customSize(20))
-                .foregroundStyle(.orange)
+                .foregroundStyle(.primary)
                 .contentTransition(.symbolEffect(.replace))
                 .symbolEffect(.bounce, value: station.isFav)
                 .frame(width: 36, height: 36)
@@ -102,7 +104,7 @@ private extension StationDetailView {
     func distanceText(_ text: String) -> some View {
         Label(text, systemImage: "location.fill")
             .font(.customSize(16, weight: .bold))
-            .foregroundStyle(.orange)
+            .foregroundStyle(.primary)
     }
     
     func priceTile(_ title: String, _ price: String, _ color: Color) -> some View {
@@ -112,7 +114,7 @@ private extension StationDetailView {
                 .foregroundStyle(color)
             Text(price.isEmpty ? "--" : price + " €")
                 .font(.customSize(20, weight: .medium))
-                .foregroundStyle(.orange)
+                .foregroundStyle(.primary)
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 12)
@@ -140,7 +142,7 @@ struct StationSidebarRow: View {
             if station.isFav {
                 Image(systemName: "star.fill")
                     .font(.customSize(11))
-                    .foregroundStyle(.orange)
+                    .foregroundStyle(.primary)
             }
             Spacer(minLength: 8)
             VStack(alignment: .trailing, spacing: 2) {

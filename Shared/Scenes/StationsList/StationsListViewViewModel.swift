@@ -55,7 +55,7 @@ extension CommonStationBrand {
                 .resizable()
                 .scaledToFit()
                 .frame(width: size, height: size)
-                .foregroundColor(.orange)
+                .foregroundColor(.primary)
         } else {
             image
                 .resizable()
@@ -258,7 +258,27 @@ final class StationsListViewViewModel {
     }
     
     var stations: [Station] = []
+    private(set) var cheapestNearby: Station?
     var favorites: [Station] = []
+    
+    var hasLocation: Bool {
+        locationManager.currentCoordinates != nil
+    }
+    
+    var effectiveSort: StationSort {
+        hasLocation ? sortOrder : .cheapest
+    }
+    
+    var availableSorts: [StationSort] {
+        hasLocation ? StationSort.allCases : [.cheapest]
+    }
+    
+    private func preferredFuel(for country: Country) -> FuelType {
+        if let vehicleFuel = VehicleFavorite.vehicleData?.fuel, country.fuels.contains(vehicleFuel) {
+            return vehicleFuel
+        }
+        return country.defaultFuel
+    }
     private(set) var selectedFuel: FuelType = .gas95
     private(set) var sortOrder: StationSort = .nearest
     private(set) var brandOptions: [StationBrand] = []
@@ -469,7 +489,7 @@ final class StationsListViewViewModel {
             country = saved
             hasChosenCountry = true
         }
-        selectedFuel = country.defaultFuel
+        selectedFuel = preferredFuel(for: country)
         if let key = defaults.string(forKey: Self.selectedFuelKey),
            let fuel = FuelType(storageKey: key),
            country.fuels.contains(fuel) {
@@ -617,10 +637,10 @@ extension StationsListViewViewModel {
         }
         country = newCountry
         if firstChoice, defaults.string(forKey: Self.selectedFuelKey) == nil {
-            selectedFuel = newCountry.defaultFuel
+            selectedFuel = preferredFuel(for: newCountry)
         }
         if !newCountry.fuels.contains(selectedFuel) {
-            selectedFuel = newCountry.defaultFuel
+            selectedFuel = preferredFuel(for: newCountry)
             defaults.set(selectedFuel.storageKey, forKey: Self.selectedFuelKey)
         }
         currentSortBrand = .all
@@ -629,6 +649,18 @@ extension StationsListViewViewModel {
         defaults.removeObject(forKey: Self.cityKey)
         navigationTitle = locationTitle
         getStations()
+    }
+    
+    func vehicleDidChange() {
+        if let fuel = VehicleFavorite.vehicleData?.fuel, country.fuels.contains(fuel), fuel != selectedFuel {
+            showFuel(fuel)
+        } else {
+            refresh()
+        }
+    }
+    
+    func nearbyStations() -> [Station] {
+        priceScope(allStations.filter { matchesCity($0) })
     }
     
     func showFuel(_ fuel: FuelType) {
@@ -644,23 +676,30 @@ extension StationsListViewViewModel {
     }
     
     func refresh() {
-        stations = filteredAndSortedStations()
-    }
-    
-    private func filteredAndSortedStations() -> [Station] {
         let filtered = allStations.filter { station in
             matchesCity(station) && matchesBrand(station) && hasPriceForCurrentFuel(station)
         }
-        let nearest = Array(sortedByProximity(filtered).prefix(kMaxLenght))
-        
-        switch sortOrder {
-        case .nearest:
-            return nearest
-        case .cheapest:
-            return nearest.sorted { (price(for: $0) ?? 0) < (price(for: $1) ?? 0) }
-        case .priciest:
-            return nearest.sorted { (price(for: $0) ?? 0) > (price(for: $1) ?? 0) }
+        let byPrice = priceScope(filtered).sorted {
+            (price(for: $0) ?? .greatestFiniteMagnitude) < (price(for: $1) ?? .greatestFiniteMagnitude)
         }
+        cheapestNearby = byPrice.first
+        switch effectiveSort {
+        case .nearest:
+            stations = Array(sortedByProximity(filtered).prefix(kMaxLenght))
+        case .cheapest:
+            stations = Array(byPrice.prefix(kMaxLenght))
+        }
+    }
+    
+    private func priceScope(_ stations: [Station]) -> [Station] {
+        guard currentCity == nil, let here = locationManager.currentCoordinates else {
+            return stations
+        }
+        let byDistance = stations
+            .map { ($0, $0.getCLLocationCoordinates().distance(from: here)) }
+            .sorted { $0.1 < $1.1 }
+        let near = byDistance.filter { $0.1 <= FillCost.nearbyRadius }
+        return (near.isEmpty ? Array(byDistance.prefix(FillCost.minimumCandidates)) : near).map(\.0)
     }
     
     private func matchesCity(_ station: Station) -> Bool {

@@ -48,7 +48,6 @@
 "listView.sort.title" = "Ordenatu honela";
 "listView.sortOrder.near" = "Hurbiltasuna";
 "listView.sortOrder.down" = "Prezio baxuena";
-"listView.sortOrder.up" = "Prezio altuena";
 "listView.brand.all" = "Marka guztiak";
 "listView.sortType.all.button" = "Dena";
 "listView.sortType.near95.button" = "Gertu 95";
@@ -98,7 +97,6 @@
 "myVehicle.ad.title" = "Gehitu ibilgailu bat";
 "myVehicle.ad.description" = "Gehitu ibilgailu bat eta aldez aurretik jakingo duzu gune bakoitzean depositua betetzeak zenbat balio duen.";
 "myVehicle.fill.title" = "Depositua betetzeak balio du";
-"myVehicle.fill.cheapestAt" = "Merkeena, %@ (%@).";
 "myVehicle.fill.footer" = "Zure inguruko 50 km-ko estazioen artean.";
 "myVehicle.fill.unavailable" = "Oraindik ez dago erregai honekin kargatutako gunerik.";
 
@@ -119,3 +117,4 @@
 "country.portugal" = "Portugal";
 "country.italy" = "Italia";
 "country.croatia" = "Kroazia";
+"listView.cheapest.title" = "Merkeena · %@";

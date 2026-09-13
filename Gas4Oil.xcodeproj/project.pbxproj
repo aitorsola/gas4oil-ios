@@ -7,11 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		12BC17EC9DF5C4E544C96969 /* PortugalStationsEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D6699CDED6F50DE73B9D9A0 /* PortugalStationsEngine.swift */; };
+		279267183F14440449E05C75 /* CroatiaStationsEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBDBB03CD273B1ECE28EFEA1 /* CroatiaStationsEngine.swift */; };
+		351417841EEE1FE43A1366B4 /* StationDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BA535103D8CD1A540C72E6 /* StationDetailView.swift */; };
+		41383CB64B739FF3BD9296F4 /* FranceStationsEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DA32AC39185359F85C655F5 /* FranceStationsEngine.swift */; };
 		5BB74FDC2D7311E6001D92C9 /* Shimmer in Frameworks */ = {isa = PBXBuildFile; productRef = 5BB74FDB2D7311E6001D92C9 /* Shimmer */; };
 		5BC0EA1F2948E3BC00E07674 /* Gas4OilTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BC0EA1E2948E3BC00E07674 /* Gas4OilTests.swift */; };
+		6556BCDA361BC8C81432F0C5 /* Country.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19D6CEA44ED34B41020B0C6 /* Country.swift */; };
+		963AD35E98DFA54AC7940BA4 /* Country.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19D6CEA44ED34B41020B0C6 /* Country.swift */; };
+		9A6573A5DD72B80BF820A53F /* StationDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BA535103D8CD1A540C72E6 /* StationDetailView.swift */; };
+		A01781D48D88A1FA50C5D7AA /* ItalyStationsEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3F190E94DCBF3ECC1943CED /* ItalyStationsEngine.swift */; };
 		A406706327D8BE5F00193D36 /* FavoriteStations.swift in Sources */ = {isa = PBXBuildFile; fileRef = A406706227D8BE5E00193D36 /* FavoriteStations.swift */; };
-		A4C1B0022D9B000100000002 /* ThemePreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4C1B0012D9B000100000001 /* ThemePreference.swift */; };
-		A4C1B0032D9B000100000003 /* ThemePreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4C1B0012D9B000100000001 /* ThemePreference.swift */; };
 		A406706427D8BE5F00193D36 /* FavoriteStations.swift in Sources */ = {isa = PBXBuildFile; fileRef = A406706227D8BE5E00193D36 /* FavoriteStations.swift */; };
 		A406706D27D90F8D00193D36 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A406706C27D90F8D00193D36 /* MainTabView.swift */; };
 		A406706E27D90F8D00193D36 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A406706C27D90F8D00193D36 /* MainTabView.swift */; };
@@ -34,15 +40,7 @@
 		A444767E27D17A5D00B25303 /* ProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A444767D27D17A5D00B25303 /* ProgressView.swift */; };
 		A444767F27D17A5D00B25303 /* ProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A444767D27D17A5D00B25303 /* ProgressView.swift */; };
 		A444768427D1887A00B25303 /* StationsEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A444768327D1887A00B25303 /* StationsEngine.swift */; };
-		41383CB64B739FF3BD9296F4 /* FranceStationsEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DA32AC39185359F85C655F5 /* FranceStationsEngine.swift */; };
-		12BC17EC9DF5C4E544C96969 /* PortugalStationsEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D6699CDED6F50DE73B9D9A0 /* PortugalStationsEngine.swift */; };
-		279267183F14440449E05C75 /* CroatiaStationsEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBDBB03CD273B1ECE28EFEA1 /* CroatiaStationsEngine.swift */; };
-		F9FEE136F9619354C0D10662 /* ItalyStationsEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3F190E94DCBF3ECC1943CED /* ItalyStationsEngine.swift */; };
 		A444768527D1887A00B25303 /* StationsEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A444768327D1887A00B25303 /* StationsEngine.swift */; };
-		A836DDA90756932E9509ACB8 /* FranceStationsEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DA32AC39185359F85C655F5 /* FranceStationsEngine.swift */; };
-		E82C42BA7FEE1C3C9FD90F75 /* PortugalStationsEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D6699CDED6F50DE73B9D9A0 /* PortugalStationsEngine.swift */; };
-		CC9F734EDF08FA411EBD7154 /* CroatiaStationsEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBDBB03CD273B1ECE28EFEA1 /* CroatiaStationsEngine.swift */; };
-		A01781D48D88A1FA50C5D7AA /* ItalyStationsEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3F190E94DCBF3ECC1943CED /* ItalyStationsEngine.swift */; };
 		A44F419B28102FBF00CE8C81 /* Shimmer in Frameworks */ = {isa = PBXBuildFile; productRef = A44F419A28102FBF00CE8C81 /* Shimmer */; };
 		A44F419D28113C6F00CE8C81 /* FakeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A44F419C28113C6F00CE8C81 /* FakeView.swift */; };
 		A44F419E28113C6F00CE8C81 /* FakeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A44F419C28113C6F00CE8C81 /* FakeView.swift */; };
@@ -55,8 +53,6 @@
 		A4727BF827D528AF0005736F /* Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4727BF727D528AF0005736F /* Sequence.swift */; };
 		A4727BF927D528AF0005736F /* Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4727BF727D528AF0005736F /* Sequence.swift */; };
 		A4727BFC27D57D4B0005736F /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4727BFB27D57D4B0005736F /* MapView.swift */; };
-		9A6573A5DD72B80BF820A53F /* StationDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BA535103D8CD1A540C72E6 /* StationDetailView.swift */; };
-		351417841EEE1FE43A1366B4 /* StationDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BA535103D8CD1A540C72E6 /* StationDetailView.swift */; };
 		A4727BFD27D57D4B0005736F /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4727BFB27D57D4B0005736F /* MapView.swift */; };
 		A4727BFF27D57D5F0005736F /* MapViewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4727BFE27D57D5F0005736F /* MapViewViewModel.swift */; };
 		A4727C0027D57D5F0005736F /* MapViewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4727BFE27D57D5F0005736F /* MapViewViewModel.swift */; };
@@ -89,9 +85,7 @@
 		A48F4AA927D218E80024473D /* DomainConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48F4AA827D218E80024473D /* DomainConvertible.swift */; };
 		A48F4AAA27D218E80024473D /* DomainConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48F4AA827D218E80024473D /* DomainConvertible.swift */; };
 		A48F4AAC27D219270024473D /* Stations.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48F4AAB27D219270024473D /* Stations.swift */; };
-		963AD35E98DFA54AC7940BA4 /* Country.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19D6CEA44ED34B41020B0C6 /* Country.swift */; };
 		A48F4AAD27D219270024473D /* Stations.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48F4AAB27D219270024473D /* Stations.swift */; };
-		6556BCDA361BC8C81432F0C5 /* Country.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19D6CEA44ED34B41020B0C6 /* Country.swift */; };
 		A48F4AAF27D4B18D0024473D /* StationsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48F4AAE27D4B18D0024473D /* StationsListView.swift */; };
 		A48F4AB027D4B18D0024473D /* StationsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48F4AAE27D4B18D0024473D /* StationsListView.swift */; };
 		A48F4AB227D4B1CF0024473D /* StationsListViewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48F4AB127D4B1CF0024473D /* StationsListViewViewModel.swift */; };
@@ -112,11 +106,17 @@
 		A4A2F8F827F073DA00AC92E8 /* VehicleModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4A2F8F627F073DA00AC92E8 /* VehicleModels.swift */; };
 		A4A2F8FA27F0755F00AC92E8 /* VehicleBrandEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4A2F8F927F0755F00AC92E8 /* VehicleBrandEntity.swift */; };
 		A4A2F8FB27F0755F00AC92E8 /* VehicleBrandEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4A2F8F927F0755F00AC92E8 /* VehicleBrandEntity.swift */; };
+		A4C1B0022D9B000100000002 /* ThemePreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4C1B0012D9B000100000001 /* ThemePreference.swift */; };
+		A4C1B0032D9B000100000003 /* ThemePreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4C1B0012D9B000100000001 /* ThemePreference.swift */; };
 		A4E70BB227F07AF30097CBF2 /* VehicleStored.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E70BB127F07AF30097CBF2 /* VehicleStored.swift */; };
 		A4E70BB327F07AF30097CBF2 /* VehicleStored.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E70BB127F07AF30097CBF2 /* VehicleStored.swift */; };
 		A4F3728C27FC555900458EBE /* DragBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4F3728B27FC555900458EBE /* DragBar.swift */; };
 		A4F3728D27FC555900458EBE /* DragBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4F3728B27FC555900458EBE /* DragBar.swift */; };
 		A4F3728F27FECA9B00458EBE /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A4F3728E27FECA9B00458EBE /* Launch Screen.storyboard */; };
+		A836DDA90756932E9509ACB8 /* FranceStationsEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DA32AC39185359F85C655F5 /* FranceStationsEngine.swift */; };
+		CC9F734EDF08FA411EBD7154 /* CroatiaStationsEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBDBB03CD273B1ECE28EFEA1 /* CroatiaStationsEngine.swift */; };
+		E82C42BA7FEE1C3C9FD90F75 /* PortugalStationsEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D6699CDED6F50DE73B9D9A0 /* PortugalStationsEngine.swift */; };
+		F9FEE136F9619354C0D10662 /* ItalyStationsEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3F190E94DCBF3ECC1943CED /* ItalyStationsEngine.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -143,11 +143,16 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		21BA535103D8CD1A540C72E6 /* StationDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationDetailView.swift; sourceTree = "<group>"; };
 		5BC0EA1C2948E3BC00E07674 /* Gas4OilTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Gas4OilTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5BC0EA1E2948E3BC00E07674 /* Gas4OilTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Gas4OilTests.swift; sourceTree = "<group>"; };
+		5C03993C7ECA9A00C68E61FA /* gl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = gl; path = gl.lproj/Localizable.strings; sourceTree = "<group>"; };
 		6E3011958B893B5EE48E4B60 /* Pods_Gas4Oil__macOS_.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Gas4Oil__macOS_.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		864A9B1A278F6288DC8A6523 /* ca */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ca; path = ca.lproj/Localizable.strings; sourceTree = "<group>"; };
+		870D9D14F901DCB420818B01 /* eu */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = eu; path = eu.lproj/Localizable.strings; sourceTree = "<group>"; };
+		8D6699CDED6F50DE73B9D9A0 /* PortugalStationsEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortugalStationsEngine.swift; sourceTree = "<group>"; };
+		8DA32AC39185359F85C655F5 /* FranceStationsEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FranceStationsEngine.swift; sourceTree = "<group>"; };
 		A406706227D8BE5E00193D36 /* FavoriteStations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteStations.swift; sourceTree = "<group>"; };
-		A4C1B0012D9B000100000001 /* ThemePreference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemePreference.swift; sourceTree = "<group>"; };
 		A406706C27D90F8D00193D36 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
 		A41249EF27FC24A50018BDB4 /* AdView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdView.swift; sourceTree = "<group>"; };
 		A416FCA327E663C200FCC16A /* LottieView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LottieView.swift; sourceTree = "<group>"; };
@@ -163,10 +168,6 @@
 		A444767827D143C500B25303 /* gas_station.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = gas_station.json; sourceTree = "<group>"; };
 		A444767D27D17A5D00B25303 /* ProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressView.swift; sourceTree = "<group>"; };
 		A444768327D1887A00B25303 /* StationsEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationsEngine.swift; sourceTree = "<group>"; };
-		8DA32AC39185359F85C655F5 /* FranceStationsEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FranceStationsEngine.swift; sourceTree = "<group>"; };
-		8D6699CDED6F50DE73B9D9A0 /* PortugalStationsEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortugalStationsEngine.swift; sourceTree = "<group>"; };
-		BBDBB03CD273B1ECE28EFEA1 /* CroatiaStationsEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CroatiaStationsEngine.swift; sourceTree = "<group>"; };
-		D3F190E94DCBF3ECC1943CED /* ItalyStationsEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItalyStationsEngine.swift; sourceTree = "<group>"; };
 		A44AF40627DA014B008213B7 /* Gas4Oil--iOS--Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Gas4Oil--iOS--Info.plist"; sourceTree = "<group>"; };
 		A44F419C28113C6F00CE8C81 /* FakeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeView.swift; sourceTree = "<group>"; };
 		A46E057E27FB5D9300697A57 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -174,14 +175,10 @@
 		A4727BF427D519740005736F /* Gas4OilButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Gas4OilButton.swift; sourceTree = "<group>"; };
 		A4727BF727D528AF0005736F /* Sequence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sequence.swift; sourceTree = "<group>"; };
 		A4727BFB27D57D4B0005736F /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
-		21BA535103D8CD1A540C72E6 /* StationDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StationDetailView.swift"; sourceTree = "<group>"; };
 		A4727BFE27D57D5F0005736F /* MapViewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewViewModel.swift; sourceTree = "<group>"; };
 		A4727C0227D600BE0005736F /* MapPin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapPin.swift; sourceTree = "<group>"; };
 		A478913C27D9217D001CA76E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		A478913E27D92180001CA76E /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
-		870D9D14F901DCB420818B01 /* eu */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = eu; path = eu.lproj/Localizable.strings; sourceTree = "<group>"; };
-		5C03993C7ECA9A00C68E61FA /* gl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = gl; path = gl.lproj/Localizable.strings; sourceTree = "<group>"; };
-		864A9B1A278F6288DC8A6523 /* ca */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ca; path = ca.lproj/Localizable.strings; sourceTree = "<group>"; };
 		A478913F27D922F4001CA76E /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
 		A47A84AC27F5AB2700AF2892 /* VehicleModelEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicleModelEntity.swift; sourceTree = "<group>"; };
 		A48581C527DAC54100864885 /* FavoriteListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteListView.swift; sourceTree = "<group>"; };
@@ -195,7 +192,6 @@
 		A48F4AA527D2133F0024473D /* StationsModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationsModels.swift; sourceTree = "<group>"; };
 		A48F4AA827D218E80024473D /* DomainConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainConvertible.swift; sourceTree = "<group>"; };
 		A48F4AAB27D219270024473D /* Stations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stations.swift; sourceTree = "<group>"; };
-		B19D6CEA44ED34B41020B0C6 /* Country.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Country.swift; sourceTree = "<group>"; };
 		A48F4AAE27D4B18D0024473D /* StationsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationsListView.swift; sourceTree = "<group>"; };
 		A48F4AB127D4B1CF0024473D /* StationsListViewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationsListViewViewModel.swift; sourceTree = "<group>"; };
 		A48F4AB427D4B4B60024473D /* Managers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Managers.swift; sourceTree = "<group>"; };
@@ -206,12 +202,16 @@
 		A4A2F8F327F06F8500AC92E8 /* VehicleEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicleEngine.swift; sourceTree = "<group>"; };
 		A4A2F8F627F073DA00AC92E8 /* VehicleModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicleModels.swift; sourceTree = "<group>"; };
 		A4A2F8F927F0755F00AC92E8 /* VehicleBrandEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicleBrandEntity.swift; sourceTree = "<group>"; };
+		A4C1B0012D9B000100000001 /* ThemePreference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemePreference.swift; sourceTree = "<group>"; };
 		A4D40C1627DE98A3003FBE8F /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		A4D40C1827DE98A3003FBE8F /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		A4E70BB127F07AF30097CBF2 /* VehicleStored.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicleStored.swift; sourceTree = "<group>"; };
 		A4F3728B27FC555900458EBE /* DragBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DragBar.swift; sourceTree = "<group>"; };
 		A4F3728E27FECA9B00458EBE /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
+		B19D6CEA44ED34B41020B0C6 /* Country.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Country.swift; sourceTree = "<group>"; };
+		BBDBB03CD273B1ECE28EFEA1 /* CroatiaStationsEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CroatiaStationsEngine.swift; sourceTree = "<group>"; };
 		C943B049A046AECA493B95BF /* Pods_Gas4Oil__iOS_.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Gas4Oil__iOS_.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D3F190E94DCBF3ECC1943CED /* ItalyStationsEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItalyStationsEngine.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -938,7 +938,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = SK4CMEFH7T;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -971,7 +971,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = SK4CMEFH7T;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;

@@ -31,6 +31,7 @@ struct MainTabView: View {
             TabView(selection: $tabSelected) {
                 
                 StationsListView(viewModel: viewModel.listViewViewModel)
+                    .tint(.primary)
                     .tag(TabSelectedType.stations.rawValue)
                     .tabItem {
                         VStack {
@@ -42,8 +43,9 @@ struct MainTabView: View {
                     }
                 
                 VehicleView(stationsViewModel: viewModel.listViewViewModel) {
-                    viewModel.listViewViewModel.refresh()
+                    viewModel.listViewViewModel.vehicleDidChange()
                 }
+                    .tint(.primary)
                     .tag(TabSelectedType.vehicle.rawValue)
                     .tabItem {
                         VStack {
@@ -58,6 +60,7 @@ struct MainTabView: View {
 #endif
                 
                 FavoriteListView(viewModel: viewModel.favoriteViewViewModel)
+                    .tint(.primary)
                     .tag(TabSelectedType.favorite.rawValue)
                     .tabItem {
                         VStack {
@@ -74,6 +77,7 @@ struct MainTabView: View {
             }
             .padding(.top, 10)
             .font(.headline)
+            .tint(.primary)
         }
         .task {
             viewModel.listViewViewModel.start()

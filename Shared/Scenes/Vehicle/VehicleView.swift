@@ -61,8 +61,12 @@ private extension VehicleView {
     @ViewBuilder
     var fillCostSection: some View {
         Section {
-            if let cost = viewModel.fillCost(using: FillCost.candidates(from: stationsViewModel.stations)) {
-                FillCostCard(cost: cost)
+            if let cost = viewModel.fillCost(using: stationsViewModel.nearbyStations()),
+               let unit = cost.cheapestStation.price(for: viewModel.vehicleData.fuel) {
+                FillCostCard(station: cost.cheapestStation,
+                             fuel: viewModel.vehicleData.fuel,
+                             pricePerLitre: unit,
+                             fillCost: cost.cheapest)
                     .listRowInsets(EdgeInsets(top: 6, leading: 6, bottom: 6, trailing: 6))
                     .listRowBackground(Color.clear)
             } else {
@@ -82,7 +86,7 @@ private extension VehicleView {
             VStack(alignment: .leading, spacing: 8) {
                 Label("myVehicle.ad.title".translated, systemImage: "car.fill")
                     .font(.customSize(17, weight: .semibold))
-                    .foregroundStyle(.orange)
+                    .foregroundStyle(.primary)
                 Text("myVehicle.ad.description".translated)
                     .font(.customSize(14))
                     .foregroundStyle(.secondary)
@@ -166,7 +170,9 @@ private extension VehicleView {
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
-            .tint(.orange)
+            .tint(.primary)
+            .foregroundStyle(.background)
+            .foregroundStyle(.background)
             .buttonWidth()
             .disabled(!viewModel.vehicleData.isValid)
             .listRowBackground(Color.clear)

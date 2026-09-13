@@ -11,7 +11,6 @@ import MapKit
 enum StationSort: String, CaseIterable, Hashable {
     case nearest
     case cheapest
-    case priciest
     
     var title: String {
         switch self {
@@ -19,8 +18,6 @@ enum StationSort: String, CaseIterable, Hashable {
             return "listView.sortOrder.near".translated
         case .cheapest:
             return "listView.sortOrder.down".translated
-        case .priciest:
-            return "listView.sortOrder.up".translated
         }
     }
     
@@ -30,8 +27,6 @@ enum StationSort: String, CaseIterable, Hashable {
             return "location.fill"
         case .cheapest:
             return "arrow.down"
-        case .priciest:
-            return "arrow.up"
         }
     }
 }
@@ -136,9 +131,18 @@ struct StationsListView: View {
                     NavigationStack {
                         stationsScreen
                     }
-                    .overlay(alignment: .bottomTrailing) {
+                    .overlay(alignment: .bottom) {
                         if !viewModel.needsCityChoice {
-                            locationButton
+                            HStack(spacing: 8) {
+                                Color.clear
+                                    .frame(width: 56, height: 56)
+                                Spacer(minLength: 0)
+                                filterBar(large: true)
+                                Spacer(minLength: 0)
+                                locationButton
+                            }
+                            .padding(.horizontal, 20)
+                            .padding(.bottom, 12)
                         }
                     }
 #endif
@@ -209,7 +213,9 @@ private extension StationsListView {
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
-            .tint(.orange)
+            .tint(.primary)
+            .foregroundStyle(.background)
+            .foregroundStyle(.background)
             .padding(.horizontal, 24)
             Button("landingView.button.notNow".translated) {
                 viewModel.continueWithoutLocation()
@@ -247,7 +253,7 @@ private extension StationsListView {
         HStack(spacing: 14) {
             Image(systemName: symbol)
                 .font(.customSize(17, weight: .semibold))
-                .foregroundStyle(.orange)
+                .foregroundStyle(.primary)
                 .frame(width: 30)
             Text(key.translated)
                 .font(.customSize(16))
@@ -285,11 +291,13 @@ private extension StationsListView {
 #endif
     }
     
-    var fillCost: FillCost? {
-        guard let vehicle = VehicleFavorite.vehicleData, vehicle.isValid else {
+    func tankCost(pricePerLitre: Double) -> Double? {
+        guard let vehicle = VehicleFavorite.vehicleData,
+              vehicle.fuel == viewModel.selectedFuel,
+              let litres = vehicle.capacityLitres else {
             return nil
         }
-        return vehicle.fillCost(using: FillCost.candidates(from: viewModel.stations))
+        return pricePerLitre * litres
     }
     
     var stationsScreen: some View {
@@ -329,14 +337,12 @@ private extension StationsListView {
         } label: {
             Image(systemName: "location.fill")
                 .font(.customSize(20, weight: .semibold))
-                .foregroundStyle(.white)
+                .foregroundStyle(.background)
                 .frame(width: 56, height: 56)
-                .background(Color.orange, in: Circle())
+                .background(Color.primary, in: Circle())
                 .shadow(color: .black.opacity(0.22), radius: 8, y: 4)
         }
         .buttonStyle(.plain)
-        .padding(.trailing, 20)
-        .padding(.bottom, 12)
         .accessibilityLabel("listView.city.useLocation".translated)
     }
     
@@ -345,11 +351,11 @@ private extension StationsListView {
             VStack(spacing: 0) {
                 ZStack {
                     Circle()
-                        .fill(Color.orange.opacity(0.14))
+                        .fill(Color.primary.opacity(0.08))
                         .frame(width: 84, height: 84)
                     Image(systemName: "globe.europe.africa.fill")
                         .font(.customSize(34, weight: .semibold))
-                        .foregroundStyle(.orange)
+                        .foregroundStyle(.primary)
                 }
                 .padding(.top, 28)
                 Text("listView.country.prompt".translated)
@@ -381,7 +387,7 @@ private extension StationsListView {
                             }
                             .padding(.horizontal, 18)
                             .padding(.vertical, 16)
-                            .background(Color.orange.opacity(0.12), in: RoundedRectangle(cornerRadius: 16))
+                            .background(Color.primary.opacity(0.06), in: RoundedRectangle(cornerRadius: 16))
                             .contentShape(RoundedRectangle(cornerRadius: 16))
                         }
                         .buttonStyle(.plain)
@@ -399,7 +405,7 @@ private extension StationsListView {
                     .font(.customSize(15, weight: .semibold))
                 }
                 .buttonStyle(.plain)
-                .foregroundStyle(.orange)
+                .foregroundStyle(.primary)
                 .padding(.top, 24)
                 .padding(.bottom, 100)
             }
@@ -412,11 +418,11 @@ private extension StationsListView {
             VStack(spacing: 0) {
                 ZStack {
                     Circle()
-                        .fill(Color.orange.opacity(0.14))
+                        .fill(Color.primary.opacity(0.08))
                         .frame(width: 84, height: 84)
                     Image(systemName: "mappin.and.ellipse")
                         .font(.customSize(34, weight: .semibold))
-                        .foregroundStyle(.orange)
+                        .foregroundStyle(.primary)
                 }
                 .padding(.top, 28)
                 Text("listView.city.prompt".translated)
@@ -448,7 +454,7 @@ private extension StationsListView {
                     .font(.customSize(15, weight: .semibold))
                 }
                 .buttonStyle(.plain)
-                .foregroundStyle(.orange)
+                .foregroundStyle(.primary)
                 .padding(.top, 24)
                 .padding(.bottom, 100)
             }
@@ -496,8 +502,8 @@ private extension StationsListView {
                             .lineLimit(1)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 11)
-                            .background(Color.orange.opacity(0.12), in: Capsule())
-                            .foregroundStyle(.orange)
+                            .background(Color.primary.opacity(0.06), in: Capsule())
+                            .foregroundStyle(.primary)
                     }
                     .buttonStyle(.plain)
                 }
@@ -522,7 +528,7 @@ private extension StationsListView {
                     HStack(spacing: 12) {
                         Image(systemName: "mappin.circle.fill")
                             .font(.customSize(20))
-                            .foregroundStyle(.orange)
+                            .foregroundStyle(.primary)
                         VStack(alignment: .leading, spacing: 1) {
                             Text(town.capitalized)
                                 .font(.customSize(16))
@@ -580,8 +586,11 @@ private extension StationsListView {
         }
 #else
         List {
-            if let cost = fillCost {
-                FillCostCard(cost: cost)
+            if let station = viewModel.cheapestNearby, let unit = station.price(for: viewModel.selectedFuel) {
+                FillCostCard(station: station,
+                             fuel: viewModel.selectedFuel,
+                             pricePerLitre: unit,
+                             fillCost: tankCost(pricePerLitre: unit))
                     .listRowSeparator(.hidden)
                     .listRowInsets(EdgeInsets(top: 10, leading: 16, bottom: 10, trailing: 16))
             }
@@ -606,7 +615,10 @@ private extension StationsListView {
                 await viewModel.reload()
             }
             .navigationTitle(viewModel.navigationTitle ?? "")
-            .sidebarSafeToolbar { filterButtons }
+            .sidebarSafeToolbar { appearanceMenu }
+#if os(iOS)
+            .contentMargins(.bottom, 80, for: .scrollContent)
+#endif
     }
     
     @ViewBuilder
@@ -753,49 +765,87 @@ private extension StationsListView {
 extension StationsListView {
     
     fileprivate var filterButtons: some View {
-        HStack(spacing: 2) {
-            countryMenu
-            
-            if !viewModel.brandOptions.isEmpty {
-                brandMenu
-            }
-            
-            Menu {
-                Section {
-                    ForEach(viewModel.country.fuels, id: \.self) { fuel in
-                        Button {
-                            viewModel.showFuel(fuel)
-                        } label: {
-                            Label(fuel.name,
-                                  systemImage: viewModel.selectedFuel == fuel ? "checkmark" : "drop")
-                        }
-                    }
-                } header: {
-                    Text("common.fuelType".translated)
-                }
-                Section {
-                    ForEach(StationSort.allCases, id: \.self) { order in
-                        Button {
-                            viewModel.showSorted(order)
-                        } label: {
-                            Label(order.title,
-                                  systemImage: viewModel.sortOrder == order ? "checkmark" : order.icon)
-                        }
-                    }
-                } header: {
-                    Text("listView.sort.title".translated)
-                }
-            } label: {
-                filterChip(icon: viewModel.sortOrder.icon,
-                           title: viewModel.selectedFuel.tag,
-                           isActive: viewModel.sortOrder != .nearest)
-            }
-            
+        HStack(spacing: 8) {
+            filterBar(large: false)
             appearanceMenu
         }
     }
     
-    fileprivate var countryMenu: some View {
+    @ViewBuilder
+    fileprivate func filterBar(large: Bool) -> some View {
+        let bar = HStack(spacing: 0) {
+            countryMenu(large: large)
+            if !viewModel.brandOptions.isEmpty {
+                barDivider(large: large)
+                brandMenu(large: large)
+            }
+            barDivider(large: large)
+            fuelSortMenu(large: large)
+        }
+        if large {
+            bar
+                .padding(.horizontal, 6)
+                .frame(height: 56)
+                .modifier(FilterBarChrome(surface: barSurface))
+        } else {
+            bar
+        }
+    }
+    
+    fileprivate var barSurface: Color {
+#if canImport(UIKit)
+        Color(uiColor: .secondarySystemBackground)
+#else
+        Color(nsColor: .controlBackgroundColor)
+#endif
+    }
+    
+    fileprivate func barDivider(large: Bool) -> some View {
+        Rectangle()
+            .fill(Color.primary.opacity(0.12))
+            .frame(width: 1, height: large ? 24 : 16)
+            .fixedSize()
+    }
+    
+    fileprivate func fuelSortMenu(large: Bool) -> some View {
+        Menu {
+            Section {
+                ForEach(viewModel.country.fuels, id: \.self) { fuel in
+                    Button {
+                        viewModel.showFuel(fuel)
+                    } label: {
+                        Label(fuel.name,
+                              systemImage: viewModel.selectedFuel == fuel ? "checkmark" : "drop")
+                    }
+                }
+            } header: {
+                Text("common.fuelType".translated)
+            }
+            Section {
+                ForEach(viewModel.availableSorts, id: \.self) { order in
+                    Button {
+                        viewModel.showSorted(order)
+                    } label: {
+                        Label(order.title,
+                              systemImage: viewModel.effectiveSort == order ? "checkmark" : order.icon)
+                    }
+                }
+            } header: {
+                Text("listView.sort.title".translated)
+            }
+        } label: {
+            let isActive = viewModel.hasLocation && viewModel.sortOrder != .nearest
+            barSegment(title: viewModel.selectedFuel.tag, isActive: isActive, large: large) {
+                Image(systemName: viewModel.effectiveSort.icon)
+                    .font(.customSize(large ? 15 : 12, weight: .bold))
+            }
+        }
+        .menuStyle(.button)
+        .menuOrder(.fixed)
+        .buttonStyle(.plain)
+    }
+    
+    fileprivate func countryMenu(large: Bool) -> some View {
         Menu {
             ForEach(Country.allCases) { country in
                 Button {
@@ -811,44 +861,89 @@ extension StationsListView {
                 }
             }
         } label: {
-            filterChip(emoji: viewModel.country.flag, title: viewModel.country.code, isActive: false)
+            barSegment(title: nil, isActive: false, large: large) {
+                Text(viewModel.country.flag)
+                    .font(.customSize(large ? 22 : 15))
+                    .fixedSize()
+            }
         }
+        .menuStyle(.button)
+        .menuOrder(.fixed)
+        .buttonStyle(.plain)
         .accessibilityLabel("country.title".translated)
     }
     
-    fileprivate var brandMenu: some View {
-        Group {
-            Menu {
+    fileprivate func brandMenu(large: Bool) -> some View {
+        Menu {
+            Button {
+                viewModel.showByBrand(.all)
+            } label: {
+                Label("listView.brand.all".translated,
+                      systemImage: isBrandFiltered ? "fuelpump.fill" : "checkmark")
+            }
+            Divider()
+            ForEach(viewModel.brandOptions) { option in
                 Button {
-                    viewModel.showByBrand(.all)
+                    viewModel.showByBrand(.brand(option.key))
                 } label: {
-                    Label("listView.brand.all".translated,
-                          systemImage: isBrandFiltered ? "fuelpump.fill" : "checkmark")
-                }
-                Divider()
-                ForEach(viewModel.brandOptions) { option in
-                    Button {
-                        viewModel.showByBrand(.brand(option.key))
-                    } label: {
-                        Label {
-                            Text(option.title)
-                        } icon: {
-                            if viewModel.currentSortBrand == .brand(option.key) {
-                                Image(systemName: "checkmark")
-                            } else if let logo = option.logo {
-                                (logo.roundedMenuImage() ?? logo.image).renderingMode(.original)
-                            } else {
-                                Image(systemName: "fuelpump")
-                            }
+                    Label {
+                        Text(option.title)
+                    } icon: {
+                        if viewModel.currentSortBrand == .brand(option.key) {
+                            Image(systemName: "checkmark")
+                        } else if let logo = option.logo {
+                            (logo.roundedMenuImage() ?? logo.image).renderingMode(.original)
+                        } else {
+                            Image(systemName: "fuelpump")
                         }
                     }
                 }
-            } label: {
-                filterChip(icon: "fuelpump",
-                           title: isBrandFiltered ? brandTitle : nil,
-                           isActive: isBrandFiltered)
+            }
+        } label: {
+            barSegment(title: isBrandFiltered ? brandTitle : nil, isActive: isBrandFiltered, large: large) {
+                if let logo = selectedBrandLogo {
+                    logo.roundIcon(size: large ? 26 : 18)
+                } else {
+                    Image(systemName: "fuelpump.fill")
+                        .font(.customSize(large ? 17 : 13, weight: .semibold))
+                }
             }
         }
+        .menuStyle(.button)
+        .menuOrder(.fixed)
+        .buttonStyle(.plain)
+    }
+    
+    fileprivate var selectedBrandLogo: CommonStationBrand? {
+        guard case .brand(let key) = viewModel.currentSortBrand else {
+            return nil
+        }
+        return viewModel.brandOptions.first { $0.key == key }?.logo
+    }
+    
+    fileprivate func barSegment<Leading: View>(title: String?,
+                                               isActive: Bool,
+                                               large: Bool,
+                                               @ViewBuilder leading: () -> Leading) -> some View {
+        HStack(spacing: large ? 6 : 4) {
+            leading()
+                .foregroundStyle(Color.primary)
+            if let title {
+                Text(title)
+                    .font(.customSize(large ? 16 : 13, weight: isActive ? .bold : .semibold))
+                    .foregroundStyle(Color.primary)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+                    .frame(maxWidth: 90)
+                    .fixedSize(horizontal: true, vertical: false)
+            }
+            Image(systemName: "chevron.down")
+                .font(.customSize(large ? 10 : 8, weight: .bold))
+                .foregroundStyle(.secondary)
+        }
+        .padding(.horizontal, large ? 12 : 8)
+        .frame(height: large ? 44 : 28)
+        .contentShape(Capsule())
     }
     
     fileprivate var appearanceMenu: some View {
@@ -862,27 +957,9 @@ extension StationsListView {
                 }
             }
         } label: {
-            filterChip(icon: appearance.icon, title: nil, isActive: appearance != .system)
+            filterChip(icon: appearance.icon, title: nil, isActive: false)
         }
         .accessibilityLabel("appearance.title".translated)
-    }
-    
-    fileprivate func filterChip(emoji: String, title: String?, isActive: Bool) -> some View {
-        HStack(spacing: 5) {
-            Text(emoji)
-                .font(.customSize(14))
-            if let title {
-                Text(title)
-                    .font(.customSize(14, weight: .semibold))
-                    .lineLimit(1)
-            }
-        }
-        .foregroundColor(isActive ? .white : .orange)
-        .padding(.horizontal, isActive ? 10 : 8)
-        .padding(.vertical, 6)
-        .background(
-            Capsule().fill(isActive ? Color.orange : Color.orange.opacity(0.15))
-        )
     }
     
     fileprivate func filterChip(icon: String, title: String?, isActive: Bool) -> some View {
@@ -893,13 +970,14 @@ extension StationsListView {
                 Text(title)
                     .font(.customSize(14, weight: .semibold))
                     .lineLimit(1)
+                    .fixedSize(horizontal: true, vertical: false)
             }
         }
-        .foregroundColor(isActive ? .white : .orange)
+        .foregroundColor(.primary)
         .padding(.horizontal, isActive ? 10 : 8)
         .padding(.vertical, 6)
         .background(
-            Capsule().fill(isActive ? Color.orange : Color.orange.opacity(0.15))
+            Capsule().fill(Color.primary.opacity(0.08))
         )
     }
     
@@ -973,5 +1051,22 @@ struct StationsListView_Previews: PreviewProvider {
     static var previews: some View {
         StationsListView(viewModel: StationsListViewViewModel())
             .preferredColorScheme(.dark)
+    }
+}
+
+private struct FilterBarChrome: ViewModifier {
+    
+    let surface: Color
+    
+    func body(content: Content) -> some View {
+        if #available(iOS 26.0, macOS 26.0, *) {
+            content
+                .glassEffect(.regular.interactive(), in: .capsule)
+        } else {
+            content
+                .background(surface, in: Capsule())
+                .overlay(Capsule().strokeBorder(Color.primary.opacity(0.12), lineWidth: 1))
+                .shadow(color: .black.opacity(0.22), radius: 8, y: 4)
+        }
     }
 }

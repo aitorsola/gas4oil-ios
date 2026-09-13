@@ -29,7 +29,11 @@ struct Gas4OilApp: App {
             } else {
                 MainTabView()
                     .frame(minWidth: 560, maxWidth: .infinity, minHeight: 640, maxHeight: .infinity)
-                    .preferredColorScheme(appearance.colorScheme)
+#if os(macOS)
+                    .onChange(of: appearance, initial: true) { _, preference in
+                        NSApp.appearance = preference.appKitAppearance
+                    }
+#endif
             }
         }
     }

@@ -48,7 +48,6 @@
 "listView.sort.title" = "Sort by";
 "listView.sortOrder.near" = "Nearest";
 "listView.sortOrder.down" = "Lowest price";
-"listView.sortOrder.up" = "Highest price";
 "listView.brand.all" = "All brands";
 "listView.sortType.all.button" = "All";
 "listView.sortType.near95.button" = "Nearest 95";
@@ -66,7 +65,7 @@
 "listView.ad.title" = "What can you do?";
 "listView.ad.button" = "Get started";
 "listView.ad.sort.title" = "Sort it your way";
-"listView.ad.sort.detail" = "By distance, lowest price or highest.";
+"listView.ad.sort.detail" = "By distance or by price.";
 "listView.ad.filter.title" = "Filter by brand";
 "listView.ad.filter.detail" = "And pick the fuel your car takes.";
 "listView.ad.search.title" = "Search by locality";
@@ -98,7 +97,6 @@
 "myVehicle.ad.title" = "Add a vehicle";
 "myVehicle.ad.description" = "Add a vehicle and you will know in advance what a full tank costs at each station.";
 "myVehicle.fill.title" = "A full tank costs";
-"myVehicle.fill.cheapestAt" = "Cheapest at %@ (%@).";
 "myVehicle.fill.footer" = "Among the loaded stations within 50 km of you.";
 "myVehicle.fill.unavailable" = "No stations loaded with this fuel yet.";
 
@@ -119,3 +117,4 @@
 "country.portugal" = "Portugal";
 "country.italy" = "Italy";
 "country.croatia" = "Croatia";
+"listView.cheapest.title" = "Cheapest · %@";

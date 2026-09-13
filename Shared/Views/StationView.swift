@@ -84,58 +84,63 @@ extension FillCost {
     
     static let nearbyRadius: Double = 50_000
     static let minimumCandidates = 20
+}
+
+extension Double {
     
-    static func candidates(from stations: [Station]) -> [Station] {
-        guard let here = Managers.location.currentCoordinates else {
-            return stations
-        }
-        let byDistance = stations
-            .map { ($0, $0.getCLLocationCoordinates().distance(from: here)) }
-            .sorted { $0.1 < $1.1 }
-        let near = byDistance.filter { $0.1 <= nearbyRadius }
-        let chosen = near.isEmpty ? Array(byDistance.prefix(minimumCandidates)) : near
-        return chosen.map { $0.0 }
+    var asPricePerLitre: String {
+        String(format: "%.3f €/l", self).replacingOccurrences(of: ".", with: ",")
     }
 }
 
 struct FillCostCard: View {
     
-    let cost: FillCost
+    let station: Station
+    let fuel: FuelType
+    let pricePerLitre: Double
+    var fillCost: Double?
+    
+    private var title: String {
+        fillCost == nil ? "listView.cheapest.title".translated(fuel.name) : "myVehicle.fill.title".translated
+    }
+    
+    private var detail: String {
+        let place = "\(station.displayTitle) (\(station.municipio.capitalized))"
+        return fillCost == nil ? place : "\(place) · \(pricePerLitre.asPricePerLitre)"
+    }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack(alignment: .top, spacing: 8) {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("myVehicle.fill.title".translated)
+                    Text(title)
                         .font(.customSize(13))
                         .foregroundStyle(.secondary)
-                    Text(cost.cheapest.asEuros)
+                    Text(fillCost?.asEuros ?? pricePerLitre.asPricePerLitre)
                         .font(.customSize(30, weight: .bold, design: .rounded))
                         .foregroundStyle(.green)
                 }
                 Spacer(minLength: 0)
-                CommonStationBrand(rotulo: cost.cheapestStation.rotulo).roundIcon(size: 36)
+                CommonStationBrand(rotulo: station.rotulo).roundIcon(size: 36)
             }
             HStack(spacing: 6) {
-                Text(
-                    "myVehicle.fill.cheapestAt".translated(
-                        cost.cheapestStation.displayTitle,
-                        cost.cheapestStation.municipio.capitalized
-                    )
-                )
+                Text(detail)
                 .font(.customSize(13))
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
                 Spacer(minLength: 0)
-                if let distance = Location.distanceFromPoint(cost.cheapestStation.getCLLocationCoordinates()) {
-                    Label(distance.text, systemImage: "location.fill")
-                        .font(.customSize(13, weight: .semibold))
-                        .foregroundStyle(.orange)
-                        .layoutPriority(1)
+                if let distance = Location.distanceFromPoint(station.getCLLocationCoordinates()) {
+                    HStack(spacing: 4) {
+                        Image(systemName: "location.fill")
+                        Text(distance.text)
+                    }
+                    .font(.customSize(13, weight: .semibold))
+                    .foregroundStyle(.primary)
+                    .layoutPriority(1)
                 }
             }
             Button {
-                cost.cheapestStation.openInMaps()
+                station.openInMaps()
             } label: {
                 HStack(spacing: 8) {
                     Image(systemName: "arrow.triangle.turn.up.right.circle.fill")
@@ -146,11 +151,13 @@ struct FillCostCard: View {
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.regular)
-            .tint(.orange)
+            .tint(.primary)
+            .foregroundStyle(.background)
+            .foregroundStyle(.background)
             .padding(.top, 2)
         }
         .padding(14)
-        .background(Color.orange.opacity(0.10), in: RoundedRectangle(cornerRadius: 16))
+        .background(Color.primary.opacity(0.06), in: RoundedRectangle(cornerRadius: 16))
     }
 }
 
@@ -224,7 +231,7 @@ private extension StationView {
                         .font(.customSize(size, weight: .bold))
                         .foregroundColor(column.color)
                     Text(column.price + " €")
-                        .foregroundColor(.orange)
+                        .foregroundColor(.primary)
                         .font(.customSize(size, weight: .medium))
                 }
                 .lineLimit(1)
@@ -270,7 +277,7 @@ private extension StationView {
             HStack(spacing: 8) {
                 Image(systemName: "arrow.triangle.turn.up.right.circle.fill")
                     .font(.customSize(18))
-                    .foregroundStyle(.orange)
+                    .foregroundStyle(.primary)
                 Text("listView.station.directions".translated)
                     .font(.customSize(16, weight: .medium))
                     .foregroundStyle(.primary)
@@ -311,7 +318,7 @@ private extension StationView {
         } label: {
             Image(systemName: isFav ? "star.fill" : "star")
                 .font(.customSize(20))
-                .foregroundStyle(.orange)
+                .foregroundStyle(.primary)
                 .contentTransition(.symbolEffect(.replace))
                 .symbolEffect(.bounce, value: isFav)
                 .frame(width: 56, height: 48)
@@ -325,15 +332,15 @@ private extension StationView {
         HStack(spacing: 4) {
             Image(systemName: "location.fill")
                 .font(.customSize(12))
-                .foregroundColor(.orange)
+                .foregroundColor(.primary)
             switch Location.distanceFromPoint(coordinates) {
             case .km(let value):
                 Text("\(value.toString()) km.")
-                    .foregroundColor(.orange)
+                    .foregroundColor(.primary)
                     .font(.customSize(15, weight: .bold))
             case .metters(let value):
                 Text("\(value.toString()) m.")
-                    .foregroundColor(.orange)
+                    .foregroundColor(.primary)
                     .font(.customSize(15, weight: .bold))
             case .none:
                 EmptyView()

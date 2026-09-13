@@ -21,17 +21,17 @@ struct Gas4OilButton: View {
             if let image = image {
                 image
                     .frame(width: 20, height: 20)
-                    .foregroundColor(.orange)
+                    .foregroundColor(.primary)
                     .rotationEffect(Angle.degrees(needsRotate ? 360 : 0))
             }
             Text(title.uppercased())
                 .multilineTextAlignment(.center)
-                .foregroundColor(isDisabled ? .gray : .orange)
+                .foregroundColor(isDisabled ? .gray : .primary)
                 .font(.system(size: 20, weight: .medium, design: .default))
                 .font(.customSize(20, weight: .medium, design: .rounded))
         }
         .padding(10)
-        .overlay(RoundedRectangle(cornerRadius: 5).stroke(isDisabled ? .gray : .orange, lineWidth: 2))
+        .overlay(RoundedRectangle(cornerRadius: 5).stroke(isDisabled ? .gray : .primary, lineWidth: 2))
         .onTapGesture {
             guard !isDisabled else {
                 return

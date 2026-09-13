@@ -35,7 +35,7 @@ struct AdView: View {
                     HStack(alignment: .top, spacing: 16) {
                         Image(systemName: tip.symbol)
                             .font(.customSize(20, weight: .semibold))
-                            .foregroundStyle(.orange)
+                            .foregroundStyle(.primary)
                             .frame(width: 32)
                         VStack(alignment: .leading, spacing: 3) {
                             Text(tip.title)
@@ -61,7 +61,9 @@ struct AdView: View {
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
-            .tint(.orange)
+            .tint(.primary)
+            .foregroundStyle(.background)
+            .foregroundStyle(.background)
             .padding(.horizontal, 24)
             .padding(.bottom, 28)
         }
