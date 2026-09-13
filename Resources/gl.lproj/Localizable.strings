@@ -108,3 +108,14 @@
 "error.emptyResponse" = "O servizo de estacións non devolveu datos";
 "error.parse" = "Non se puideron ler os datos das estacións";
 "listView.detail.empty" = "Escolle unha estación";
+
+"country.title" = "País";
+"country.spain" = "España";
+"country.france" = "Francia";
+"fuel.e10" = "Gasolina 95 E10";
+"fuel.e85" = "Etanol E85";
+"listView.country.prompt" = "En que país estás?";
+"listView.country.hint" = "Sen localización non sabemos que prezos mostrarche. Elixe o país e despois a túa localidade.";
+"country.portugal" = "Portugal";
+"country.italy" = "Italia";
+"country.croatia" = "Croacia";

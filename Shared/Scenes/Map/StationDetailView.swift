@@ -28,9 +28,9 @@ private extension StationDetailView {
             HStack(spacing: 12) {
                 CommonStationBrand(rotulo: station.rotulo).roundIcon(size: 44)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(station.brandName.uppercased())
+                    Text(station.displayTitle.uppercased())
                         .font(.customSize(22, weight: .bold))
-                    Text(station.direccion.capitalized + " · " + station.municipio.capitalized)
+                    Text(station.displayAddress.capitalized + " · " + station.municipio.capitalized)
                         .font(.customSize(14))
                         .foregroundStyle(.secondary)
                 }
@@ -129,10 +129,10 @@ struct StationSidebarRow: View {
         HStack(spacing: 10) {
             CommonStationBrand(rotulo: station.rotulo).roundIcon(size: 30)
             VStack(alignment: .leading, spacing: 2) {
-                Text(station.brandName.uppercased())
+                Text(station.displayTitle.uppercased())
                     .font(.customSize(14, weight: .bold))
                     .lineLimit(1)
-                Text(station.direccion.capitalized)
+                Text(station.displayAddress.capitalized)
                     .font(.customSize(12))
                     .foregroundStyle(.secondary)
                     .lineLimit(1)

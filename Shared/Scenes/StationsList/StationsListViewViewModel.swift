@@ -192,14 +192,18 @@ extension CommonStationBrand {
 final class StationsListViewViewModel {
     
     private var locationManager: LocationManager
-    private var servicesStationsAPI: ServiceStationsAPI
+    private let provider: (Country) -> ServiceStationsAPI
     
     private var kMaxLenght = 200
     private static let selectedFuelKey = "listView.selectedFuel"
     private static let sortOrderKey = "listView.sortOrder"
     private static let brandKey = "listView.brand"
     private static let cityKey = "listView.city"
-    private var municipioSearchKeys: [String] = []
+    private(set) var country: Country = .spain
+    private(set) var hasChosenCountry = false
+    private var countryPinnedByUser = false
+    private(set) var isLocating = false
+    private var townSearchKeys: [String] = []
     private var fetchTask: Task<Void, Never>?
     private var locatingTask: Task<Void, Never>?
     private static let locatingTimeout: Duration = .seconds(15)
@@ -208,7 +212,7 @@ final class StationsListViewViewModel {
     
     var allStations: [Station] = []
     var allMunicipios: [String] = []
-    private(set) var provinceByMunicipio: [String: String] = [:]
+    private(set) var provinceByTown: [String: String] = [:]
     var currentCity: String?
     private(set) var currentSortBrand: FuelBrandSortType = .all
     
@@ -224,14 +228,25 @@ final class StationsListViewViewModel {
     private(set) var loadError: String?
     
     var suggestedCities: [String] {
-        let biggest = ["madrid", "barcelona", "valencia", "sevilla", "zaragoza", "málaga",
-                       "murcia", "palma de mallorca", "bilbao", "alicante/alacant",
-                       "valladolid", "vigo", "gijón", "córdoba"]
-        return biggest.filter { allMunicipios.contains($0) }
+        country.suggestedCities.filter { allMunicipios.contains($0) }
     }
     
     func province(of municipio: String) -> String? {
-        provinceByMunicipio[municipio]
+        provinceByTown[municipio]
+    }
+    
+    private var locationTitle: String? {
+        guard locationManager.currentCoordinates != nil else {
+            return nil
+        }
+        if Country(isoCode: locationManager.currentCountryCode) != country {
+            return country.name
+        }
+        return locationManager.currentCity?.capitalized
+    }
+    
+    var needsCountryChoice: Bool {
+        !hasChosenCountry && !isLocating
     }
     
     var needsCityChoice: Bool {
@@ -259,38 +274,38 @@ final class StationsListViewViewModel {
         }
     }
     
-    private static let genericRotuloTokens: Set<String> = [
+    private static let genericBrandTokens: Set<String> = [
         "estacion", "estación", "servicio", "gasolinera", "area", "área", "oil", "energy",
         "energia", "energía", "carburantes", "combustibles", "petrol", "gasoleos", "gasóleos",
-        "auto", "gas", "unknown"
+        "auto", "gas", "unknown", "genérico", "generico"
     ]
     
     private static let minStationsPerBrand = 20
-    private static let minBareRotulos = 5
+    private static let minBareBrandNames = 5
     
-    static func rotuloTokens(_ rotulo: String) -> [String] {
+    static func brandTokens(_ rotulo: String) -> [String] {
         rotulo.lowercased()
             .split { !$0.isLetter && !$0.isNumber }
             .map(String.init)
     }
     
     static func rotulo(_ rotulo: String, matches key: String) -> Bool {
-        rotuloTokens(rotulo).contains(key)
+        brandTokens(rotulo).contains(key)
     }
     
     static func brandOptions(from stations: [Station]) -> [StationBrand] {
-        var bareRotulos: [String: Int] = [:]
+        var bareBrandNames: [String: Int] = [:]
         for station in stations {
-            let tokens = rotuloTokens(station.rotulo)
+            let tokens = brandTokens(station.rotulo)
             if tokens.count == 1 {
-                bareRotulos[tokens[0], default: 0] += 1
+                bareBrandNames[tokens[0], default: 0] += 1
             }
         }
         
         var counts: [String: Int] = [:]
         var logos: [String: CommonStationBrand] = [:]
         for station in stations {
-            let tokens = rotuloTokens(station.rotulo)
+            let tokens = brandTokens(station.rotulo)
             if let known = tokens.lazy
                 .compactMap({ CommonStationBrand(rawValue: $0) })
                 .first(where: { $0 != .unknown }) {
@@ -299,9 +314,9 @@ final class StationsListViewViewModel {
                 continue
             }
             let discovered = tokens.first {
-                !genericRotuloTokens.contains($0)
+                !genericBrandTokens.contains($0)
                     && $0.count >= 3
-                    && bareRotulos[$0, default: 0] >= minBareRotulos
+                    && bareBrandNames[$0, default: 0] >= minBareBrandNames
             }
             if let discovered {
                 counts[discovered, default: 0] += 1
@@ -325,9 +340,10 @@ final class StationsListViewViewModel {
         return branded + discovered
     }
     
-    init(locationManager: LocationManager = Managers.location, servicesAPI: ServiceStationsAPI = Network()) {
+    init(locationManager: LocationManager = Managers.location,
+         provider: @escaping (Country) -> ServiceStationsAPI = Country.provider) {
         self.locationManager = locationManager
-        self.servicesStationsAPI = servicesAPI
+        self.provider = provider
         self.locationAllowed = isAuthorized(locationManager.currentAuth)
         _ = FavoriteStations.getAllFavorites()
         restoreFilters()
@@ -355,9 +371,14 @@ final class StationsListViewViewModel {
     
     private func startLocatingTimeout() {
         locatingTask?.cancel()
+        isLocating = true
         locatingTask = Task {
             try? await Task.sleep(for: Self.locatingTimeout)
-            guard !Task.isCancelled, allStations.isEmpty, !isFetching else {
+            guard !Task.isCancelled else {
+                return
+            }
+            isLocating = false
+            guard allStations.isEmpty, !isFetching, hasChosenCountry else {
                 return
             }
             getStations()
@@ -365,6 +386,7 @@ final class StationsListViewViewModel {
     }
     
     func requestLocation() {
+        countryPinnedByUser = false
 #if os(iOS)
         if locationManager.currentAuth == .denied || locationManager.currentAuth == .restricted {
             if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
@@ -381,9 +403,10 @@ final class StationsListViewViewModel {
             requestLocation()
             return
         }
+        countryPinnedByUser = false
         currentCity = nil
         defaults.removeObject(forKey: Self.cityKey)
-        navigationTitle = locationManager.currentCity?.capitalized
+        navigationTitle = locationTitle
         refresh()
         locationManager.requestAuth()
         startLocatingTimeout()
@@ -391,7 +414,11 @@ final class StationsListViewViewModel {
     
     func continueWithoutLocation() {
         skippedLocation = true
-        if allStations.isEmpty, !isFetching {
+        if currentCity == nil, allStations.isEmpty {
+            hasChosenCountry = false
+            return
+        }
+        if hasChosenCountry, allStations.isEmpty, !isFetching {
             getStations()
         }
     }
@@ -411,13 +438,13 @@ final class StationsListViewViewModel {
         if text.isEmpty {
             return allMunicipios
         } else {
-            return zip(allMunicipios, municipioSearchKeys)
+            return zip(allMunicipios, townSearchKeys)
                 .filter { $0.1.contains(text) }
                 .map(\.0)
         }
     }
     
-    static func municipioSearchKey(_ name: String) -> String {
+    static func townSearchKey(_ name: String) -> String {
         guard name.hasSuffix(")"), let open = name.lastIndex(of: "(") else {
             return name
         }
@@ -437,8 +464,15 @@ final class StationsListViewViewModel {
     }
     
     private func restoreFilters() {
+        if let key = defaults.string(forKey: Country.storageKey),
+           let saved = Country(rawValue: key) {
+            country = saved
+            hasChosenCountry = true
+        }
+        selectedFuel = country.defaultFuel
         if let key = defaults.string(forKey: Self.selectedFuelKey),
-           let fuel = FuelType(storageKey: key) {
+           let fuel = FuelType(storageKey: key),
+           country.fuels.contains(fuel) {
             selectedFuel = fuel
         }
         if let key = defaults.string(forKey: Self.sortOrderKey),
@@ -468,25 +502,26 @@ final class StationsListViewViewModel {
         isLoading = true
         allStations = []
         allMunicipios = []
-        provinceByMunicipio = [:]
-        municipioSearchKeys = []
+        provinceByTown = [:]
+        townSearchKeys = []
         brandOptions = []
         stations = []
         loadError = nil
         isFetching = true
         
         fetchTask?.cancel()
+        let api = provider(country)
         fetchTask = Task {
             do throws(G4OError) {
-                let stations = try await servicesStationsAPI.getAllStations()
+                let stations = try await api.getAllStations()
                 guard !Task.isCancelled else {
                     return
                 }
                 allStations = stations
                 allMunicipios = stations.map(\.municipio).unique().sorted()
-                provinceByMunicipio = Dictionary(stations.map { ($0.municipio, $0.provincia) },
+                provinceByTown = Dictionary(stations.map { ($0.municipio, $0.provincia) },
                                                  uniquingKeysWith: { first, _ in first })
-                municipioSearchKeys = allMunicipios.map(Self.municipioSearchKey)
+                townSearchKeys = allMunicipios.map(Self.townSearchKey)
                 brandOptions = Self.brandOptions(from: stations)
                 dropBrandFilterIfGone()
                 favorites = refreshedFavorites(with: stations)
@@ -555,7 +590,7 @@ extension StationsListViewViewModel {
         let trimmed = city.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
         currentCity = trimmed.isEmpty ? nil : trimmed
         refresh()
-        navigationTitle = currentCity?.capitalized ?? locationManager.currentCity?.capitalized
+        navigationTitle = currentCity?.capitalized ?? locationTitle
         if locationManager.currentCoordinates == nil {
             if let currentCity {
                 defaults.set(currentCity, forKey: Self.cityKey)
@@ -563,6 +598,37 @@ extension StationsListViewViewModel {
                 defaults.removeObject(forKey: Self.cityKey)
             }
         }
+    }
+    
+    func showCountry(_ newCountry: Country) {
+        countryPinnedByUser = true
+        applyCountry(newCountry)
+    }
+    
+    private func applyCountry(_ newCountry: Country) {
+        defaults.set(newCountry.rawValue, forKey: Country.storageKey)
+        let firstChoice = !hasChosenCountry
+        hasChosenCountry = true
+        if newCountry == country {
+            if allStations.isEmpty, !isFetching {
+                getStations()
+            }
+            return
+        }
+        country = newCountry
+        if firstChoice, defaults.string(forKey: Self.selectedFuelKey) == nil {
+            selectedFuel = newCountry.defaultFuel
+        }
+        if !newCountry.fuels.contains(selectedFuel) {
+            selectedFuel = newCountry.defaultFuel
+            defaults.set(selectedFuel.storageKey, forKey: Self.selectedFuelKey)
+        }
+        currentSortBrand = .all
+        defaults.removeObject(forKey: Self.brandKey)
+        currentCity = nil
+        defaults.removeObject(forKey: Self.cityKey)
+        navigationTitle = locationTitle
+        getStations()
     }
     
     func showFuel(_ fuel: FuelType) {
@@ -601,7 +667,7 @@ extension StationsListViewViewModel {
         guard let currentCity else {
             return true
         }
-        return Self.municipioSearchKey(station.municipio).contains(currentCity)
+        return Self.townSearchKey(station.municipio).contains(currentCity)
             || station.provincia.contains(currentCity)
     }
     
@@ -662,7 +728,15 @@ extension StationsListViewViewModel: LocationManagerDelegate {
     func didGet(auth: CLAuthorizationStatus) {
         guard isAuthorized(auth) else {
             if auth == .denied || auth == .restricted {
+                locationManager.currentCoordinates = nil
+                locationManager.currentCity = nil
+                locatingTask?.cancel()
+                isLocating = false
+                if currentCity == nil {
+                    navigationTitle = nil
+                }
                 continueWithoutLocation()
+                refresh()
             }
             return
         }
@@ -670,15 +744,25 @@ extension StationsListViewViewModel: LocationManagerDelegate {
             locationAllowed = true
         }
         startLocatingTimeout()
-        if allStations.isEmpty, !isFetching {
+        if hasChosenCountry, allStations.isEmpty, !isFetching {
             getStations()
         }
     }
     
     func didGet(city: String?) {
         locatingTask?.cancel()
-        if let city, currentCity == nil {
-            navigationTitle = city.capitalized
+        isLocating = false
+        if city != nil, currentCity == nil {
+            navigationTitle = locationTitle
+        }
+        if let detected = Country(isoCode: locationManager.currentCountryCode),
+           !countryPinnedByUser,
+           detected != country || !hasChosenCountry {
+            applyCountry(detected)
+            return
+        }
+        guard hasChosenCountry else {
+            return
         }
         if allStations.isEmpty {
             if !isFetching {
@@ -692,7 +776,8 @@ extension StationsListViewViewModel: LocationManagerDelegate {
     func didFailGettingLocation(_ error: Error) {
         print(error.localizedDescription)
         locatingTask?.cancel()
-        if allStations.isEmpty, !isFetching {
+        isLocating = false
+        if hasChosenCountry, allStations.isEmpty, !isFetching {
             getStations()
         } else if !isFetching {
             isLoading = false

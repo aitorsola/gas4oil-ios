@@ -101,8 +101,8 @@ extension FavoriteListView {
             fillPrice = unitPrice * litres
         }
         return StationView(prices: PriceColumn.columns(for: station),
-                           brand: station.rotulo,
-                           address: station.direccion,
+                           brand: station.displayTitle,
+                           address: station.displayAddress,
                            schedule: station.horario,
                            coordinates: station.getCLLocationCoordinates(),
                            showFavButton: false,

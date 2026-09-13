@@ -25,7 +25,7 @@ struct PriceColumn: Identifiable {
     var id: String { label }
     
     static func columns(for station: Station) -> [PriceColumn] {
-        FuelType.allCases.compactMap { fuel in
+        (station.country ?? .spain).fuels.compactMap { fuel in
             let price = station.rawPrice(for: fuel)
             guard !price.isEmpty else {
                 return nil
@@ -51,6 +51,10 @@ extension FuelType {
             return "fuel.dieselPremium".translated
         case .glp:
             return "GLP"
+        case .e10:
+            return "E10"
+        case .e85:
+            return "E85"
         }
     }
     
@@ -68,6 +72,10 @@ extension FuelType {
             return .indigo
         case .glp:
             return .blue
+        case .e10:
+            return .teal
+        case .e85:
+            return .purple
         }
     }
 }
@@ -111,7 +119,7 @@ struct FillCostCard: View {
             HStack(spacing: 6) {
                 Text(
                     "myVehicle.fill.cheapestAt".translated(
-                        cost.cheapestStation.brandName,
+                        cost.cheapestStation.displayTitle,
                         cost.cheapestStation.municipio.capitalized
                     )
                 )
@@ -183,7 +191,9 @@ struct StationView: View {
                 .foregroundColor(.secondary)
                 .lineLimit(2)
                 .fixedSize(horizontal: false, vertical: true)
-            scheduleRow
+            if !schedule.isEmpty {
+                scheduleRow
+            }
             if let fillPrice = fillPrice, !fillPrice.isZero {
                 fillPriceRow(fillPrice)
             }
@@ -336,30 +346,80 @@ private extension StationView {
 struct StationView_Previews: PreviewProvider {
     static var previews: some View {
         VStack(spacing: 0) {
-            StationView(prices: [PriceColumn(label: "95E5", price: "1,966", color: .green),
-                                 PriceColumn(label: "Diésel", price: "1,964", color: Color(.darkGray)),
-                                 PriceColumn(label: "98E5", price: "2,065", color: .red)],
-                        brand: "Ballenoil",
-                        address: "C/ Miralrio 113, 3º 2",
-                        schedule: "L-V: 07:30-22:00; S: 08:00-22:00; D: 09:00-21:00",
-                        coordinates: CLLocation(latitude: 40.42500000, longitude: -3.68300000),
-                        showFavButton: true,
-                        fillPrice: 80,
-                        isFav: false)
+            StationView(
+                prices: [
+                    PriceColumn(
+                        label: "95E5",
+                        price: "1,966",
+                        color: .green
+                    ),
+                    PriceColumn(
+                        label: "Diésel",
+                        price: "1,964",
+                        color: Color(
+                            .darkGray
+                        )
+                    ),
+                    PriceColumn(
+                        label: "98E5",
+                        price: "2,065",
+                        color: .red
+                    )
+                ],
+                brand: "Ballenoil",
+                address: "C/ Miralrio 113, 3º 2",
+                schedule: "L-V: 07:30-22:00; S: 08:00-22:00; D: 09:00-21:00",
+                coordinates: CLLocation(
+                    latitude: 40.42500000,
+                    longitude: -3.68300000
+                ),
+                showFavButton: true,
+                fillPrice: 80,
+                isFav: false
+            )
             Divider()
-            StationView(prices: [PriceColumn(label: "95E5", price: "1,899", color: .green),
-                                 PriceColumn(label: "Diésel", price: "1,799", color: Color(.darkGray)),
-                                 PriceColumn(label: "Premium", price: "1,899", color: .indigo),
-                                 PriceColumn(label: "GLP", price: "1,059", color: .blue)],
-                        brand: "Repsol",
-                        address: "Glorieta Embajadores, 0",
-                        schedule: "L-D: 24H",
-                        coordinates: CLLocation(latitude: 40.42500000, longitude: -3.68300000),
-                        showFavButton: true,
-                        fillPrice: nil,
-                        isFav: true)
+            StationView(
+                prices: [
+                    PriceColumn(
+                        label: "95E5",
+                        price: "1,899",
+                        color: .green
+                    ),
+                    PriceColumn(
+                        label: "Diésel",
+                        price: "1,799",
+                        color: Color(
+                            .darkGray
+                        )
+                    ),
+                    PriceColumn(
+                        label: "Premium",
+                        price: "1,899",
+                        color: .indigo
+                    ),
+                    PriceColumn(
+                        label: "GLP",
+                        price: "1,059",
+                        color: .blue
+                    )
+                ],
+                brand: "Repsol",
+                address: "Glorieta Embajadores, 0",
+                schedule: "L-D: 24H",
+                coordinates: CLLocation(
+                    latitude: 40.42500000,
+                    longitude: -3.68300000
+                ),
+                showFavButton: true,
+                fillPrice: nil,
+                isFav: true
+            )
         }
-        .padding(.horizontal)
-        .preferredColorScheme(.dark)
+        .padding(
+            .horizontal
+        )
+        .preferredColorScheme(
+            .dark
+        )
     }
 }

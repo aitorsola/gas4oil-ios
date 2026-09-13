@@ -14,6 +14,8 @@ enum FuelType: Codable, CaseIterable {
     case diesel
     case dieselPremium
     case glp
+    case e10
+    case e85
 }
 
 extension FuelType {
@@ -32,6 +34,10 @@ extension FuelType {
             return "dieselPremium"
         case .glp:
             return "glp"
+        case .e10:
+            return "e10"
+        case .e85:
+            return "e85"
         }
     }
     

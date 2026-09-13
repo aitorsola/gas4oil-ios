@@ -108,3 +108,14 @@
 "error.emptyResponse" = "Zerbitzuguneen zerbitzuak ez du daturik itzuli";
 "error.parse" = "Ezin izan dira zerbitzuguneen datuak irakurri";
 "listView.detail.empty" = "Aukeratu gune bat";
+
+"country.title" = "Herrialdea";
+"country.spain" = "Espainia";
+"country.france" = "Frantzia";
+"fuel.e10" = "95 E10 gasolina";
+"fuel.e85" = "E85 etanola";
+"listView.country.prompt" = "Zein herrialdetan zaude?";
+"listView.country.hint" = "Kokapenik gabe ez dakigu zein prezio erakutsi. Aukeratu herrialdea eta gero zure herria.";
+"country.portugal" = "Portugal";
+"country.italy" = "Italia";
+"country.croatia" = "Kroazia";

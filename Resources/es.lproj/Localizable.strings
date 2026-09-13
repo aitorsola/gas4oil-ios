@@ -108,3 +108,14 @@
 "error.emptyResponse" = "El servicio de gasolineras no ha devuelto datos";
 "error.parse" = "No se han podido leer los datos de las gasolineras";
 "listView.detail.empty" = "Elige una estación";
+
+"country.title" = "País";
+"country.spain" = "España";
+"country.france" = "Francia";
+"fuel.e10" = "Gasolina 95 E10";
+"fuel.e85" = "Etanol E85";
+"listView.country.prompt" = "¿En qué país estás?";
+"listView.country.hint" = "Sin ubicación no sabemos qué precios mostrarte. Elige el país y después tu población.";
+"country.portugal" = "Portugal";
+"country.italy" = "Italia";
+"country.croatia" = "Croacia";

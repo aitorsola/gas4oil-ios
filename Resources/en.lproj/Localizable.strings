@@ -108,3 +108,14 @@
 "error.emptyResponse" = "The fuel stations service returned no data";
 "error.parse" = "The fuel stations data could not be read";
 "listView.detail.empty" = "Pick a station";
+
+"country.title" = "Country";
+"country.spain" = "Spain";
+"country.france" = "France";
+"fuel.e10" = "Petrol 95 E10";
+"fuel.e85" = "Ethanol E85";
+"listView.country.prompt" = "Which country are you in?";
+"listView.country.hint" = "Without a location we cannot tell which prices to show. Pick the country, then your town.";
+"country.portugal" = "Portugal";
+"country.italy" = "Italy";
+"country.croatia" = "Croatia";

@@ -24,7 +24,7 @@ struct MapView: View {
     
     var body: some View {
         Map(position: $position, scope: mapScope) {
-            Annotation(station.brandName,
+            Annotation(station.displayTitle,
                        coordinate: CLLocationCoordinate2D(latitude: station.latitude,
                                                           longitude: station.longitude)) {
                 MapPin(station: station) {

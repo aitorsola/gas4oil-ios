@@ -108,3 +108,14 @@
 "error.emptyResponse" = "El servei d'estacions no ha retornat dades";
 "error.parse" = "No s'han pogut llegir les dades de les estacions";
 "listView.detail.empty" = "Tria una estació";
+
+"country.title" = "País";
+"country.spain" = "Espanya";
+"country.france" = "França";
+"fuel.e10" = "Gasolina 95 E10";
+"fuel.e85" = "Etanol E85";
+"listView.country.prompt" = "A quin país ets?";
+"listView.country.hint" = "Sense ubicació no sabem quins preus mostrar-te. Tria el país i després la teva població.";
+"country.portugal" = "Portugal";
+"country.italy" = "Itàlia";
+"country.croatia" = "Croàcia";

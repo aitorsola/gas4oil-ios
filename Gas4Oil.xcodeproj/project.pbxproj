@@ -34,7 +34,15 @@
 		A444767E27D17A5D00B25303 /* ProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A444767D27D17A5D00B25303 /* ProgressView.swift */; };
 		A444767F27D17A5D00B25303 /* ProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A444767D27D17A5D00B25303 /* ProgressView.swift */; };
 		A444768427D1887A00B25303 /* StationsEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A444768327D1887A00B25303 /* StationsEngine.swift */; };
+		41383CB64B739FF3BD9296F4 /* FranceStationsEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DA32AC39185359F85C655F5 /* FranceStationsEngine.swift */; };
+		12BC17EC9DF5C4E544C96969 /* PortugalStationsEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D6699CDED6F50DE73B9D9A0 /* PortugalStationsEngine.swift */; };
+		279267183F14440449E05C75 /* CroatiaStationsEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBDBB03CD273B1ECE28EFEA1 /* CroatiaStationsEngine.swift */; };
+		F9FEE136F9619354C0D10662 /* ItalyStationsEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3F190E94DCBF3ECC1943CED /* ItalyStationsEngine.swift */; };
 		A444768527D1887A00B25303 /* StationsEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A444768327D1887A00B25303 /* StationsEngine.swift */; };
+		A836DDA90756932E9509ACB8 /* FranceStationsEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DA32AC39185359F85C655F5 /* FranceStationsEngine.swift */; };
+		E82C42BA7FEE1C3C9FD90F75 /* PortugalStationsEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D6699CDED6F50DE73B9D9A0 /* PortugalStationsEngine.swift */; };
+		CC9F734EDF08FA411EBD7154 /* CroatiaStationsEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBDBB03CD273B1ECE28EFEA1 /* CroatiaStationsEngine.swift */; };
+		A01781D48D88A1FA50C5D7AA /* ItalyStationsEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3F190E94DCBF3ECC1943CED /* ItalyStationsEngine.swift */; };
 		A44F419B28102FBF00CE8C81 /* Shimmer in Frameworks */ = {isa = PBXBuildFile; productRef = A44F419A28102FBF00CE8C81 /* Shimmer */; };
 		A44F419D28113C6F00CE8C81 /* FakeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A44F419C28113C6F00CE8C81 /* FakeView.swift */; };
 		A44F419E28113C6F00CE8C81 /* FakeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A44F419C28113C6F00CE8C81 /* FakeView.swift */; };
@@ -81,7 +89,9 @@
 		A48F4AA927D218E80024473D /* DomainConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48F4AA827D218E80024473D /* DomainConvertible.swift */; };
 		A48F4AAA27D218E80024473D /* DomainConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48F4AA827D218E80024473D /* DomainConvertible.swift */; };
 		A48F4AAC27D219270024473D /* Stations.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48F4AAB27D219270024473D /* Stations.swift */; };
+		963AD35E98DFA54AC7940BA4 /* Country.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19D6CEA44ED34B41020B0C6 /* Country.swift */; };
 		A48F4AAD27D219270024473D /* Stations.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48F4AAB27D219270024473D /* Stations.swift */; };
+		6556BCDA361BC8C81432F0C5 /* Country.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19D6CEA44ED34B41020B0C6 /* Country.swift */; };
 		A48F4AAF27D4B18D0024473D /* StationsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48F4AAE27D4B18D0024473D /* StationsListView.swift */; };
 		A48F4AB027D4B18D0024473D /* StationsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48F4AAE27D4B18D0024473D /* StationsListView.swift */; };
 		A48F4AB227D4B1CF0024473D /* StationsListViewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48F4AB127D4B1CF0024473D /* StationsListViewViewModel.swift */; };
@@ -153,6 +163,10 @@
 		A444767827D143C500B25303 /* gas_station.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = gas_station.json; sourceTree = "<group>"; };
 		A444767D27D17A5D00B25303 /* ProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressView.swift; sourceTree = "<group>"; };
 		A444768327D1887A00B25303 /* StationsEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationsEngine.swift; sourceTree = "<group>"; };
+		8DA32AC39185359F85C655F5 /* FranceStationsEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FranceStationsEngine.swift; sourceTree = "<group>"; };
+		8D6699CDED6F50DE73B9D9A0 /* PortugalStationsEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortugalStationsEngine.swift; sourceTree = "<group>"; };
+		BBDBB03CD273B1ECE28EFEA1 /* CroatiaStationsEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CroatiaStationsEngine.swift; sourceTree = "<group>"; };
+		D3F190E94DCBF3ECC1943CED /* ItalyStationsEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItalyStationsEngine.swift; sourceTree = "<group>"; };
 		A44AF40627DA014B008213B7 /* Gas4Oil--iOS--Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Gas4Oil--iOS--Info.plist"; sourceTree = "<group>"; };
 		A44F419C28113C6F00CE8C81 /* FakeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeView.swift; sourceTree = "<group>"; };
 		A46E057E27FB5D9300697A57 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -181,6 +195,7 @@
 		A48F4AA527D2133F0024473D /* StationsModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationsModels.swift; sourceTree = "<group>"; };
 		A48F4AA827D218E80024473D /* DomainConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainConvertible.swift; sourceTree = "<group>"; };
 		A48F4AAB27D219270024473D /* Stations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stations.swift; sourceTree = "<group>"; };
+		B19D6CEA44ED34B41020B0C6 /* Country.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Country.swift; sourceTree = "<group>"; };
 		A48F4AAE27D4B18D0024473D /* StationsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationsListView.swift; sourceTree = "<group>"; };
 		A48F4AB127D4B1CF0024473D /* StationsListViewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationsListViewViewModel.swift; sourceTree = "<group>"; };
 		A48F4AB427D4B4B60024473D /* Managers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Managers.swift; sourceTree = "<group>"; };
@@ -311,6 +326,7 @@
 			isa = PBXGroup;
 			children = (
 				A48F4AAB27D219270024473D /* Stations.swift */,
+				B19D6CEA44ED34B41020B0C6 /* Country.swift */,
 				A4A2F8F927F0755F00AC92E8 /* VehicleBrandEntity.swift */,
 				A4E70BB127F07AF30097CBF2 /* VehicleStored.swift */,
 				A47A84AC27F5AB2700AF2892 /* VehicleModelEntity.swift */,
@@ -421,6 +437,10 @@
 			isa = PBXGroup;
 			children = (
 				A444768327D1887A00B25303 /* StationsEngine.swift */,
+				8DA32AC39185359F85C655F5 /* FranceStationsEngine.swift */,
+				8D6699CDED6F50DE73B9D9A0 /* PortugalStationsEngine.swift */,
+				BBDBB03CD273B1ECE28EFEA1 /* CroatiaStationsEngine.swift */,
+				D3F190E94DCBF3ECC1943CED /* ItalyStationsEngine.swift */,
 				A4A2F8F327F06F8500AC92E8 /* VehicleEngine.swift */,
 			);
 			path = "Network+Stations";
@@ -635,6 +655,7 @@
 				A444767427D13A8E00B25303 /* Network.swift in Sources */,
 				A48581CC27DB3FE700864885 /* FavoriteListViewViewModel.swift in Sources */,
 				A48F4AAC27D219270024473D /* Stations.swift in Sources */,
+				963AD35E98DFA54AC7940BA4 /* Country.swift in Sources */,
 				A487AB8627E8B2FF0085385E /* VehicleViewViewModel.swift in Sources */,
 				A46E058127FB69C400697A57 /* BackgroundTaskManager.swift in Sources */,
 				A48581C927DB3E6000864885 /* MainTabViewViewModel.swift in Sources */,
@@ -660,6 +681,10 @@
 				A444767E27D17A5D00B25303 /* ProgressView.swift in Sources */,
 				A48F4AA627D2133F0024473D /* StationsModels.swift in Sources */,
 				A444768427D1887A00B25303 /* StationsEngine.swift in Sources */,
+				41383CB64B739FF3BD9296F4 /* FranceStationsEngine.swift in Sources */,
+				12BC17EC9DF5C4E544C96969 /* PortugalStationsEngine.swift in Sources */,
+				279267183F14440449E05C75 /* CroatiaStationsEngine.swift in Sources */,
+				F9FEE136F9619354C0D10662 /* ItalyStationsEngine.swift in Sources */,
 				A406706D27D90F8D00193D36 /* MainTabView.swift in Sources */,
 				A4727BF827D528AF0005736F /* Sequence.swift in Sources */,
 				A4727BFC27D57D4B0005736F /* MapView.swift in Sources */,
@@ -685,6 +710,7 @@
 				A444767527D13A8E00B25303 /* Network.swift in Sources */,
 				A48581CD27DB3FE700864885 /* FavoriteListViewViewModel.swift in Sources */,
 				A48F4AAD27D219270024473D /* Stations.swift in Sources */,
+				6556BCDA361BC8C81432F0C5 /* Country.swift in Sources */,
 				A48581CA27DB3E6000864885 /* MainTabViewViewModel.swift in Sources */,
 				A48F4AB627D4B4B60024473D /* Managers.swift in Sources */,
 				A444767327D13A8B00B25303 /* LocationManager.swift in Sources */,
@@ -709,6 +735,10 @@
 				A48F4AA727D2133F0024473D /* StationsModels.swift in Sources */,
 				A4A2F8F527F06F8500AC92E8 /* VehicleEngine.swift in Sources */,
 				A444768527D1887A00B25303 /* StationsEngine.swift in Sources */,
+				A836DDA90756932E9509ACB8 /* FranceStationsEngine.swift in Sources */,
+				E82C42BA7FEE1C3C9FD90F75 /* PortugalStationsEngine.swift in Sources */,
+				CC9F734EDF08FA411EBD7154 /* CroatiaStationsEngine.swift in Sources */,
+				A01781D48D88A1FA50C5D7AA /* ItalyStationsEngine.swift in Sources */,
 				A406706E27D90F8D00193D36 /* MainTabView.swift in Sources */,
 				A4727BF927D528AF0005736F /* Sequence.swift in Sources */,
 				A4727BFD27D57D4B0005736F /* MapView.swift in Sources */,
@@ -751,11 +781,11 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = SK4CMEFH7T;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.Aitor.Gas4OilTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -772,11 +802,11 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = SK4CMEFH7T;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.Aitor.Gas4OilTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -908,7 +938,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = SK4CMEFH7T;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -924,7 +954,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.0;
+				MARKETING_VERSION = 1.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.AitorSola.Gas4Oil;
 				PRODUCT_NAME = Gas4Oil;
 				SDKROOT = iphoneos;
@@ -941,7 +971,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = SK4CMEFH7T;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -957,7 +987,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.0;
+				MARKETING_VERSION = 1.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.AitorSola.Gas4Oil;
 				PRODUCT_NAME = Gas4Oil;
 				SDKROOT = iphoneos;
@@ -977,7 +1007,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = Resources/Assets.xcassets;
 				DEVELOPMENT_TEAM = SK4CMEFH7T;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -993,7 +1023,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.AitorSola.Gas4Oil;
 				PRODUCT_NAME = Gas4Oil;
 				SDKROOT = macosx;
@@ -1011,7 +1041,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = Resources/Assets.xcassets;
 				DEVELOPMENT_TEAM = SK4CMEFH7T;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -1027,7 +1057,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.AitorSola.Gas4Oil;
 				PRODUCT_NAME = Gas4Oil;
 				SDKROOT = macosx;

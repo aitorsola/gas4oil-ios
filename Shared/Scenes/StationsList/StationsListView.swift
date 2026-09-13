@@ -52,6 +52,10 @@ extension FuelType {
             return "fuel.dieselPremium".translated
         case .glp:
             return "fuel.glp".translated
+        case .e10:
+            return "fuel.e10".translated
+        case .e85:
+            return "fuel.e85".translated
         }
     }
     
@@ -69,6 +73,10 @@ extension FuelType {
             return "fuel.dieselPremium".translated
         case .glp:
             return "GLP"
+        case .e10:
+            return "E10"
+        case .e85:
+            return "E85"
         }
     }
 }
@@ -100,7 +108,9 @@ struct StationsListView: View {
             landing
         } else {
             ZStack {
-                if viewModel.isPreparing || viewModel.isLoading {
+                if viewModel.needsCountryChoice {
+                    countryPrompt
+                } else if viewModel.isPreparing || viewModel.isLoading {
                     loadingPlaceholder
                 } else {
 #if os(macOS)
@@ -328,6 +338,73 @@ private extension StationsListView {
         .padding(.trailing, 20)
         .padding(.bottom, 12)
         .accessibilityLabel("listView.city.useLocation".translated)
+    }
+    
+    var countryPrompt: some View {
+        ScrollView {
+            VStack(spacing: 0) {
+                ZStack {
+                    Circle()
+                        .fill(Color.orange.opacity(0.14))
+                        .frame(width: 84, height: 84)
+                    Image(systemName: "globe.europe.africa.fill")
+                        .font(.customSize(34, weight: .semibold))
+                        .foregroundStyle(.orange)
+                }
+                .padding(.top, 28)
+                Text("listView.country.prompt".translated)
+                    .font(.customSize(22, weight: .bold))
+                    .multilineTextAlignment(.center)
+                    .padding(.top, 18)
+                Text("listView.country.hint".translated)
+                    .font(.customSize(14))
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.top, 6)
+                    .padding(.horizontal, 8)
+                VStack(spacing: 12) {
+                    ForEach(Country.allCases) { country in
+                        Button {
+                            viewModel.showCountry(country)
+                        } label: {
+                            HStack(spacing: 14) {
+                                Text(country.flag)
+                                    .font(.customSize(30))
+                                Text(country.name)
+                                    .font(.customSize(18, weight: .semibold))
+                                    .foregroundStyle(.primary)
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                                    .font(.customSize(14, weight: .semibold))
+                                    .foregroundStyle(.secondary)
+                            }
+                            .padding(.horizontal, 18)
+                            .padding(.vertical, 16)
+                            .background(Color.orange.opacity(0.12), in: RoundedRectangle(cornerRadius: 16))
+                            .contentShape(RoundedRectangle(cornerRadius: 16))
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                .padding(.top, 28)
+                Spacer(minLength: 20)
+                Button {
+                    viewModel.requestLocation()
+                } label: {
+                    HStack(spacing: 8) {
+                        Image(systemName: "location.fill")
+                        Text("listView.city.useLocation".translated)
+                    }
+                    .font(.customSize(15, weight: .semibold))
+                }
+                .buttonStyle(.plain)
+                .foregroundStyle(.orange)
+                .padding(.top, 24)
+                .padding(.bottom, 100)
+            }
+            .padding(.horizontal, 24)
+        }
     }
     
     var cityPrompt: some View {
@@ -677,40 +754,15 @@ extension StationsListView {
     
     fileprivate var filterButtons: some View {
         HStack(spacing: 2) {
-            Menu {
-                Button {
-                    viewModel.showByBrand(.all)
-                } label: {
-                    Label("listView.brand.all".translated,
-                          systemImage: isBrandFiltered ? "fuelpump.fill" : "checkmark")
-                }
-                Divider()
-                ForEach(viewModel.brandOptions) { option in
-                    Button {
-                        viewModel.showByBrand(.brand(option.key))
-                    } label: {
-                        Label {
-                            Text(option.title)
-                        } icon: {
-                            if viewModel.currentSortBrand == .brand(option.key) {
-                                Image(systemName: "checkmark")
-                            } else if let logo = option.logo {
-                                (logo.roundedMenuImage() ?? logo.image).renderingMode(.original)
-                            } else {
-                                Image(systemName: "fuelpump")
-                            }
-                        }
-                    }
-                }
-            } label: {
-                filterChip(icon: "fuelpump",
-                           title: isBrandFiltered ? brandTitle : nil,
-                           isActive: isBrandFiltered)
+            countryMenu
+            
+            if !viewModel.brandOptions.isEmpty {
+                brandMenu
             }
             
             Menu {
                 Section {
-                    ForEach(FuelType.allCases, id: \.self) { fuel in
+                    ForEach(viewModel.country.fuels, id: \.self) { fuel in
                         Button {
                             viewModel.showFuel(fuel)
                         } label: {
@@ -743,6 +795,62 @@ extension StationsListView {
         }
     }
     
+    fileprivate var countryMenu: some View {
+        Menu {
+            ForEach(Country.allCases) { country in
+                Button {
+                    viewModel.showCountry(country)
+                } label: {
+                    Label {
+                        Text(country.flag + " " + country.name)
+                    } icon: {
+                        if viewModel.country == country {
+                            Image(systemName: "checkmark")
+                        }
+                    }
+                }
+            }
+        } label: {
+            filterChip(emoji: viewModel.country.flag, title: viewModel.country.code, isActive: false)
+        }
+        .accessibilityLabel("country.title".translated)
+    }
+    
+    fileprivate var brandMenu: some View {
+        Group {
+            Menu {
+                Button {
+                    viewModel.showByBrand(.all)
+                } label: {
+                    Label("listView.brand.all".translated,
+                          systemImage: isBrandFiltered ? "fuelpump.fill" : "checkmark")
+                }
+                Divider()
+                ForEach(viewModel.brandOptions) { option in
+                    Button {
+                        viewModel.showByBrand(.brand(option.key))
+                    } label: {
+                        Label {
+                            Text(option.title)
+                        } icon: {
+                            if viewModel.currentSortBrand == .brand(option.key) {
+                                Image(systemName: "checkmark")
+                            } else if let logo = option.logo {
+                                (logo.roundedMenuImage() ?? logo.image).renderingMode(.original)
+                            } else {
+                                Image(systemName: "fuelpump")
+                            }
+                        }
+                    }
+                }
+            } label: {
+                filterChip(icon: "fuelpump",
+                           title: isBrandFiltered ? brandTitle : nil,
+                           isActive: isBrandFiltered)
+            }
+        }
+    }
+    
     fileprivate var appearanceMenu: some View {
         Menu {
             ForEach(ThemePreference.allCases) { option in
@@ -757,6 +865,24 @@ extension StationsListView {
             filterChip(icon: appearance.icon, title: nil, isActive: appearance != .system)
         }
         .accessibilityLabel("appearance.title".translated)
+    }
+    
+    fileprivate func filterChip(emoji: String, title: String?, isActive: Bool) -> some View {
+        HStack(spacing: 5) {
+            Text(emoji)
+                .font(.customSize(14))
+            if let title {
+                Text(title)
+                    .font(.customSize(14, weight: .semibold))
+                    .lineLimit(1)
+            }
+        }
+        .foregroundColor(isActive ? .white : .orange)
+        .padding(.horizontal, isActive ? 10 : 8)
+        .padding(.vertical, 6)
+        .background(
+            Capsule().fill(isActive ? Color.orange : Color.orange.opacity(0.15))
+        )
     }
     
     fileprivate func filterChip(icon: String, title: String?, isActive: Bool) -> some View {
@@ -821,8 +947,8 @@ extension StationsListView {
             fillPrice = unitPrice * litres
         }
         return StationView(prices: PriceColumn.columns(for: station),
-                           brand: station.rotulo,
-                           address: station.direccion,
+                           brand: station.displayTitle,
+                           address: station.displayAddress,
                            schedule: station.horario,
                            coordinates: station.getCLLocationCoordinates(),
                            showFavButton: true,

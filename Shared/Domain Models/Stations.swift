@@ -36,6 +36,9 @@ struct Station: Identifiable, Codable, Hashable {
     var glp: String?
     let rotulo: String
     var isFav: Bool
+    var country: Country? = nil
+    var e85: String? = nil
+    var services: [String]? = nil
     
     func getCLLocationCoordinates() -> CLLocation {
         CLLocation(latitude: latitude, longitude: longitude)
@@ -55,6 +58,10 @@ struct Station: Identifiable, Codable, Hashable {
             return gasoleoPremium
         case .gas95Premium:
             return gasolina95E5Premium
+        case .e10:
+            return gasolina95E10
+        case .e85:
+            return e85 ?? ""
         }
     }
     
@@ -64,6 +71,14 @@ struct Station: Identifiable, Codable, Hashable {
     
     var brandName: String {
         rotulo.trimmingCharacters(in: CharacterSet(charactersIn: " -.,"))
+    }
+    
+    var displayTitle: String {
+        brandName.isEmpty ? direccion.capitalized : brandName
+    }
+    
+    var displayAddress: String {
+        brandName.isEmpty ? "\(cp) \(municipio.capitalized)" : direccion
     }
     
     func openInMaps() {

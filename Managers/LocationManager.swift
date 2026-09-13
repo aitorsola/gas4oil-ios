@@ -30,6 +30,7 @@ protocol LocationManager {
     var delegate: LocationManagerDelegate? { get set }
     var currentCoordinates: CLLocation? { get set }
     var currentCity: String? { get set }
+    var currentCountryCode: String? { get }
 }
 
 class Location: NSObject, LocationManager {
@@ -40,6 +41,7 @@ class Location: NSObject, LocationManager {
     
     var currentCoordinates: CLLocation?
     var currentCity: String?
+    private(set) var currentCountryCode: String?
     var currentAuth: CLAuthorizationStatus {
         manager.authorizationStatus
     }
@@ -101,6 +103,7 @@ extension Location: CLLocationManagerDelegate {
         currentCoordinates = location
         getCityNameFor(location) { placemark in
             self.currentCity = placemark?.locality
+            self.currentCountryCode = placemark?.isoCountryCode
             Task { @MainActor in
                 self.delegate?.didGet(city: placemark?.locality)
             }
