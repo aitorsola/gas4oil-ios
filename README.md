@@ -50,7 +50,7 @@ Ninguna requiere clave. Los IDs de estación se desplazan por país para que no 
 | | |
 |---|---|
 | Xcode | 26 o superior |
-| iOS | 18.0, solo iPhone en vertical |
+| iOS | 18.0, solo en vertical |
 | macOS | 15.0 |
 | Swift | 5 (herramientas de Swift 6) |
 
