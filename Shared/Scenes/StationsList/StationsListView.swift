@@ -90,6 +90,7 @@ struct StationsListView: View {
     @State private var selectedStation: Station?
     @State private var showOnboarding: Bool = false
     @State private var cityQuery: String = ""
+    @State private var isFilterBarHidden: Bool = false
 #if os(macOS)
     @State private var selectedStationID: Station.ID?
 #endif
@@ -132,17 +133,11 @@ struct StationsListView: View {
                         stationsScreen
                     }
                     .overlay(alignment: .bottom) {
-                        if !viewModel.needsCityChoice {
-                            HStack(spacing: 8) {
-                                Color.clear
-                                    .frame(width: 56, height: 56)
-                                Spacer(minLength: 0)
-                                filterBar(large: true)
-                                Spacer(minLength: 0)
-                                locationButton
-                            }
-                            .padding(.horizontal, 20)
-                            .padding(.bottom, 12)
+                        if !viewModel.needsCityChoice && !isFilterBarHidden {
+                            filterBar(large: true)
+                                .padding(.horizontal, 20)
+                                .padding(.bottom, 12)
+                                .transition(.move(edge: .bottom).combined(with: .opacity))
                         }
                     }
 #endif
@@ -210,12 +205,11 @@ private extension StationsListView {
                 Text("landingView.button.requestLocationPermission".translated)
                     .font(.customSize(17, weight: .semibold))
                     .frame(maxWidth: .infinity)
+                    .invertedForeground()
             }
-            .buttonStyle(.borderedProminent)
+            .primaryButtonStyle()
             .controlSize(.large)
             .tint(.primary)
-            .foregroundStyle(.background)
-            .foregroundStyle(.background)
             .padding(.horizontal, 24)
             Button("landingView.button.notNow".translated) {
                 viewModel.continueWithoutLocation()
@@ -307,42 +301,40 @@ private extension StationsListView {
 #endif
             if viewModel.isLoaded && viewModel.needsCityChoice {
                 cityPrompt
-            } else if viewModel.isLoaded && viewModel.stations.isEmpty {
-                Spacer()
-                VStack(spacing: 16) {
-                    Text(viewModel.loadError ?? "listView.empty".translated)
-                        .font(.customSize(20))
-                        .multilineTextAlignment(.center)
-                        .foregroundColor(.secondary)
-                    if viewModel.loadError != nil {
-                        Gas4OilButton(title: "common.retry".translated,
-                                      image: nil,
-                                      isDisabled: false) {
-                            viewModel.retryLoading()
+            } else {
+                stationList
+                    .overlay {
+                        if viewModel.isLoaded && viewModel.stations.isEmpty {
+                            emptyState
                         }
                     }
-                }
-                .padding(.horizontal, 20)
-                Spacer()
-            }
-            if !(viewModel.isLoaded && viewModel.needsCityChoice) {
-                stationList
             }
         }
+    }
+
+    var emptyState: some View {
+        VStack(spacing: 16) {
+            Text(viewModel.loadError ?? "listView.empty".translated)
+                .font(.customSize(20))
+                .multilineTextAlignment(.center)
+                .foregroundColor(.secondary)
+            if viewModel.loadError != nil {
+                Gas4OilButton(title: "common.retry".translated,
+                              image: nil,
+                              isDisabled: false) {
+                    viewModel.retryLoading()
+                }
+            }
+        }
+        .padding(.horizontal, 20)
     }
     
     var locationButton: some View {
         Button {
             viewModel.useCurrentLocation()
         } label: {
-            Image(systemName: "location.fill")
-                .font(.customSize(20, weight: .semibold))
-                .foregroundStyle(.background)
-                .frame(width: 56, height: 56)
-                .background(Color.primary, in: Circle())
-                .shadow(color: .black.opacity(0.22), radius: 8, y: 4)
+            filterChip(icon: "location.fill", title: nil, isActive: false)
         }
-        .buttonStyle(.plain)
         .accessibilityLabel("listView.city.useLocation".translated)
     }
     
@@ -602,12 +594,37 @@ private extension StationsListView {
                                            isLast: station.id == viewModel.stations.last?.id)
             }
         }
+        .onScrollGeometryChange(for: ScrollOffset.self) { geometry in
+            ScrollOffset(y: geometry.contentOffset.y + geometry.contentInsets.top,
+                         maxY: geometry.contentSize.height + geometry.contentInsets.top
+                            + geometry.contentInsets.bottom - geometry.containerSize.height)
+        } action: { old, new in
+            updateFilterBarVisibility(from: old, to: new)
+        }
         .navigationDestination(item: $selectedStation) { station in
             MapView(station: station)
         }
 #endif
     }
     
+#if os(iOS)
+    func updateFilterBarVisibility(from old: ScrollOffset, to new: ScrollOffset) {
+        let delta = new.y - old.y
+        let hide: Bool
+        if new.y <= 0 {
+            hide = false
+        } else if new.y >= new.maxY || abs(delta) < 4 {
+            return
+        } else {
+            hide = delta > 0
+        }
+        guard hide != isFilterBarHidden else { return }
+        withAnimation(.snappy) {
+            isFilterBarHidden = hide
+        }
+    }
+#endif
+
     var stationList: some View {
         searchableList
             .platformListStyle()
@@ -615,7 +632,16 @@ private extension StationsListView {
                 await viewModel.reload()
             }
             .navigationTitle(viewModel.navigationTitle ?? "")
-            .sidebarSafeToolbar { appearanceMenu }
+#if os(iOS)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    locationButton
+                }
+                ToolbarItem(placement: .primaryAction) {
+                    appearanceMenu
+                }
+            }
+#endif
 #if os(iOS)
             .contentMargins(.bottom, 80, for: .scrollContent)
 #endif
@@ -647,19 +673,6 @@ private extension View {
 }
 
 private extension View {
-    
-    @ViewBuilder
-    func sidebarSafeToolbar<Content: View>(@ViewBuilder content: () -> Content) -> some View {
-#if os(macOS)
-        self
-#else
-        toolbar {
-            ToolbarItem(placement: .primaryAction) {
-                content()
-            }
-        }
-#endif
-    }
 }
 
 private struct TownSearch: ViewModifier {
@@ -781,6 +794,7 @@ extension StationsListView {
             }
             barDivider(large: large)
             fuelSortMenu(large: large)
+                .layoutPriority(1)
         }
         if large {
             bar
@@ -791,7 +805,7 @@ extension StationsListView {
             bar
         }
     }
-    
+
     fileprivate var barSurface: Color {
 #if canImport(UIKit)
         Color(uiColor: .secondarySystemBackground)
@@ -933,15 +947,13 @@ extension StationsListView {
                     .font(.customSize(large ? 16 : 13, weight: isActive ? .bold : .semibold))
                     .foregroundStyle(Color.primary)
                     .lineLimit(1)
-                    .minimumScaleFactor(0.8)
-                    .frame(maxWidth: 90)
-                    .fixedSize(horizontal: true, vertical: false)
+                    .minimumScaleFactor(0.5)
             }
             Image(systemName: "chevron.down")
                 .font(.customSize(large ? 10 : 8, weight: .bold))
                 .foregroundStyle(.secondary)
         }
-        .padding(.horizontal, large ? 12 : 8)
+        .padding(.horizontal, large ? 10 : 8)
         .frame(height: large ? 44 : 28)
         .contentShape(Capsule())
     }
@@ -1054,10 +1066,15 @@ struct StationsListView_Previews: PreviewProvider {
     }
 }
 
+struct ScrollOffset: Equatable {
+    let y: CGFloat
+    let maxY: CGFloat
+}
+
 private struct FilterBarChrome: ViewModifier {
-    
+
     let surface: Color
-    
+
     func body(content: Content) -> some View {
         if #available(iOS 26.0, macOS 26.0, *) {
             content

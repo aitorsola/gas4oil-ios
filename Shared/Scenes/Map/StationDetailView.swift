@@ -42,27 +42,28 @@ private extension StationDetailView {
             }
             
             HStack(spacing: 12) {
-                priceTile("95E5", station.gasolina95E5, .green)
-                priceTile("Diesel", station.gasoleoA, .gray)
-                priceTile("98E5", station.gasolina98E5, .red)
+                ForEach(PriceColumn.columns(for: station)) { column in
+                    priceTile(column.label, column.price, column.color)
+                }
             }
             
             HStack(spacing: 12) {
-                Label(station.horario, systemImage: "clock")
-                    .font(.customSize(13))
-                    .foregroundStyle(.secondary)
-                    .lineLimit(1)
+                if !station.horario.isEmpty {
+                    Label(station.horario, systemImage: "clock")
+                        .font(.customSize(13))
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                }
                 Spacer(minLength: 12)
                 Button {
                     station.openInMaps()
                 } label: {
                     Label("listView.station.directions".translated,
                           systemImage: "arrow.triangle.turn.up.right.circle.fill")
+                    .invertedForeground()
                 }
-                .buttonStyle(.borderedProminent)
+                .primaryButtonStyle()
                 .tint(.primary)
-                .foregroundStyle(.background)
-                .foregroundStyle(.background)
             }
         }
         .padding(20)
@@ -112,10 +113,12 @@ private extension StationDetailView {
             Text(title)
                 .font(.customSize(15, weight: .bold))
                 .foregroundStyle(color)
-            Text(price.isEmpty ? "--" : price + " €")
+            Text(price + " €")
                 .font(.customSize(20, weight: .medium))
                 .foregroundStyle(.primary)
         }
+        .lineLimit(1)
+        .minimumScaleFactor(0.6)
         .frame(maxWidth: .infinity)
         .padding(.vertical, 12)
         .background(Color.gray.opacity(0.15), in: RoundedRectangle(cornerRadius: 12))

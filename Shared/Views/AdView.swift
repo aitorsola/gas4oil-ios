@@ -21,7 +21,7 @@ struct AdView: View {
     let tips: [OnboardingTip]
     let buttonTitle: String
     let buttonHandler: (() -> Void)?
-    
+
     var body: some View {
         VStack(spacing: 0) {
             Text(title)
@@ -58,12 +58,11 @@ struct AdView: View {
                 Text(buttonTitle)
                     .font(.customSize(17, weight: .semibold))
                     .frame(maxWidth: .infinity)
+                    .invertedForeground()
             }
-            .buttonStyle(.borderedProminent)
+            .primaryButtonStyle()
             .controlSize(.large)
             .tint(.primary)
-            .foregroundStyle(.background)
-            .foregroundStyle(.background)
             .padding(.horizontal, 24)
             .padding(.bottom, 28)
         }

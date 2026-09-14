@@ -148,12 +148,11 @@ struct FillCostCard: View {
                 }
                 .font(.customSize(15, weight: .semibold))
                 .frame(maxWidth: .infinity)
+                .invertedForeground()
             }
-            .buttonStyle(.borderedProminent)
+            .primaryButtonStyle()
             .controlSize(.regular)
             .tint(.primary)
-            .foregroundStyle(.background)
-            .foregroundStyle(.background)
             .padding(.top, 2)
         }
         .padding(14)

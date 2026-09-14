@@ -22,7 +22,7 @@ Encuentra las gasolineras más cercanas, ordénalas por precio, filtra por marca
 
 - **Cinco países.** Con la ubicación activa la app detecta en qué país estás y carga sus estaciones; sin ella, eliges país y después población. Puedes cambiar de país desde la barra para consultar precios antes de un viaje.
 - **Estaciones cercanas** con todos los combustibles que vende cada una en una sola fila, ordenadas por proximidad o por precio.
-- **Filtros** por combustible (95, 95+, 98, diésel, diésel+, GLP y, en Francia, E10 y E85) y por marca, construido a partir de los datos y con logo cuando lo hay.
+- **Filtros** por combustible (95, 95+, 98, diésel, diésel+, GLP y, en Francia, E10 y E85) y por marca, construido a partir de los datos y con logo cuando lo hay. En iPhone van en una barra flotante que se esconde al bajar por la lista y vuelve al subir.
 - **Búsqueda por población**, sin tildes y con el artículo por delante ("Las Rozas").
 - **Coste del depósito**: si guardas tu vehículo, la pantalla principal y Mi vehículo muestran cuánto cuesta llenarlo en la estación más barata a menos de 50 km, con botón de ruta.
 - **Favoritos**, que mantienen su precio actualizado, de cualquier país.
@@ -50,7 +50,7 @@ Ninguna requiere clave. Los IDs de estación se desplazan por país para que no 
 | | |
 |---|---|
 | Xcode | 26 o superior |
-| iOS | 18.0 |
+| iOS | 18.0, solo iPhone en vertical |
 | macOS | 15.0 |
 | Swift | 5 (herramientas de Swift 6) |
 
