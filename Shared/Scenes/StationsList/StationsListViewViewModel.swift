@@ -206,7 +206,10 @@ final class StationsListViewViewModel {
     private var townSearchKeys: [String] = []
     private var fetchTask: Task<Void, Never>?
     private var locatingTask: Task<Void, Never>?
+    private var lastForegroundLocateAttempt: Date?
     private static let locatingTimeout: Duration = .seconds(15)
+    private static let closeRadius: Double = 10_000
+    private static let minimumCloseStations = 20
     
     let defaults: UserDefaults = UserDefaults.standard
     
@@ -225,7 +228,10 @@ final class StationsListViewViewModel {
     var isLoading: Bool = false
     var navigationTitle: String?
     var isLoaded: Bool = false
-    private(set) var loadError: String?
+    private(set) var loadError: G4OError?
+    private(set) var locationFailed = false
+    private(set) var refreshFailed = false
+    private(set) var lastUpdated: Date?
     
     var suggestedCities: [String] {
         country.suggestedCities.filter { allMunicipios.contains($0) }
@@ -251,6 +257,10 @@ final class StationsListViewViewModel {
     
     var needsCityChoice: Bool {
         locationManager.currentCoordinates == nil && currentCity == nil
+    }
+    
+    var isAwaitingLocation: Bool {
+        isLocating && needsCityChoice
     }
     
     var isPreparing: Bool {
@@ -389,15 +399,33 @@ final class StationsListViewViewModel {
         }
     }
     
+    func didBecomeActive() {
+        guard hasStarted, !isLocating, needsCityChoice,
+              isAuthorized(locationManager.currentAuth) else {
+            return
+        }
+        // Where there is never a fix (a desktop Mac without Wi-Fi) every return to the app
+        // would swap the town prompt for a spinner again.
+        if let lastAttempt = lastForegroundLocateAttempt, Date().timeIntervalSince(lastAttempt) < 60 {
+            return
+        }
+        lastForegroundLocateAttempt = Date()
+        locationManager.requestAuth()
+        startLocatingTimeout()
+    }
+    
     private func startLocatingTimeout() {
         locatingTask?.cancel()
         isLocating = true
+        locationFailed = false
         locatingTask = Task {
             try? await Task.sleep(for: Self.locatingTimeout)
             guard !Task.isCancelled else {
                 return
             }
             isLocating = false
+            locationFailed = !hasLocation
+            restoreSavedCityIfNeeded()
             guard allStations.isEmpty, !isFetching, hasChosenCountry else {
                 return
             }
@@ -416,6 +444,9 @@ final class StationsListViewViewModel {
         }
 #endif
         locationManager.requestAuth()
+        if isAuthorized(locationManager.currentAuth) {
+            startLocatingTimeout()
+        }
     }
     
     func useCurrentLocation() {
@@ -426,18 +457,24 @@ final class StationsListViewViewModel {
         countryPinnedByUser = false
         currentCity = nil
         defaults.removeObject(forKey: Self.cityKey)
-        navigationTitle = locationTitle
-        refresh()
+        if isOutsideDetectedCountry, let detected = Country(isoCode: locationManager.currentCountryCode) {
+            applyCountry(detected)
+        } else {
+            navigationTitle = locationTitle
+            refresh()
+        }
         locationManager.requestAuth()
         startLocatingTimeout()
     }
     
     func continueWithoutLocation() {
         skippedLocation = true
+#if !os(macOS)
         if currentCity == nil, allStations.isEmpty {
             hasChosenCountry = false
             return
         }
+#endif
         if hasChosenCountry, allStations.isEmpty, !isFetching {
             getStations()
         }
@@ -508,6 +545,19 @@ final class StationsListViewViewModel {
         }
     }
     
+    /// The saved town is only restored at launch when there is no permission. With the
+    /// permission granted but no fix (a desktop Mac without Wi-Fi, a denied-later prompt)
+    /// it has to come back here, or every launch ends in the town prompt.
+    private func restoreSavedCityIfNeeded() {
+        guard currentCity == nil, !hasLocation,
+              let city = defaults.string(forKey: Self.cityKey), !city.isEmpty else {
+            return
+        }
+        currentCity = city.lowercased()
+        navigationTitle = city.capitalized
+        refresh()
+    }
+    
     private func dropBrandFilterIfGone() {
         guard case .brand(let key) = currentSortBrand,
               !brandOptions.contains(where: { $0.key == key }) else {
@@ -517,15 +567,18 @@ final class StationsListViewViewModel {
         defaults.removeObject(forKey: Self.brandKey)
     }
     
-    private func getStations() {
+    private func getStations(keepingData: Bool = false) {
         locationAllowed = true
-        isLoading = true
-        allStations = []
-        allMunicipios = []
-        provinceByTown = [:]
-        townSearchKeys = []
-        brandOptions = []
-        stations = []
+        let keepsData = keepingData && !allStations.isEmpty
+        if !keepsData {
+            isLoading = true
+            allStations = []
+            allMunicipios = []
+            provinceByTown = [:]
+            townSearchKeys = []
+            brandOptions = []
+            stations = []
+        }
         loadError = nil
         isFetching = true
         
@@ -545,15 +598,21 @@ final class StationsListViewViewModel {
                 brandOptions = Self.brandOptions(from: stations)
                 dropBrandFilterIfGone()
                 favorites = refreshedFavorites(with: stations)
+                lastUpdated = Date()
+                refreshFailed = false
                 refresh()
                 finishLoading()
             } catch {
                 guard !Task.isCancelled else {
                     return
                 }
-                loadError = error.localizedDescription
+                if allStations.isEmpty {
+                    loadError = error
+                } else {
+                    refreshFailed = true
+                    showRefreshFailed()
+                }
                 finishLoading()
-                show(error)
             }
         }
     }
@@ -565,7 +624,93 @@ final class StationsListViewViewModel {
         adViewSeen = defaults.bool(forKey: "stationsView.adSeen")
     }
     
+    func dismissRefreshFailure() {
+        refreshFailed = false
+    }
+    
+    var locationAuth: CLAuthorizationStatus {
+        locationManager.currentAuth
+    }
+    
+    var isLocationAuthorized: Bool {
+        isAuthorized(locationManager.currentAuth)
+    }
+    
+    var isLocationDenied: Bool {
+        locationManager.currentAuth == .denied || locationManager.currentAuth == .restricted
+    }
+    
+    var detectedCity: String? {
+        locationManager.currentCity
+    }
+    
+    var hasActiveFilters: Bool {
+        currentSortBrand != .all || currentCity != nil
+    }
+    
+    func resetFilters() {
+        currentSortBrand = .all
+        defaults.removeObject(forKey: Self.brandKey)
+        currentCity = nil
+        defaults.removeObject(forKey: Self.cityKey)
+        navigationTitle = locationTitle
+        refresh()
+    }
+    
+    /// Whether a search term matches any town or province of the loaded country.
+    func hasMatches(for text: String) -> Bool {
+        let query = text.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        guard !query.isEmpty else {
+            return false
+        }
+        return !searchResults(text: query).isEmpty || provinceByTown.values.contains { $0.contains(query) }
+    }
+    
+    /// The user picked another country by hand while the last fix places them elsewhere.
+    var isOutsideDetectedCountry: Bool {
+        guard hasLocation, let detected = Country(isoCode: locationManager.currentCountryCode) else {
+            return false
+        }
+        return detected != country
+    }
+    
+    var currentCoordinate: CLLocationCoordinate2D? {
+        locationManager.currentCoordinates?.coordinate
+    }
+    
+    func distance(to station: Station) -> Double? {
+        guard let here = locationManager.currentCoordinates else {
+            return nil
+        }
+        return station.getCLLocationCoordinates().distance(from: here)
+    }
+    
+#if os(macOS)
+    /// macOS has no landing screen: it asks for the permission straight away and loads
+    /// the saved country in parallel instead of waiting for the first fix.
+    func startOnMac() {
+        guard !hasStarted else {
+            return
+        }
+        hasStarted = true
+        skippedLocation = true
+        locationManager.delegate = self
+        if !isLocationDenied {
+            locationManager.requestAuth()
+        }
+        if isLocationAuthorized {
+            startLocatingTimeout()
+        }
+        if hasChosenCountry, allStations.isEmpty, !isFetching {
+            getStations()
+        }
+    }
+#endif
+    
     func retryLoading() {
+        if needsCityChoice, isAuthorized(locationManager.currentAuth) {
+            locationManager.requestAuth()
+        }
         getStations()
     }
     
@@ -573,14 +718,14 @@ final class StationsListViewViewModel {
         if isAuthorized(locationManager.currentAuth), locationManager.currentCoordinates == nil {
             locationManager.requestAuth()
         }
-        getStations()
+        getStations(keepingData: true)
         await fetchTask?.value
     }
     
-    private func show(_ error: G4OError) {
+    private func showRefreshFailed() {
 #if os(iOS)
         NotificationBanner(
-            title: error.localizedDescription,
+            title: "error.refreshFailed".translated,
             subtitle: "",
             leftView: nil,
             rightView: nil,
@@ -588,7 +733,7 @@ final class StationsListViewViewModel {
             colors: nil
         ).show()
 #else
-        print(error.localizedDescription)
+        print("error.refreshFailed".translated)
 #endif
     }
     
@@ -688,7 +833,23 @@ extension StationsListViewViewModel {
             stations = Array(sortedByProximity(filtered).prefix(kMaxLenght))
         case .cheapest:
             stations = Array(byPrice.prefix(kMaxLenght))
+        case .nearbyCheapest:
+            stations = nearbySortedByPrice(filtered)
         }
+    }
+
+    private func nearbySortedByPrice(_ stations: [Station]) -> [Station] {
+        guard let here = locationManager.currentCoordinates else {
+            return stations
+        }
+        let byDistance = stations
+            .map { ($0, $0.getCLLocationCoordinates().distance(from: here)) }
+            .sorted { $0.1 < $1.1 }
+        let near = byDistance.filter { $0.1 <= Self.closeRadius }
+        let candidates = near.count >= Self.minimumCloseStations ? near : Array(byDistance.prefix(Self.minimumCloseStations))
+        return candidates
+            .sorted { (price(for: $0.0) ?? .greatestFiniteMagnitude, $0.1) < (price(for: $1.0) ?? .greatestFiniteMagnitude, $1.1) }
+            .map(\.0)
     }
     
     private func priceScope(_ stations: [Station]) -> [Station] {
@@ -771,6 +932,7 @@ extension StationsListViewViewModel: LocationManagerDelegate {
                 locationManager.currentCity = nil
                 locatingTask?.cancel()
                 isLocating = false
+                restoreSavedCityIfNeeded()
                 if currentCity == nil {
                     navigationTitle = nil
                 }
@@ -791,6 +953,7 @@ extension StationsListViewViewModel: LocationManagerDelegate {
     func didGet(city: String?) {
         locatingTask?.cancel()
         isLocating = false
+        locationFailed = false
         if city != nil, currentCity == nil {
             navigationTitle = locationTitle
         }
@@ -816,6 +979,8 @@ extension StationsListViewViewModel: LocationManagerDelegate {
         print(error.localizedDescription)
         locatingTask?.cancel()
         isLocating = false
+        locationFailed = !hasLocation
+        restoreSavedCityIfNeeded()
         if hasChosenCountry, allStations.isEmpty, !isFetching {
             getStations()
         } else if !isFetching {

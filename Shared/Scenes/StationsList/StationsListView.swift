@@ -9,24 +9,29 @@ import SwiftUI
 import MapKit
 
 enum StationSort: String, CaseIterable, Hashable {
+    case nearbyCheapest
     case nearest
     case cheapest
-    
+
     var title: String {
         switch self {
         case .nearest:
             return "listView.sortOrder.near".translated
         case .cheapest:
             return "listView.sortOrder.down".translated
+        case .nearbyCheapest:
+            return "listView.sortOrder.nearDown".translated
         }
     }
-    
+
     var icon: String {
         switch self {
         case .nearest:
             return "location.fill"
         case .cheapest:
             return "arrow.down"
+        case .nearbyCheapest:
+            return "mappin.and.ellipse"
         }
     }
 }
@@ -106,7 +111,7 @@ struct StationsListView: View {
             ZStack {
                 if viewModel.needsCountryChoice {
                     countryPrompt
-                } else if viewModel.isPreparing || viewModel.isLoading {
+                } else if viewModel.isPreparing || viewModel.isLoading || viewModel.isAwaitingLocation {
                     loadingPlaceholder
                 } else {
 #if os(macOS)
@@ -119,8 +124,7 @@ struct StationsListView: View {
                                 viewModel.favoriteStationTapAction(station)
                             }
                         } else {
-                            ContentUnavailableView("listView.detail.empty".translated,
-                                                   systemImage: "fuelpump")
+                            StateView(icon: "fuelpump", title: "listView.detail.empty".translated)
                         }
                     }
                     .toolbar {
@@ -133,7 +137,7 @@ struct StationsListView: View {
                         stationsScreen
                     }
                     .overlay(alignment: .bottom) {
-                        if !viewModel.needsCityChoice && !isFilterBarHidden {
+                        if !viewModel.needsCityChoice && viewModel.loadError == nil && !isFilterBarHidden && selectedStation == nil {
                             filterBar(large: true)
                                 .padding(.horizontal, 20)
                                 .padding(.bottom, 12)
@@ -299,7 +303,11 @@ private extension StationsListView {
 #if os(macOS)
             macSearchField
 #endif
-            if viewModel.isLoaded && viewModel.needsCityChoice {
+            if viewModel.isLoaded, let error = viewModel.loadError {
+                StateView(error: error) {
+                    viewModel.retryLoading()
+                }
+            } else if viewModel.isLoaded && viewModel.needsCityChoice {
                 cityPrompt
             } else {
                 stationList
@@ -313,20 +321,9 @@ private extension StationsListView {
     }
 
     var emptyState: some View {
-        VStack(spacing: 16) {
-            Text(viewModel.loadError ?? "listView.empty".translated)
-                .font(.customSize(20))
-                .multilineTextAlignment(.center)
-                .foregroundColor(.secondary)
-            if viewModel.loadError != nil {
-                Gas4OilButton(title: "common.retry".translated,
-                              image: nil,
-                              isDisabled: false) {
-                    viewModel.retryLoading()
-                }
-            }
-        }
-        .padding(.horizontal, 20)
+        StateView(icon: "fuelpump.slash",
+                  title: "listView.empty".translated,
+                  message: "listView.empty.hint".translated)
     }
     
     var locationButton: some View {
@@ -428,6 +425,18 @@ private extension StationsListView {
                     .fixedSize(horizontal: false, vertical: true)
                     .padding(.top, 6)
                     .padding(.horizontal, 8)
+                if viewModel.locationFailed {
+                    HStack(spacing: 10) {
+                        Image(systemName: "location.slash.fill")
+                        Text("listView.city.locationFailed".translated)
+                            .fixedSize(horizontal: false, vertical: true)
+                        Spacer(minLength: 0)
+                    }
+                    .font(.customSize(14, weight: .medium))
+                    .padding(14)
+                    .background(Color.primary.opacity(0.06), in: RoundedRectangle(cornerRadius: 14))
+                    .padding(.top, 18)
+                }
                 cityField
                     .padding(.top, 22)
                 if cityQuery.isEmpty {

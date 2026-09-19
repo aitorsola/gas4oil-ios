@@ -29,14 +29,48 @@ enum G4OError: Error {
     case parseProblems
 }
 
+extension G4OError {
+    
+    var isOffline: Bool {
+        guard case .networkProblem(let underlying) = self,
+              let code = (underlying as? URLError)?.code else {
+            return false
+        }
+        return [.notConnectedToInternet, .networkConnectionLost, .dataNotAllowed,
+                .internationalRoamingOff].contains(code)
+    }
+    
+    var title: String {
+        switch self {
+        case .networkProblem where isOffline:
+            return "error.offline.title".translated
+        case .invalidURL, .networkProblem, .badStatusCode:
+            return "error.service.title".translated
+        case .emptyResponse, .parseProblems:
+            return "error.data.title".translated
+        }
+    }
+    
+    var icon: String {
+        switch self {
+        case .networkProblem where isOffline:
+            return "wifi.slash"
+        case .invalidURL, .networkProblem, .badStatusCode:
+            return "exclamationmark.icloud"
+        case .emptyResponse, .parseProblems:
+            return "exclamationmark.triangle"
+        }
+    }
+}
+
 extension G4OError: LocalizedError {
 
     var errorDescription: String? {
         switch self {
         case .invalidURL:
             return "error.invalidURL".translated
-        case .networkProblem(let underlying):
-            return underlying?.localizedDescription ?? "error.network".translated
+        case .networkProblem:
+            return isOffline ? "error.offline.message".translated : "error.network".translated
         case .badStatusCode(let code):
             return "error.badStatusCode".translated(code)
         case .emptyResponse:

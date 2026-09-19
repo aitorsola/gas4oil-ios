@@ -13,6 +13,7 @@
 		41383CB64B739FF3BD9296F4 /* FranceStationsEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DA32AC39185359F85C655F5 /* FranceStationsEngine.swift */; };
 		5BB74FDC2D7311E6001D92C9 /* Shimmer in Frameworks */ = {isa = PBXBuildFile; productRef = 5BB74FDB2D7311E6001D92C9 /* Shimmer */; };
 		5BC0EA1F2948E3BC00E07674 /* Gas4OilTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BC0EA1E2948E3BC00E07674 /* Gas4OilTests.swift */; };
+		A4F0E7D12F00000100C0FFEE /* StationsLoadingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4F0E7D02F00000100C0FFEE /* StationsLoadingTests.swift */; };
 		6556BCDA361BC8C81432F0C5 /* Country.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19D6CEA44ED34B41020B0C6 /* Country.swift */; };
 		963AD35E98DFA54AC7940BA4 /* Country.swift in Sources */ = {isa = PBXBuildFile; fileRef = B19D6CEA44ED34B41020B0C6 /* Country.swift */; };
 		9A6573A5DD72B80BF820A53F /* StationDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21BA535103D8CD1A540C72E6 /* StationDetailView.swift */; };
@@ -49,7 +50,9 @@
 		A46E057F27FB5D9300697A57 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A46E057E27FB5D9300697A57 /* AppDelegate.swift */; };
 		A46E058127FB69C400697A57 /* BackgroundTaskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A46E058027FB69C400697A57 /* BackgroundTaskManager.swift */; };
 		A4727BF527D519740005736F /* Gas4OilButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4727BF427D519740005736F /* Gas4OilButton.swift */; };
+		A4F0E7A12F00000100C0FFEE /* StateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4F0E7A02F00000100C0FFEE /* StateView.swift */; };
 		A4727BF627D519740005736F /* Gas4OilButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4727BF427D519740005736F /* Gas4OilButton.swift */; };
+		A4F0E7A22F00000100C0FFEE /* StateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4F0E7A02F00000100C0FFEE /* StateView.swift */; };
 		A4727BF827D528AF0005736F /* Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4727BF727D528AF0005736F /* Sequence.swift */; };
 		A4727BF927D528AF0005736F /* Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4727BF727D528AF0005736F /* Sequence.swift */; };
 		A4727BFC27D57D4B0005736F /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4727BFB27D57D4B0005736F /* MapView.swift */; };
@@ -117,6 +120,14 @@
 		CC9F734EDF08FA411EBD7154 /* CroatiaStationsEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBDBB03CD273B1ECE28EFEA1 /* CroatiaStationsEngine.swift */; };
 		E82C42BA7FEE1C3C9FD90F75 /* PortugalStationsEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D6699CDED6F50DE73B9D9A0 /* PortugalStationsEngine.swift */; };
 		F9FEE136F9619354C0D10662 /* ItalyStationsEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3F190E94DCBF3ECC1943CED /* ItalyStationsEngine.swift */; };
+		A4F0E7C02F00000100C0FFEE /* MacAppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4F0E7B02F00000100C0FFEE /* MacAppModel.swift */; };
+		A4F0E7C12F00000100C0FFEE /* MacRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4F0E7B12F00000100C0FFEE /* MacRootView.swift */; };
+		A4F0E7C22F00000100C0FFEE /* MacStationsTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4F0E7B22F00000100C0FFEE /* MacStationsTable.swift */; };
+		A4F0E7C32F00000100C0FFEE /* MacStationsMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4F0E7B32F00000100C0FFEE /* MacStationsMap.swift */; };
+		A4F0E7C42F00000100C0FFEE /* MacStationInspector.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4F0E7B42F00000100C0FFEE /* MacStationInspector.swift */; };
+		A4F0E7C52F00000100C0FFEE /* MacCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4F0E7B52F00000100C0FFEE /* MacCommands.swift */; };
+		A4F0E7C62F00000100C0FFEE /* MacSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4F0E7B62F00000100C0FFEE /* MacSettingsView.swift */; };
+		A4F0E7C72F00000100C0FFEE /* MacMenuBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4F0E7B72F00000100C0FFEE /* MacMenuBarView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -146,6 +157,7 @@
 		21BA535103D8CD1A540C72E6 /* StationDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationDetailView.swift; sourceTree = "<group>"; };
 		5BC0EA1C2948E3BC00E07674 /* Gas4OilTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Gas4OilTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5BC0EA1E2948E3BC00E07674 /* Gas4OilTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Gas4OilTests.swift; sourceTree = "<group>"; };
+		A4F0E7D02F00000100C0FFEE /* StationsLoadingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationsLoadingTests.swift; sourceTree = "<group>"; };
 		5C03993C7ECA9A00C68E61FA /* gl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = gl; path = gl.lproj/Localizable.strings; sourceTree = "<group>"; };
 		6E3011958B893B5EE48E4B60 /* Pods_Gas4Oil__macOS_.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Gas4Oil__macOS_.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		864A9B1A278F6288DC8A6523 /* ca */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ca; path = ca.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -173,6 +185,7 @@
 		A46E057E27FB5D9300697A57 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A46E058027FB69C400697A57 /* BackgroundTaskManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTaskManager.swift; sourceTree = "<group>"; };
 		A4727BF427D519740005736F /* Gas4OilButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Gas4OilButton.swift; sourceTree = "<group>"; };
+		A4F0E7A02F00000100C0FFEE /* StateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateView.swift; sourceTree = "<group>"; };
 		A4727BF727D528AF0005736F /* Sequence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sequence.swift; sourceTree = "<group>"; };
 		A4727BFB27D57D4B0005736F /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		A4727BFE27D57D5F0005736F /* MapViewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewViewModel.swift; sourceTree = "<group>"; };
@@ -212,6 +225,14 @@
 		BBDBB03CD273B1ECE28EFEA1 /* CroatiaStationsEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CroatiaStationsEngine.swift; sourceTree = "<group>"; };
 		C943B049A046AECA493B95BF /* Pods_Gas4Oil__iOS_.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Gas4Oil__iOS_.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D3F190E94DCBF3ECC1943CED /* ItalyStationsEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItalyStationsEngine.swift; sourceTree = "<group>"; };
+		A4F0E7B02F00000100C0FFEE /* MacAppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacAppModel.swift; sourceTree = "<group>"; };
+		A4F0E7B12F00000100C0FFEE /* MacRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacRootView.swift; sourceTree = "<group>"; };
+		A4F0E7B22F00000100C0FFEE /* MacStationsTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacStationsTable.swift; sourceTree = "<group>"; };
+		A4F0E7B32F00000100C0FFEE /* MacStationsMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacStationsMap.swift; sourceTree = "<group>"; };
+		A4F0E7B42F00000100C0FFEE /* MacStationInspector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacStationInspector.swift; sourceTree = "<group>"; };
+		A4F0E7B52F00000100C0FFEE /* MacCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacCommands.swift; sourceTree = "<group>"; };
+		A4F0E7B62F00000100C0FFEE /* MacSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacSettingsView.swift; sourceTree = "<group>"; };
+		A4F0E7B72F00000100C0FFEE /* MacMenuBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacMenuBarView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -248,6 +269,7 @@
 			isa = PBXGroup;
 			children = (
 				5BC0EA1E2948E3BC00E07674 /* Gas4OilTests.swift */,
+				A4F0E7D02F00000100C0FFEE /* StationsLoadingTests.swift */,
 			);
 			path = Gas4OilTests;
 			sourceTree = "<group>";
@@ -296,6 +318,14 @@
 			isa = PBXGroup;
 			children = (
 				A444764E27D12DB600B25303 /* macOS.entitlements */,
+				A4F0E7B02F00000100C0FFEE /* MacAppModel.swift */,
+				A4F0E7B12F00000100C0FFEE /* MacRootView.swift */,
+				A4F0E7B22F00000100C0FFEE /* MacStationsTable.swift */,
+				A4F0E7B32F00000100C0FFEE /* MacStationsMap.swift */,
+				A4F0E7B42F00000100C0FFEE /* MacStationInspector.swift */,
+				A4F0E7B52F00000100C0FFEE /* MacCommands.swift */,
+				A4F0E7B62F00000100C0FFEE /* MacSettingsView.swift */,
+				A4F0E7B72F00000100C0FFEE /* MacMenuBarView.swift */,
 			);
 			path = macOS;
 			sourceTree = "<group>";
@@ -396,6 +426,7 @@
 				A444767D27D17A5D00B25303 /* ProgressView.swift */,
 				A48F4ABB27D4DEA10024473D /* StationView.swift */,
 				A4727BF427D519740005736F /* Gas4OilButton.swift */,
+				A4F0E7A02F00000100C0FFEE /* StateView.swift */,
 				A4727C0227D600BE0005736F /* MapPin.swift */,
 				A416FCA327E663C200FCC16A /* LottieView.swift */,
 				A41249EF27FC24A50018BDB4 /* AdView.swift */,
@@ -639,6 +670,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5BC0EA1F2948E3BC00E07674 /* Gas4OilTests.swift in Sources */,
+				A4F0E7D12F00000100C0FFEE /* StationsLoadingTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -675,6 +707,7 @@
 				A48581C627DAC54100864885 /* FavoriteListView.swift in Sources */,
 				A4F3728C27FC555900458EBE /* DragBar.swift in Sources */,
 				A4727BF527D519740005736F /* Gas4OilButton.swift in Sources */,
+				A4F0E7A12F00000100C0FFEE /* StateView.swift in Sources */,
 				A48F4AA927D218E80024473D /* DomainConvertible.swift in Sources */,
 				A4727C0327D600BE0005736F /* MapPin.swift in Sources */,
 				A478914027D922F4001CA76E /* String.swift in Sources */,
@@ -701,6 +734,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A4F0E7C02F00000100C0FFEE /* MacAppModel.swift in Sources */,
+				A4F0E7C12F00000100C0FFEE /* MacRootView.swift in Sources */,
+				A4F0E7C22F00000100C0FFEE /* MacStationsTable.swift in Sources */,
+				A4F0E7C32F00000100C0FFEE /* MacStationsMap.swift in Sources */,
+				A4F0E7C42F00000100C0FFEE /* MacStationInspector.swift in Sources */,
+				A4F0E7C52F00000100C0FFEE /* MacCommands.swift in Sources */,
+				A4F0E7C62F00000100C0FFEE /* MacSettingsView.swift in Sources */,
+				A4F0E7C72F00000100C0FFEE /* MacMenuBarView.swift in Sources */,
 				A4A2F8F227F06DA000AC92E8 /* View.swift in Sources */,
 				A47A84AE27F5AB2700AF2892 /* VehicleModelEntity.swift in Sources */,
 				A487AB8727E8B2FF0085385E /* VehicleViewViewModel.swift in Sources */,
@@ -723,6 +764,7 @@
 				A487AB8A27E8B8530085385E /* VehicleDataStored.swift in Sources */,
 				A4A2F8FB27F0755F00AC92E8 /* VehicleBrandEntity.swift in Sources */,
 				A4727BF627D519740005736F /* Gas4OilButton.swift in Sources */,
+				A4F0E7A22F00000100C0FFEE /* StateView.swift in Sources */,
 				A4F3728D27FC555900458EBE /* DragBar.swift in Sources */,
 				A48F4AAA27D218E80024473D /* DomainConvertible.swift in Sources */,
 				A487AB8427E8A6250085385E /* VehicleView.swift in Sources */,
@@ -938,7 +980,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = SK4CMEFH7T;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -948,15 +990,15 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen";
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = UIInterfaceOrientationPortrait;
-				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.3.0;
+				MARKETING_VERSION = 1.3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.AitorSola.Gas4Oil;
 				PRODUCT_NAME = Gas4Oil;
 				SDKROOT = iphoneos;
@@ -973,7 +1015,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = SK4CMEFH7T;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -983,15 +1025,15 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen";
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = UIInterfaceOrientationPortrait;
-				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.3.0;
+				MARKETING_VERSION = 1.3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.AitorSola.Gas4Oil;
 				PRODUCT_NAME = Gas4Oil;
 				SDKROOT = iphoneos;

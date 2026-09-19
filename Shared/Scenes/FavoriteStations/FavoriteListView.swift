@@ -30,17 +30,18 @@ struct FavoriteListView: View {
                     selectedStationID = nil
                 }
             } else {
-                ContentUnavailableView(viewModel.favoriteStations.isEmpty
-                                       ? "favorites.empty".translated
-                                       : "listView.detail.empty".translated,
-                                       systemImage: "star")
+                if viewModel.favoriteStations.isEmpty {
+                    favoritesEmpty
+                } else {
+                    StateView(icon: "star", title: "listView.detail.empty".translated)
+                }
             }
         }
 #else
         NavigationStack {
             Group {
                 if viewModel.favoriteStations.isEmpty {
-                    Text("favorites.empty".translated)
+                    favoritesEmpty
                 } else {
                     phoneList
                 }
@@ -90,6 +91,13 @@ struct FavoriteListView: View {
 }
 
 extension FavoriteListView {
+    
+    private var favoritesEmpty: some View {
+        StateView(icon: "star",
+                  title: "favorites.empty".translated,
+                  message: "favorites.empty.hint".translated)
+    }
+
     
 
     private func getStationView(_ station: Station) -> StationView {

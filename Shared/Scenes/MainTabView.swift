@@ -24,6 +24,7 @@ struct MainTabView: View {
 #if os(iOS)
     @EnvironmentObject var appDelegate: AppDelegate
 #endif
+    @Environment(\.scenePhase) private var scenePhase
     
     var body: some View {
         VStack {
@@ -81,6 +82,11 @@ struct MainTabView: View {
         }
         .task {
             viewModel.listViewViewModel.start()
+        }
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active {
+                viewModel.listViewViewModel.didBecomeActive()
+            }
         }
 #if os(iOS)
         .ignoresSafeArea()

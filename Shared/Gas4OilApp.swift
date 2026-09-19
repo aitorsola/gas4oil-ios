@@ -7,6 +7,51 @@
 
 import SwiftUI
 
+#if os(macOS)
+
+@main
+struct Gas4OilApp: App {
+    
+    private let model = MacAppModel.shared
+    
+    init() {
+        model.start()
+    }
+    
+    var body: some Scene {
+        Window("Gas4Oil", id: MacWindowID.main) {
+            MacRootView(model: model)
+                .frame(minWidth: 1000, minHeight: 560)
+        }
+        .defaultSize(width: 1240, height: 760)
+        .windowToolbarStyle(.unified)
+        .commands {
+            MacCommands(model: model)
+            SidebarCommands()
+            ToolbarCommands()
+        }
+        
+        WindowGroup(id: MacWindowID.station, for: Station.ID.self) { $stationID in
+            MacStationWindow(model: model, stationID: stationID)
+        }
+        .defaultSize(width: 820, height: 520)
+        
+        Settings {
+            MacSettingsView(model: model)
+        }
+        
+        MenuBarExtra(isInserted: model.menuBarBinding) {
+            MacMenuBarView(model: model)
+        } label: {
+            Label(model.menuBarTitle, systemImage: "fuelpump.fill")
+                .labelStyle(.titleAndIcon)
+        }
+        .menuBarExtraStyle(.window)
+    }
+}
+
+#else
+
 @main
 struct Gas4OilApp: App {
     
@@ -38,3 +83,5 @@ struct Gas4OilApp: App {
         }
     }
 }
+
+#endif

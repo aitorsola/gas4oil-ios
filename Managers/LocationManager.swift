@@ -36,6 +36,8 @@ protocol LocationManager {
 class Location: NSObject, LocationManager {
     
     private let manager: CLLocationManager = .init()
+    private var locationRetries = 0
+    private static let maxLocationRetries = 3
     
     weak var delegate: LocationManagerDelegate?
     
@@ -53,6 +55,7 @@ class Location: NSObject, LocationManager {
     }
     
     func requestAuth() {
+        locationRetries = 0
         if case .notDetermined = manager.authorizationStatus {
             manager.requestWhenInUseAuthorization()
         } else {
@@ -100,6 +103,7 @@ extension Location: CLLocationManagerDelegate {
         guard let location = locations.first else {
             return
         }
+        locationRetries = 0
         currentCoordinates = location
         getCityNameFor(location) { placemark in
             self.currentCity = placemark?.locality
@@ -111,6 +115,18 @@ extension Location: CLLocationManagerDelegate {
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        if (error as? CLError)?.code == .locationUnknown, locationRetries < Self.maxLocationRetries {
+            locationRetries += 1
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                manager.requestLocation()
+            }
+            return
+        }
+        locationRetries = 0
+        if currentCoordinates == nil, let cached = manager.location {
+            locationManager(manager, didUpdateLocations: [cached])
+            return
+        }
         Task { @MainActor in
             delegate?.didFailGettingLocation(error)
         }
