@@ -16,6 +16,16 @@ Encuentra las gasolineras más cercanas, ordénalas por precio, filtra por marca
 <p align="center">
   <img src="docs/screenshots/mapa.png" width="200" alt="Mapa de la estación" />
   <img src="docs/screenshots/vehiculo.png" width="200" alt="Mi vehículo con el coste de llenado" />
+  <img src="docs/screenshots/favoritos.png" width="200" alt="Estaciones favoritas" />
+</p>
+
+### macOS
+
+<p align="center">
+  <img src="docs/screenshots/macos.png" width="820" alt="Ventana de macOS con barra lateral, tabla de estaciones, mapa e inspector" />
+</p>
+<p align="center">
+  <img src="docs/screenshots/macos-mapa.png" width="820" alt="Vista de mapa en macOS con los precios coloreados del más barato al más caro" />
 </p>
 
 ## Qué hace
@@ -27,7 +37,7 @@ Encuentra las gasolineras más cercanas, ordénalas por precio, filtra por marca
 - **Coste del depósito**: si guardas tu vehículo, la pantalla principal y Mi vehículo muestran cuánto cuesta llenarlo en la estación más barata a menos de 50 km, con botón de ruta.
 - **Favoritos**, que mantienen su precio actualizado, de cualquier país.
 - **Cómo llegar**: abre la ruta en Apple Maps con el destino ya nombrado, sin salir de la celda.
-- **App de macOS** con vista dividida: lista a la izquierda, detalle y mapa a la derecha.
+- **App de macOS nativa**, con su propia interfaz: barra lateral (cerca de mí, favoritos y ciudades), tabla con columnas ordenables, mapa con todos los precios coloreados del más barato al más caro e inspector con el detalle de la estación. Incluye búsqueda en la barra de herramientas, menús con atajos de teclado (⌘F, ⌘R, ⌘L, ⌘D…), ventana de Ajustes (tema, país, vehículo, ubicación y actualización automática), icono en la barra de menús con la estación más barata y los favoritos, y una ventana propia por estación con doble clic.
 
 ## Datos
 
